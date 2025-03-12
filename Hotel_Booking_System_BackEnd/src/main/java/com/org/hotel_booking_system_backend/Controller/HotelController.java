@@ -34,4 +34,10 @@ public class HotelController {
         hotelService.update(hotelDTO);
         return new ResponseUtil(200, "Hotel details are updated", null);
     }
+
+    @DeleteMapping("delete/{id}")
+   public ResponseUtil deleteHotel(@PathVariable(value = "id") int id){
+       hotelService.delete(id);
+       return new ResponseUtil(200, "Hotel details are deleted", null);
+   }
 }

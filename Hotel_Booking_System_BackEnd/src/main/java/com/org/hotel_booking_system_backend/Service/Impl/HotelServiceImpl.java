@@ -57,4 +57,13 @@ public class HotelServiceImpl implements HotelService {
         }
     }
 
+    @Override
+    public void delete(long id) {
+        if (hotelRepo.existsById(id)) {
+            hotelRepo.deleteById(id);
+        } else {
+            throw new RuntimeException("Hotel does not found");
+        }
+    }
+
 }

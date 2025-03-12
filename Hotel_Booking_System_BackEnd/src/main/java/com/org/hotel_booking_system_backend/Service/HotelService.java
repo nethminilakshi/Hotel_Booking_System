@@ -11,4 +11,6 @@ public interface HotelService {
     List<HotelDTO> getAll();
 
     void update(HotelDTO hotelDTO) throws IOException;
+
+    void delete(long id);
 }

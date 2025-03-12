@@ -1,0 +1,55 @@
+:root {
+  --primary-color: #0d6efd;
+  --sidebar-width: 280px;
+  --header-height: 70px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: #F8F9FA;
+}
+
+/* Content Styles */
+#content {
+  width: calc(100% - var(--sidebar-width));
+  margin-left: var(--sidebar-width);
+  padding: 25px;
+}
+
+/* Table Styles */
+.table td {
+  vertical-align: middle;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.action-buttons .btn {
+  padding: 4px 12px;
+  font-size: 0.85rem;
+}
+
+/* Modal Styles */
+.modal-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.modal-footer {
+  background-color: #f8f9fa;
+  border-top: 1px solid #dee2e6;
+}
+
+/* Form Styles */
+.form-label {
+  font-weight: 500;
+  color: #444;
+}
+
+/* Badge Styles */
+.badge {
+  padding: 6px 10px;
+  font-weight: 500;
+}

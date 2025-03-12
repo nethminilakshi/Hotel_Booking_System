@@ -31,16 +31,17 @@ public class Hotel {
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
     private List<Room> rooms;
 
-    public Hotel(Long hotelId, String name, String location, String description, String image, User manager) {
+    public Hotel() {
+    }
+
+
+    public Hotel(Long hotelId, String name, String location, String description, String image, User manager, List<Room> rooms) {
         this.hotelId = hotelId;
         this.name = name;
         this.location = location;
         this.description = description;
         this.image = image;
         this.manager = manager;
-    }
-
-    public Hotel() {
     }
 
     public Long getHotelId() {
@@ -97,18 +98,5 @@ public class Hotel {
 
     public void setRooms(List<Room> rooms) {
         this.rooms = rooms;
-    }
-
-    @Override
-    public String toString() {
-        return "Hotel{" +
-                "hotelId=" + hotelId +
-                ", name='" + name + '\'' +
-                ", location='" + location + '\'' +
-                ", description='" + description + '\'' +
-                ", image='" + image + '\'' +
-                ", manager=" + manager +
-                ", rooms=" + rooms +
-                '}';
     }
 }

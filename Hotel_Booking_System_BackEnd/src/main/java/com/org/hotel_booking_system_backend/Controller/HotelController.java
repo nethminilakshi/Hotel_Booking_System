@@ -21,6 +21,17 @@ public class HotelController {
     @PostMapping(path = "save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseUtil saveHotel(@ModelAttribute HotelDTO hotelDTO) throws IOException {
         hotelService.save(hotelDTO);
-        return new ResponseUtil(201,"data saved",null);
+        return new ResponseUtil(201,"Hotel details saved",null);
+    }
+
+    @GetMapping(path = "getAll")
+    public ResponseUtil getHotels(){
+        return new ResponseUtil(200, "Success",hotelService.getAll());
+    }
+
+    @PutMapping("update")
+    public ResponseUtil updateHotel(@ModelAttribute HotelDTO hotelDTO) throws IOException {
+        hotelService.update(hotelDTO);
+        return new ResponseUtil(200, "Hotel details are updated", null);
     }
 }

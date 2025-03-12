@@ -1,12 +1,6 @@
 package com.org.hotel_booking_system_backend.Dto;
 
-import com.org.hotel_booking_system_backend.Entity.Room;
-import com.org.hotel_booking_system_backend.Entity.User;
-import jakarta.persistence.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class HotelDTO {
 
@@ -15,18 +9,19 @@ public class HotelDTO {
     private String location; // Different locations (branches)
     private String description;
     private MultipartFile image;
-    private User Manager; // Reference to User entity
+    private Long Manager; // Reference to User entity
 
-    public HotelDTO(Long hotelId, String name, String location, String description, MultipartFile image, User manager) {
+    public HotelDTO() {
+
+    }
+
+    public HotelDTO(Long hotelId, String name, String location, String description, MultipartFile image, Long manager) {
         this.hotelId = hotelId;
         this.name = name;
         this.location = location;
         this.description = description;
         this.image = image;
         Manager = manager;
-    }
-
-    public HotelDTO() {
     }
 
     public Long getHotelId() {
@@ -69,11 +64,11 @@ public class HotelDTO {
         this.image = image;
     }
 
-    public User getManager() {
+    public Long getManager() {
         return Manager;
     }
 
-    public void setManager(User manager) {
+    public void setManager(Long manager) {
         Manager = manager;
     }
 

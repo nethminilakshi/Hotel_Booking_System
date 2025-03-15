@@ -8,7 +8,7 @@ import java.util.List;
 @Table(name = "customers")
 public class Customer {
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long customerId;
 
     @Column(nullable = false)

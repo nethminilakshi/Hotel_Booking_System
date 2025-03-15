@@ -1,139 +1,182 @@
-// Fetch All Rooms
-const getAllRooms = () => {
-  $.ajax({
-    url: `http://localhost:8080/api/v1/roomType/getAll`,
-    type: 'GET',
-    success: (res) => {
-      console.log("API Response:", res);
-      $('#roomTableBody').empty();
+document.addEventListener("DOMContentLoaded", () => {
+  const roomRegisterForm = document.getElementById("room-register-form");
+  const addRoomButton = document.getElementById("add-room");
+  const closeButton = document.getElementById("room-register-close");
+  const roomForm = document.getElementById("room-form");
+  const formTitle = document.querySelector(".room-register-title");
+  const imageInput = document.getElementById("room-image");
+  const imagePreview = document.getElementById("room-image-preview");
+  const imagePreviewContainer = document.getElementById("room-image-preview-container");
+  const removeImageButton = document.getElementById("room-remove-image");
+  const tableBody = document.querySelector(".room-table tbody");
+  let currentRoomId = null;
 
-      if (res.data && Array.isArray(res.data)) {
-        res.data.forEach(room => {
-          $('#roomTableBody').append(`
-            <tr>
-              <td>${room.typeId || 'N/A'}</td>
-              <td><img src="${room.image || 'https://via.placeholder.com/50'}" alt="Room Image" width="50" height="50"></td>
-              <td>${room.description || 'N/A'}</td>
-              <td>${room.price || 'N/A'}</td>
-              <td>${room.qtyOnHand || 'N/A'}</td>
-              <td>
-                <button id="edit_roomType" class="btn btn-warning btn-sm" onclick="editRoom(${room.typeId}, '${room.description}', ${room.price}, ${room.qtyOnHand})">Edit</button>
-                <button id="delete_roomType" class="btn btn-danger btn-sm" onclick="deleteRoom(${room.typeId})">Delete</button>
-              </td>
-            </tr>
-          `);
-        });
-      }
-    },
-    error: (err) => console.error('Error fetching rooms:', err)
-  });
-};
+  //  Open Room Form
+  const openForm = () => {
+    console.log("Opening Room Form...");
+    roomRegisterForm.style.display = "flex";
+    formTitle.textContent = "Register Room Type";
+    currentRoomId = null;
+    clearForm();
+  };
 
-// Open Add Room Modal
-const openAddModal = () => {
-  $('#roomForm')[0].reset();
-  $('#roomModal').modal('show');
-};
+  //  Close Room Form
+  const closeForm = () => {
+    console.log("Closing Room Form...");
+    roomRegisterForm.style.display = "none";
+    clearForm();
+  };
 
+  addRoomButton?.addEventListener("click", openForm);
+  closeButton?.addEventListener("click", closeForm);
 
-//add
-$('#roomForm').submit((e) => {
-  e.preventDefault();  // Prevent default form submission
-
-  const formData = new FormData();  // Create FormData object to handle file uploads
-
-  const roomId = $("#roomId").val();  // Get the room ID
-  const roomType = $('#roomType').val();  // Get the room type (description)
-  const price = $('#price').val();  // Get the room price
-  const qtyOnHand = $('#qtyOnHand').val();  // Get the quantity on hand
-  const imageFile = $('#image')[0].files[0];  // Get the image file from the input field
-
-  // Append all form data including the image
-  formData.append('typeId', roomId);
-  formData.append('description', roomType);
-  formData.append('price', price);
-  formData.append('qtyOnHand', qtyOnHand);
-  formData.append('image', imageFile);  // Append image
-
-  // Perform the AJAX request for POST
-  $.ajax({
-    url: 'http://localhost:8080/api/v1/roomType/save',  // Endpoint for saving room
-    type: 'POST',
-    data: formData,  // Send the FormData with image
-    contentType: false,  // Do not set contentType, as FormData will automatically set it
-    processData: false,  // Do not process data, let FormData handle it
-    success: (res) => {
-      $('#roomModal').modal('hide');  // Hide the modal
-      getAllRooms();  // Reload the room data
-      console.log(res);  // Log the response for debugging
-    },
-    error: (err) => {
-      console.log(err);  // Log any errors
+  //  Close form when clicking outside
+  window.addEventListener("click", (event) => {
+    if (event.target === roomRegisterForm) {
+      closeForm();
     }
   });
-});
 
-
-// Delete Room
-const deleteRoom = (typeId) => {
-  $.ajax({
-    url: `http://localhost:8080/api/v1/roomType/delete/${typeId}`,
-    type: 'DELETE',
-    success: () => getAllRooms(),
-    error: (err) => console.error('Error deleting room:', err)
-  });
-};
-
-// Load rooms when page loads
-$(document).ready(() => getAllRooms());
-
-
-// Function to open edit modal for a room
-const editRoom = (typeId, description, price, qtyOnHand) => {
-  // Fill form values
-  $('#edit_roomId').val(typeId);
-  $('#edit_roomType').val(description);
-  $('#edit_price').val(price);
-  $('#edit_qtyOnHand').val(qtyOnHand);
-
-  // Show the modal
-  $('#editRoomModal').modal('show');
-}
-
-// Update Room Form Submit
-$('#editRoomForm').submit((e) => {
-  e.preventDefault();
-
-  const typeId = $('#edit_roomId').val();
-  const description = $('#edit_roomType').val();
-  const price = $('#edit_price').val();
-  const qtyOnHand = $('#edit_qtyOnHand').val();
-  const imageFile = $('#edit_image')[0].files[0];
-
-  const formData = new FormData();
-  formData.append('typeId', typeId);
-  formData.append('description', description);
-  formData.append('price', price);
-  formData.append('qtyOnHand', qtyOnHand);
-
-  // Only append image if a new one is selected
-  if (imageFile) {
-    formData.append('image', imageFile);
-  }
-
-  $.ajax({
-    url: 'http://localhost:8080/api/v1/roomType/update',
-    type: 'PUT',
-    data: formData,
-    contentType: false,
-    processData: false,
-    success: (res) => {
-      $('#editRoomModal').modal('hide');
-      getAllRooms();
-      console.log(res);
-    },
-    error: (err) => {
-      console.log(err);
+  //  Image preview handling
+  imageInput?.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        imagePreview.src = e.target.result;
+        imagePreviewContainer.style.display = "flex";
+      };
+      reader.readAsDataURL(file);
     }
   });
+
+  //  Remove image functionality
+  removeImageButton?.addEventListener("click", () => {
+    imageInput.value = "";
+    imagePreview.src = "";
+    imagePreviewContainer.style.display = "none";
+  });
+
+  // ✅ Fetch Room Types
+  const fetchRooms = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/v1/roomType/getAll");
+      if (!response.ok) throw new Error("Failed to fetch room types");
+
+      const result = await response.json();
+      const rooms = result.data || []; // Ensure it's an array
+      tableBody.innerHTML = "";
+      rooms.forEach(addRoomToTable);
+    } catch (error) {
+      console.error("Error fetching rooms:", error);
+      alert("An error occurred while fetching room types.");
+    }
+  };
+
+  //  Save Room Type (Create or Update)
+  roomForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const description = document.getElementById("room-description").value;
+    const price = document.getElementById("room-price").value;
+    const quantity = document.getElementById("room-qty").value;
+    const roomImage = imageInput.files[0];
+
+    const formData = new FormData();
+    formData.append("description", description);
+    formData.append("price", price);
+    formData.append("qtyOnHand", quantity);
+    if (roomImage) {
+      formData.append("image", roomImage);
+    }
+
+    try {
+      const response = await fetch("http://localhost:8080/api/v1/roomType/save", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error(`Failed to save room type: ${response.statusText}`);
+
+      fetchRooms(); // Refresh room list
+      closeForm();
+    } catch (error) {
+      console.error("Error saving room type:", error);
+      alert(error.message);
+    }
+  });
+
+  //  Add Room Type to Table
+  const addRoomToTable = (room) => {
+    console.log("Room Data:", room); // ✅ Debugging line
+
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+        <td>${room.roomId || room.typeId || "N/A"}</td> <!-- 🔥 Check for both possible IDs -->
+        <td>${room.description || "N/A"}</td>
+        <td>${room.price || "N/A"}</td>
+        <td>${room.qtyOnHand || "N/A"}</td>
+        <td>
+            <img src="data:image/png;base64,${room.image || ''}"
+                 alt="Room Image"
+                 class="room-image-table" />
+        </td>
+        <td><span class="update-button"><i class="fas fa-edit">update</i></span></td>
+        <td><span class="delete-button"><i class="fas fa-trash">delete</i></span></td>
+    `;
+
+    row.querySelector(".update-button").addEventListener("click", () => openUpdateForm(room));
+    row.querySelector(".delete-button").addEventListener("click", () => deleteRoom(room.roomId || room.typeId));
+
+    tableBody.appendChild(row);
+  };
+
+  //  Open Update Room Form
+  const openUpdateForm = (room) => {
+    currentRoomId = room.roomId;
+    openForm();
+    populateRoomForm(room);
+  };
+
+  //  Populate Room Form
+  const populateRoomForm = (room) => {
+    document.getElementById("room-description").value = room.description;
+    document.getElementById("room-price").value = room.price;
+    document.getElementById("room-qty").value = room.qtyOnHand;
+
+    if (room.image) {
+      imagePreview.src = `data:image/png;base64,${room.image}`;
+      imagePreviewContainer.style.display = "flex";
+    }
+  };
+
+  // ✅ Delete Room Type
+  const deleteRoom = async (roomId) => {
+    if (!confirm("Are you sure you want to delete this room type?")) return;
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/v1/roomType/delete/${roomId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) throw new Error("Failed to delete room type");
+
+      fetchRooms();
+    } catch (error) {
+      console.error("Error deleting room type:", error);
+      alert("An error occurred while deleting the room type.");
+    }
+  };
+
+  // ✅ Clear Form
+  const clearForm = () => {
+    roomForm.reset();
+    imagePreview.src = "";
+    imagePreviewContainer.style.display = "none";
+    currentRoomId = null;
+  };
+
+  // ✅ Fetch Initial Data
+  fetchRooms();
 });

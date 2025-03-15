@@ -1,55 +1,212 @@
-:root {
-  --primary-color: #0d6efd;
-  --sidebar-width: 280px;
-  --header-height: 70px;
-}
-
+/* General Styling */
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background-color: #F8F9FA;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f8f9fa;
 }
 
-/* Content Styles */
-#content {
-  width: calc(100% - var(--sidebar-width));
-  margin-left: var(--sidebar-width);
-  padding: 25px;
+/* Section Container */
+#roomTypeForm {
+  width: 90%;
+  margin: 20px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Table Styles */
-.table td {
-  vertical-align: middle;
-}
-
-.action-buttons {
+/* Header */
+.room-header-section {
   display: flex;
-  gap: 8px;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #ddd;
 }
 
-.action-buttons .btn {
-  padding: 4px 12px;
-  font-size: 0.85rem;
+.room-header-section h2 {
+  font-size: 24px;
+  color: #333;
 }
 
-/* Modal Styles */
-.modal-header {
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #dee2e6;
+.add-room-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
 }
 
-.modal-footer {
-  background-color: #f8f9fa;
-  border-top: 1px solid #dee2e6;
+.add-room-button:hover {
+  background-color: #218838;
 }
 
-/* Form Styles */
-.form-label {
-  font-weight: 500;
-  color: #444;
+/* Form Styling */
+.room-register-form {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  width: 400px;
 }
 
-/* Badge Styles */
-.badge {
-  padding: 6px 10px;
-  font-weight: 500;
+.room-register-box {
+  position: relative;
+  text-align: center;
+}
+
+.room-register-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.room-form-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.room-form-row input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/* Image Upload */
+.room-image-upload-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.room-image-upload-group input {
+  width: 100%;
+  border: none;
+}
+
+/* Image Preview */
+.room-image-preview-container {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.room-image-preview {
+  width: 100px;
+  height: 100px;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+.room-remove-image-button {
+  margin-top: 5px;
+  background: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.room-remove-image-button:hover {
+  background: darkred;
+}
+
+/* Submit Button */
+.room-register-submit {
+  width: 100%;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.room-register-submit:hover {
+  background-color: #0056b3;
+}
+
+/* Table */
+.table-container {
+  margin-top: 20px;
+}
+
+.room-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+.room-image-table {
+  width: 100px; /* Adjust width as needed */
+  height: 100px; /* Adjust height as needed */
+  object-fit: cover; /* Ensures the image maintains aspect ratio and fills the box */
+  border-radius: 5px; /* Optional: Makes the image corners rounded */
+}
+.room-table th, .room-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.room-table th {
+  background-color: #007bff;
+  color: white;
+}
+
+.room-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* Buttons */
+.update-button, .delete-button {
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  color: white;
+}
+
+.update-button {
+  background-color: #ffc107;
+}
+
+.update-button:hover {
+  background-color: #e0a800;
+}
+
+.delete-button {
+  background-color: #dc3545;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .room-register-form {
+    width: 90%;
+  }
+
+  .room-form-row {
+    flex-direction: column;
+  }
+
+  .room-table {
+    font-size: 12px;
+  }
 }

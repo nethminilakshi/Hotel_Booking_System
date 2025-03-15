@@ -1,4 +1,4 @@
-package lk.ijse.back_end.utill;
+package com.org.hotel_booking_system_backend.Util;
 
 public class VarList {
     public static final int Continue = 100;

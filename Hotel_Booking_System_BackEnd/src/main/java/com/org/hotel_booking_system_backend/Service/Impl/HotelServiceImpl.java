@@ -2,6 +2,7 @@ package com.org.hotel_booking_system_backend.Service.Impl;
 
 import com.org.hotel_booking_system_backend.Dto.HotelDTO;
 import com.org.hotel_booking_system_backend.Entity.Hotel;
+import com.org.hotel_booking_system_backend.Entity.User;
 import com.org.hotel_booking_system_backend.Repo.HotelRepo;
 import com.org.hotel_booking_system_backend.Service.HotelService;
 import org.modelmapper.ModelMapper;
@@ -40,9 +41,16 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public List<HotelDTO> getAll() {
-        return modelMapper.map(hotelRepo.findAll(), new TypeToken<List<HotelDTO>>() {
-        }.getType());
+        List<Hotel> hotels = hotelRepo.findAll();
+
+        // Custom mapping for User
+        modelMapper.addConverter(
+                ctx -> ctx.getSource() == null ? null : ((User) ctx.getSource()).getUserId(),
+                User.class, Long.class);
+
+        return modelMapper.map(hotels, new TypeToken<List<HotelDTO>>(){}.getType());
     }
+
 
     @Override
     public void update(HotelDTO hotelDTO) throws IOException {

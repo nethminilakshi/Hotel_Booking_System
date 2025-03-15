@@ -1,9 +1,8 @@
-package org.example.z13_spring_boot.Advicer;
+package com.org.hotel_booking_system_backend.Advicer;
 
-import org.example.z13_spring_boot.Util.ResponseUtil;
+import com.org.hotel_booking_system_backend.Util.ResponseUtil;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice

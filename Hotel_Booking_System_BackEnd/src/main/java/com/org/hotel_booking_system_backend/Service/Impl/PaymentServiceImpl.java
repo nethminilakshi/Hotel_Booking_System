@@ -1,4 +1,6 @@
 package com.org.hotel_booking_system_backend.Service.Impl;
 
-public class PaymentServiceImpl {
+import com.org.hotel_booking_system_backend.Service.PaymentService;
+
+public class PaymentServiceImpl implements PaymentService {
 }

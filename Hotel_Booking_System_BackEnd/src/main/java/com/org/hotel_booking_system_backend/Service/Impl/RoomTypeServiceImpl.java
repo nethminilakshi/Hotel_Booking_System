@@ -4,69 +4,76 @@ import com.org.hotel_booking_system_backend.Dto.RoomTypeDTO;
 import com.org.hotel_booking_system_backend.Entity.RoomType;
 import com.org.hotel_booking_system_backend.Repo.RoomTypeRepo;
 import com.org.hotel_booking_system_backend.Service.RoomTypeService;
-import org.modelmapper.ModelMapper;
+import com.org.hotel_booking_system_backend.Util.AppUtil;
+import com.org.hotel_booking_system_backend.Util.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RoomTypeServiceImpl implements RoomTypeService {
+
     @Autowired
     private RoomTypeRepo roomTypeRepo;
     @Autowired
-    private ModelMapper modelMapper;
+    private Mapping mapping;
+
+
 
     @Override
-    public boolean save(RoomTypeDTO roomTypeDTO) throws IOException {
-        if (roomTypeRepo.existsById(roomTypeDTO.getTypeId())) {
-            throw new RuntimeException("Item already exists");
-        }
-        RoomType roomType = modelMapper.map(roomTypeDTO, RoomType.class);
-        if (roomTypeDTO.getImage() != null && !roomTypeDTO.getImage().isEmpty()) {
-            roomType.setImage(roomTypeDTO.getImage().getBytes().toString());
+    public void save(RoomTypeDTO roomTypeDTO) {
+        RoomType roomType = mapping.convertToRoomTypeEntity(roomTypeDTO);
+
+        if (roomType.getTypeId() == null || roomType.getTypeId().isEmpty()){
+            roomType.setTypeId(AppUtil.createRoomTypeCode());
         }
 
-        try {
-            roomTypeRepo.save(roomType);
-            return true;
-        } catch (Exception e) {
-            System.out.println("Error saving to database: " + e.getMessage());
-            e.printStackTrace();
-            throw e;
-        }
+        roomTypeRepo.save(roomType);
     }
+
 
     @Override
     public List<RoomTypeDTO> getAll() {
-        return modelMapper.map(roomTypeRepo.findAll(), new org.modelmapper.TypeToken<List<RoomTypeDTO>>() {
-        }.getType());
+        List<RoomType> getRoomTypes = roomTypeRepo.findAll();
+        return mapping.convertroomTypeToDTOList(getRoomTypes);
+
     }
 
     @Override
-    public void update(RoomTypeDTO roomTypeDTO) {
-        if (roomTypeRepo.existsById(roomTypeDTO.getTypeId())) {
-            RoomType roomType = modelMapper.map(roomTypeDTO, RoomType.class);
-            if (roomTypeDTO.getImage() != null && !roomTypeDTO.getImage().isEmpty()) {
-                try {
-                    roomType.setImage(roomTypeDTO.getImage().getBytes().toString());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            roomTypeRepo.save(roomType);
-        } else {
-            throw new RuntimeException("Room Type does not exist");
+    public void delete(String id) {
+        Optional<RoomType> findId = roomTypeRepo.findById(id);
+        if (!findId.isPresent()){
+            throw new RuntimeException("RoomType not Found");
+        }else {
+            roomTypeRepo.deleteById(id);
         }
     }
 
     @Override
-    public void delete(long id) {
-        if (roomTypeRepo.existsById(id)) {
-            roomTypeRepo.deleteById(id);
+    public RoomTypeDTO getSelectedType(String roomTypeCode) {
+        if (roomTypeRepo.existsById(roomTypeCode)) {
+            RoomType roomTypeById = roomTypeRepo.getReferenceById(roomTypeCode);
+            return mapping.convertToRoomTypeDTO(roomTypeById);
         } else {
-            throw new RuntimeException("Room Type does not exist");
+            throw new RuntimeException("Room Type not found");
+        }    }
+
+    @Override
+    public void update(RoomTypeDTO updateRoomTypeDTO) {
+        Optional<RoomType> roomType = roomTypeRepo.findById(updateRoomTypeDTO.getTypeId());
+        if (!roomType.isPresent()) {
+            throw new RuntimeException("Crop not Found");
+        } else {
+            RoomType roomType1 = roomType.get();
+            roomType1.setDescription(updateRoomTypeDTO.getDescription());
+            roomType1.setPrice(updateRoomTypeDTO.getPrice());
+            roomType1.setQtyOnHand(updateRoomTypeDTO.getQtyOnHand());
+            roomType1.setImage(updateRoomTypeDTO.getImage());
+
+            // Save the updated entity
+            roomTypeRepo.save(roomType1);  // This line ensures the entity is saved to the database
         }
     }
 }

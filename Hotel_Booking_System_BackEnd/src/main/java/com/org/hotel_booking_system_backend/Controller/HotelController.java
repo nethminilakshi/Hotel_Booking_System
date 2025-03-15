@@ -26,6 +26,7 @@ public class HotelController {
 
     @GetMapping(path = "getAll")
     public ResponseUtil getHotels(){
+        System.out.println(hotelService.getAll()); // Add this line to check the returned data
         return new ResponseUtil(200, "Success",hotelService.getAll());
     }
 

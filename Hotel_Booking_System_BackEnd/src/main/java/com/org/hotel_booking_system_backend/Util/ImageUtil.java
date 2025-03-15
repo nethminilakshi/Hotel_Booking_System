@@ -1,9 +1,9 @@
-package lk.ijse.back_end.utill;
+package com.org.hotel_booking_system_backend.Util;
 
-import lk.ijse.back_end.enums.ImageType;
-import lk.ijse.back_end.exception.ImageExtractionFailedException;
-import lk.ijse.back_end.exception.ImagePersistFailedException;
-import lk.ijse.back_end.exception.InvalidImageTypeException;
+import com.org.hotel_booking_system_backend.enums.ImageType;
+import com.org.hotel_booking_system_backend.exception.ImageExtractionFailedException;
+import com.org.hotel_booking_system_backend.exception.ImagePersistFailedException;
+import com.org.hotel_booking_system_backend.exception.InvalidImageTypeException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +16,7 @@ import java.util.Base64;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+
 @Component
 public class ImageUtil {
     public static Path IMAGE_DIRECTORY = Paths.get(System.getProperty("user.home"), "Desktop", "LocalS3Bucket").toAbsolutePath().normalize();

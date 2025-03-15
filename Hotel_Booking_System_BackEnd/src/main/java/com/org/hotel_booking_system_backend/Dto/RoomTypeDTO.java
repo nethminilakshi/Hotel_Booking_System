@@ -1,4 +1,23 @@
-package com.org.hotel_booking_system_backend.Controller;
+package com.org.hotel_booking_system_backend.Dto;
 
-public class roomTypeDTO {
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
+import java.util.UUID;
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class RoomTypeDTO implements Serializable {
+
+    private String typeId;
+    private String description;
+    private double price;
+    private int qtyOnHand;
+    private String image;
+
+
 }
+

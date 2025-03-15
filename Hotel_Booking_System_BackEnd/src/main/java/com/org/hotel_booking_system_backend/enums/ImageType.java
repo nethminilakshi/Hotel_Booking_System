@@ -1,5 +1,5 @@
-package lk.ijse.back_end.enums;
+package com.org.hotel_booking_system_backend.enums;
 
 public enum ImageType {
-    SPICE,CATEGORY,USER
+    HOTEL, ROOMTYPE
 }

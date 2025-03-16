@@ -29,129 +29,85 @@
 
   <!-- Page Content -->
   <div id="content">
-    <nav class="navbar navbar-expand-lg">
-      <div class="container-fluid">
-        <h4 class="mb-0">Hotel Management</h4>
-        <button class="btn btn-primary" onclick="openAddModal()">
-          <i class="bi bi-plus-lg"></i> Add New Hotel
-        </button>
+    <section id="HotelsForm">
+      <div id="hotelHeaderSection" class="hotel-header-section">
+        <h2> Hotels Manage</span></h2>
+        <button id="add-hotel" class="add-hotel-button">Add Hotel Details</button>
       </div>
-    </nav>
 
-    <!-- Hotel Table -->
-    <div class="card mt-4">
-      <div class="card-body">
-        <div class="table-responsive">
-          <table class="table table-hover">
-            <thead>
-            <tr>
-              <th>Hotel ID</th>
-              <th>Image</th>
-              <th>Name</th>
-              <th>Location</th>
-              <th>Description</th>
-              <th>Manager ID</th>
-              <th>Action</th>
-            </tr>
-            </thead>
-            <tbody id="hotelTableBody">
-            <!-- Data will be loaded dynamically -->
-            </tbody>
-          </table>
+      <!-- Hotel Registration Form -->
+      <div class="hotel-register-form" id="hotel-register-form">
+        <div class="hotel-register-box">
+          <span id="hotel-register-close" class="hotel-register-close">&times;</span>
+
+          <h2 class="hotel-register-title">Register Hotel</h2>
+
+          <form id="hotel-form">
+            <!-- Hotel ID and Name -->
+            <div class="hotel-form-row">
+              <input type="text" id="hotel-id" name="hotel-id" placeholder="Hotel ID" required>
+              <input type="text" id="hotel-name" name="hotel-name" placeholder="Hotel Name" required>
+            </div>
+
+            <!-- Location and Description -->
+            <div class="hotel-form-row">
+              <input type="text" id="hotel-location" name="hotel-location" placeholder="Location" required>
+              <textarea id="hotel-description" name="hotel-description" placeholder="Description" required></textarea>
+            </div>
+
+            <!-- Manager Dropdown (Foreign Key) -->
+            <div class="hotel-form-row manager-dropdown-row">
+              <select id="hotel-manager" name="hotel-manager" required>
+                <option value="">Select Manager</option>
+                <!-- Dynamic options for managers will be inserted here -->
+              </select>
+            </div>
+
+            <!-- Image Upload Field -->
+            <div class="hotel-form-row">
+              <div class="hotel-image-upload-group">
+                <label for="hotel-image">Hotel Image</label>
+                <input type="file" id="hotel-image" name="hotelImage" accept="image/*" required>
+              </div>
+            </div>
+
+            <!-- Image Preview -->
+            <div class="hotel-form-row">
+              <div id="hotel-image-preview-container" class="hotel-image-preview-container" style="display: none;">
+                <img id="hotel-image-preview" class="hotel-image-preview" alt="Hotel Image Preview" />
+                <button type="button" id="hotel-remove-image" class="hotel-remove-image-button">Remove</button>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button id="hotel-register-submit" type="submit" class="hotel-register-submit">Submit</button>
+          </form>
         </div>
       </div>
-    </div>
-  </div>
-</div>
 
-<!-- Add Hotel Modal -->
-<div class="modal fade" id="hotelModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Hotel Form</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      <!-- Hotel Table -->
+      <div class="table-container">
+        <table class="hotel-table">
+          <thead>
+          <tr>
+            <th>Hotel ID</th>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Description</th>
+            <th>Image</th>
+            <th>Manager</th>
+            <th>Update</th>
+            <th>Delete</th>
+          </tr>
+          </thead>
+          <tbody>
+          <!-- Rows with hotel data will be dynamically inserted here -->
+          </tbody>
+        </table>
       </div>
-      <div class="modal-body">
-        <form id="hotelForm" enctype="multipart/form-data">
-          <div class="mb-3">
-            <label for="hotel_id" class="form-label">Hotel ID</label>
-            <input type="text" class="form-control" id="hotel_id" required>
-          </div>
-          <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
-            <input type="text" class="form-control" id="name" required>
-          </div>
-          <div class="mb-3">
-            <label for="location" class="form-label">Location</label>
-            <input type="text" class="form-control" id="location" required>
-          </div>
-          <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
-            <textarea class="form-control" id="description" rows="3" required></textarea>
-          </div>
-          <div class="mb-3">
-            <label for="manager_id" class="form-label">Manager ID</label>
-            <input type="text" class="form-control" id="manager_id" required>
-          </div>
-          <div class="mb-3">
-            <label for="image" class="form-label">Hotel Image</label>
-            <input type="file" class="form-control" id="image" accept="image/*" required>
-          </div>
-          <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-primary">Save</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          </div>
-        </form>
-      </div>
-    </div>
+    </section>
   </div>
-</div>
-
-<!-- Edit Hotel Modal -->
-<div class="modal fade" id="editHotelModal" tabindex="-1">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Edit Hotel</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <form id="editHotelForm" enctype="multipart/form-data">
-          <div class="mb-3">
-            <label for="edit_hotel_id" class="form-label">Hotel ID</label>
-            <input type="text" class="form-control" id="edit_hotel_id" readonly>
-          </div>
-          <div class="mb-3">
-            <label for="edit_name" class="form-label">Name</label>
-            <input type="text" class="form-control" id="edit_name" required>
-          </div>
-          <div class="mb-3">
-            <label for="edit_location" class="form-label">Location</label>
-            <input type="text" class="form-control" id="edit_location" required>
-          </div>
-          <div class="mb-3">
-            <label for="edit_description" class="form-label">Description</label>
-            <textarea class="form-control" id="edit_description" rows="3" required></textarea>
-          </div>
-          <div class="mb-3">
-            <label for="edit_manager_id" class="form-label">Manager ID</label>
-            <input type="text" class="form-control" id="edit_manager_id" required>
-          </div>
-          <div class="mb-3">
-            <label for="edit_image" class="form-label">Hotel Image (Optional)</label>
-            <input type="file" class="form-control" id="edit_image" accept="image/*">
-            <small class="text-muted">Leave empty to keep current image</small>
-          </div>
-          <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-primary">Update</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          </div>
-        </form>
-      </div>
-    </div>
   </div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/jquery-3.7.1.min.js"></script>

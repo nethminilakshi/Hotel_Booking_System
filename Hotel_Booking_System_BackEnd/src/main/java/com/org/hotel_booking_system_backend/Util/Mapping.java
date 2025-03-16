@@ -1,6 +1,8 @@
 package com.org.hotel_booking_system_backend.Util;
 
+import com.org.hotel_booking_system_backend.Dto.HotelDTO;
 import com.org.hotel_booking_system_backend.Dto.RoomTypeDTO;
+import com.org.hotel_booking_system_backend.Entity.Hotel;
 import com.org.hotel_booking_system_backend.Entity.RoomType;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -30,5 +32,16 @@ public class Mapping {
     public List<RoomTypeDTO> convertroomTypeToDTOList(List<RoomType> roomTypes){
         return modelMapper.map(roomTypes, new TypeToken<List<RoomTypeDTO>>(){}.getType());
     }
+
+    public HotelDTO convertToHotelDTO(Hotel hotel){
+        return modelMapper.map(hotel, HotelDTO.class);
+    }
+    public Hotel convertToHotelEntity(HotelDTO dto){
+        return modelMapper.map(dto, Hotel.class);
+    }
+    public List<HotelDTO> convertHotelToDTOList(List<Hotel> hotels){
+        return modelMapper.map(hotels, new TypeToken<List<HotelDTO>>(){}.getType());
+    }
+
 
 }

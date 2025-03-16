@@ -12,5 +12,7 @@ public interface HotelService {
 
     void update(HotelDTO hotelDTO) throws IOException;
 
-    void delete(long id);
+    void delete(String id);
+
+    HotelDTO getHotelId(String hotelId);
 }

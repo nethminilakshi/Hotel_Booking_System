@@ -7,10 +7,16 @@ import java.util.Base64;
 
 public class AppUtil {
     private static int roomTypeCount = 0;
+    private static int hotelCount = 0;
 
     public static synchronized String createRoomTypeCode(){
         roomTypeCount++;
         return String.format("RT%03d", roomTypeCount);
+    }
+
+    public static synchronized String createHotelCode(){
+        hotelCount++;
+        return String.format("H%03d", hotelCount);
     }
     public static String toBase64CropImage(MultipartFile cropImage) throws IOException {
         if (cropImage == null || cropImage.isEmpty()) {

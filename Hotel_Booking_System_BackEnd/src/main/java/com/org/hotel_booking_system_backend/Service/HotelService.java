@@ -1,6 +1,7 @@
 package com.org.hotel_booking_system_backend.Service;
 
 import com.org.hotel_booking_system_backend.Dto.HotelDTO;
+import com.org.hotel_booking_system_backend.Util.ResponseUtil;
 
 import java.io.IOException;
 import java.util.List;

@@ -37,7 +37,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     @Override
     public List<RoomTypeDTO> getAll() {
         List<RoomType> getRoomTypes = roomTypeRepo.findAll();
-        return mapping.convertroomTypeToDTOList(getRoomTypes);
+        return mapping.convertRoomTypeToDTOList(getRoomTypes);
 
     }
 

@@ -8,6 +8,7 @@ import java.util.Base64;
 public class AppUtil {
     private static int roomTypeCount = 0;
     private static int hotelCount = 0;
+    private static int roomCount = 0;
 
     public static synchronized String createRoomTypeCode(){
         roomTypeCount++;
@@ -17,6 +18,10 @@ public class AppUtil {
     public static synchronized String createHotelCode(){
         hotelCount++;
         return String.format("H%03d", hotelCount);
+    }
+    public static synchronized String createRoomCode(){
+        roomCount++;
+        return String.format("R%03d", roomCount);
     }
     public static String toBase64CropImage(MultipartFile cropImage) throws IOException {
         if (cropImage == null || cropImage.isEmpty()) {

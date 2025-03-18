@@ -2,22 +2,20 @@ package com.org.hotel_booking_system_backend.Dto;
 
 import com.org.hotel_booking_system_backend.Entity.Hotel;
 import com.org.hotel_booking_system_backend.Entity.RoomType;
-import jakarta.persistence.Column;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 public class RoomDTO {
 
-    private Long roomId;
+    private String roomId;
     private RoomType roomType; // Reference to RoomType entity
     private Boolean availability;
     private int floorNumber;
     private Hotel hotel;
 
     public RoomDTO() {
+
     }
 
-    public RoomDTO(Long roomId, RoomType roomType, Boolean availability, int floorNumber, Hotel hotel) {
+    public RoomDTO(String roomId, RoomType roomType, Boolean availability, int floorNumber, Hotel hotel) {
         this.roomId = roomId;
         this.roomType = roomType;
         this.availability = availability;
@@ -25,11 +23,11 @@ public class RoomDTO {
         this.hotel = hotel;
     }
 
-    public Long getRoomId() {
+    public String getRoomId() {
         return roomId;
     }
 
-    public void setRoomId(Long roomId) {
+    public void setRoomId(String roomId) {
         this.roomId = roomId;
     }
 
@@ -63,16 +61,5 @@ public class RoomDTO {
 
     public void setHotel(Hotel hotel) {
         this.hotel = hotel;
-    }
-
-    @Override
-    public String toString() {
-        return "RoomDTO{" +
-                "roomId=" + roomId +
-                ", roomType=" + roomType +
-                ", availability=" + availability +
-                ", floorNumber=" + floorNumber +
-                ", hotel=" + hotel +
-                '}';
     }
 }

@@ -43,9 +43,8 @@
           <h2 class="hotel-register-title">Register Hotel</h2>
 
           <form id="hotel-form">
-            <!-- Hotel ID and Name -->
+            <!-- Hotel Name -->
             <div class="hotel-form-row">
-              <input type="text" id="hotel-id" name="hotel-id" placeholder="Hotel ID" required>
               <input type="text" id="hotel-name" name="hotel-name" placeholder="Hotel Name" required>
             </div>
 
@@ -57,7 +56,7 @@
 
             <!-- Manager Dropdown (Foreign Key) -->
             <div class="hotel-form-row manager-dropdown-row">
-              <select id="hotel-manager" name="hotel-manager" required>
+              <select id="managerId" name="managerId" required>
                 <option value="">Select Manager</option>
                 <!-- Dynamic options for managers will be inserted here -->
               </select>

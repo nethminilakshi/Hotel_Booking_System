@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const tableBody = document.querySelector(".room-table tbody");
   let currentRoomId = null;
 
-  //  Open Room Form
+  // Open Room Form (Create)
   const openForm = () => {
     console.log("Opening Room Form...");
     roomRegisterForm.style.display = "flex";
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
     clearForm();
   };
 
-  //  Close Room Form
+  // Close Room Form
   const closeForm = () => {
     console.log("Closing Room Form...");
     roomRegisterForm.style.display = "none";
@@ -30,14 +30,14 @@ document.addEventListener("DOMContentLoaded", () => {
   addRoomButton?.addEventListener("click", openForm);
   closeButton?.addEventListener("click", closeForm);
 
-  //  Close form when clicking outside
+  // Close form when clicking outside
   window.addEventListener("click", (event) => {
     if (event.target === roomRegisterForm) {
       closeForm();
     }
   });
 
-  //  Image preview handling
+  // Image preview handling
   imageInput?.addEventListener("change", (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -50,14 +50,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  //  Remove image functionality
+  // Remove image functionality
   removeImageButton?.addEventListener("click", () => {
     imageInput.value = "";
     imagePreview.src = "";
     imagePreviewContainer.style.display = "none";
   });
 
-  // ✅ Fetch Room Types
+  // Fetch Room Types
   const fetchRooms = async () => {
     try {
       const response = await fetch("http://localhost:8080/api/v1/roomType/getAll");
@@ -73,47 +73,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  //  Save Room Type (Create or Update)
-  roomForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const description = document.getElementById("room-description").value;
-    const price = document.getElementById("room-price").value;
-    const quantity = document.getElementById("room-qty").value;
-    const roomImage = imageInput.files[0];
-
-    const formData = new FormData();
-    formData.append("description", description);
-    formData.append("price", price);
-    formData.append("qtyOnHand", quantity);
-    if (roomImage) {
-      formData.append("image", roomImage);
-    }
-
-    try {
-      const response = await fetch("http://localhost:8080/api/v1/roomType/save", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) throw new Error(`Failed to save room type: ${response.statusText}`);
-
-      fetchRooms(); // Refresh room list
-      closeForm();
-    } catch (error) {
-      console.error("Error saving room type:", error);
-      alert(error.message);
-    }
-  });
-
-  //  Add Room Type to Table
+  // Add Room Type to Table
   const addRoomToTable = (room) => {
-    console.log("Room Data:", room); // ✅ Debugging line
+    console.log("Room Data:", room); // Debugging line
 
     const row = document.createElement("tr");
 
     row.innerHTML = `
-        <td>${room.roomId || room.typeId || "N/A"}</td> <!-- 🔥 Check for both possible IDs -->
+        <td>${room.roomId || room.typeId || "N/A"}</td>
         <td>${room.description || "N/A"}</td>
         <td>${room.price || "N/A"}</td>
         <td>${room.qtyOnHand || "N/A"}</td>
@@ -132,14 +99,14 @@ document.addEventListener("DOMContentLoaded", () => {
     tableBody.appendChild(row);
   };
 
-  //  Open Update Room Form
+  // Open Update Form
   const openUpdateForm = (room) => {
-    currentRoomId = room.roomId;
+    currentRoomId = room.roomId || room.typeId;  // Use typeId or roomId to identify
     openForm();
     populateRoomForm(room);
   };
 
-  //  Populate Room Form
+  // Populate Room Form with existing data (for update)
   const populateRoomForm = (room) => {
     document.getElementById("room-description").value = room.description;
     document.getElementById("room-price").value = room.price;
@@ -151,7 +118,44 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // ✅ Delete Room Type
+  // Save Room Type (Create or Update)
+  roomForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const description = document.getElementById("room-description").value;
+    const price = document.getElementById("room-price").value;
+    const quantity = document.getElementById("room-qty").value;
+    const roomImage = imageInput.files[0];
+
+    const formData = new FormData();
+    formData.append("description", description);
+    formData.append("price", price);
+    formData.append("qtyOnHand", quantity);
+    if (roomImage) {
+      formData.append("image", roomImage);
+    }
+
+    try {
+      const url = currentRoomId ? `http://localhost:8080/api/v1/roomType/update/${currentRoomId}` : "http://localhost:8080/api/v1/roomType/save";
+      const method = currentRoomId ? "PATCH" : "POST"; // PATCH for updating, POST for creating
+
+      const response = await fetch(url, {
+        method: method,
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error(`Failed to save room type: ${response.statusText}`);
+
+      fetchRooms(); // Refresh room list
+      closeForm();  // Close the form
+      currentRoomId = null; // Reset room ID after saving
+    } catch (error) {
+      console.error("Error saving room type:", error);
+      alert(error.message);
+    }
+  });
+
+  // Delete Room Type
   const deleteRoom = async (roomId) => {
     if (!confirm("Are you sure you want to delete this room type?")) return;
 
@@ -169,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // ✅ Clear Form
+  // Clear Form
   const clearForm = () => {
     roomForm.reset();
     imagePreview.src = "";
@@ -177,6 +181,6 @@ document.addEventListener("DOMContentLoaded", () => {
     currentRoomId = null;
   };
 
-  // ✅ Fetch Initial Data
+  // Fetch Initial Data
   fetchRooms();
 });

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 public class HotelServiceImpl implements HotelService {
@@ -20,17 +21,28 @@ public class HotelServiceImpl implements HotelService {
     private HotelRepo hotelRepo;
  @Autowired
     private Mapping mapper;
+  static Logger logger = Logger.getLogger(HotelServiceImpl.class.getName());
 
     @Override
     public void save(HotelDTO hotelDTO) throws IOException {
+        // Convert DTO to entity
         Hotel hotel = mapper.convertToHotelEntity(hotelDTO);
+        logger.info("Mapped Hotel Entity: " + hotel.toString());
 
-        if (hotel.getHotelId() == null || hotel.getHotelId().isEmpty()){
+        // Generate hotel ID if necessary
+        if (hotel.getHotelId() == null || hotel.getHotelId().isEmpty()) {
             hotel.setHotelId(AppUtil.createHotelCode());
+            logger.info("Generated hotel ID: " + hotel.getHotelId());
         }
 
+        // Log the entity before saving
+        logger.info("Saving hotel: " + hotel.toString());
+
+        // Save to database
         hotelRepo.save(hotel);
+        logger.info("Hotel saved successfully with ID: " + hotel.getHotelId());
     }
+
 
     @Override
     public List<HotelDTO> getAll() {
@@ -41,15 +53,19 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public void update(HotelDTO hotelDTO) throws IOException {
-//        if (hotelRepo.existsById(hotelDTO.getHotelId())) {
-//            Hotel hotel = modelMapper.map(hotelDTO, Hotel.class);
-//            if (hotelDTO.getImage() != null && !hotelDTO.getImage().isEmpty()) {
-//                hotel.setImage(hotelDTO.getImage().getBytes().toString());
-//            }
-//            hotelRepo.save(hotel);
-//        } else {
-//            throw new RuntimeException("Hotel does not found");
-//        }
+        Optional<Hotel> hotel = hotelRepo.findById(hotelDTO.getHotelId());
+        if (!hotel.isPresent()) {
+            throw new RuntimeException("Hotel not Found");
+        } else {
+            Hotel hotelEntity = hotel.get();
+            hotelEntity.setName(hotelDTO.getName());
+            hotelEntity.setLocation(hotelDTO.getLocation());
+            hotelEntity.setDescription(hotelDTO.getDescription());
+            hotelEntity.setImage(hotelDTO.getImage());
+
+            // Save the updated entity
+            hotelRepo.save(hotelEntity);  // This line ensures the entity is saved to the database
+        }
     }
 
     @Override
@@ -68,7 +84,7 @@ public class HotelServiceImpl implements HotelService {
             Hotel getById = hotelRepo.getReferenceById(hotelId);
             return mapper.convertToHotelDTO(getById);
         }
-            throw  new RuntimeException("Hotel not Found");
+            throw  new RuntimeException("HotelId not Found");
         }
     }
 

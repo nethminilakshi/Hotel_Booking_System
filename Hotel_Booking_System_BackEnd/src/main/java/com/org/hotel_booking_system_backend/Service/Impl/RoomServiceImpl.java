@@ -2,52 +2,67 @@ package com.org.hotel_booking_system_backend.Service.Impl;
 
 import com.org.hotel_booking_system_backend.Dto.RoomDTO;
 import com.org.hotel_booking_system_backend.Entity.Room;
+import com.org.hotel_booking_system_backend.Entity.RoomType;
 import com.org.hotel_booking_system_backend.Repo.RoomRepo;
 import com.org.hotel_booking_system_backend.Service.RoomService;
+import com.org.hotel_booking_system_backend.Util.AppUtil;
+import com.org.hotel_booking_system_backend.Util.Mapping;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RoomServiceImpl implements RoomService {
     @Autowired
     private RoomRepo roomRepo;
     @Autowired
-    private ModelMapper modelMapper;
+    private Mapping mapper;
 
     @Override
     public void save(RoomDTO roomDTO) {
-if(roomRepo.existsById(roomDTO.getRoomId())){
-    throw new RuntimeException("Room already exist");
-    }
-    roomRepo.save(modelMapper.map(roomDTO, Room.class));
+        Room room = mapper.convertToRoomEntity(roomDTO);
+
+        if (room.getRoomId() == null || room.getRoomId().isEmpty()){
+            room.setRoomId(AppUtil.createRoomCode());
+        }
+
+        roomRepo.save(room);
     }
 
     @Override
     public List<RoomDTO> getAll() {
-return modelMapper.map(roomRepo.findAll(),
-        new TypeToken<List<RoomDTO>>()
-        {}.getType());
+        List<Room> getRoom = roomRepo.findAll();
+        return mapper.convertRoomToDTOList(getRoom);
+
     }
 
     @Override
     public void update(RoomDTO roomDTO) {
-    if(roomRepo.existsById(roomDTO.getRoomId())){
-    roomRepo.save(modelMapper.map(roomDTO, Room.class));
-    }
-    throw new RuntimeException("Room does not found");
+        Optional<Room> room = roomRepo.findById(roomDTO.getRoomId());
+        if (!room.isPresent()) {
+            throw new RuntimeException("Room not Found");
+        } else {
+            Room rooms = room.get();
+            rooms.setAvailability(roomDTO.getAvailability());
+            rooms.setFloorNumber(roomDTO.getFloorNumber());
+
+            // Save the updated entity
+            roomRepo.save(rooms);  // This line ensures the entity is saved to the database
+        }
     }
 
     @Override
-    public void delete(Long id) {
-if(roomRepo.existsById(id)){
-    roomRepo.deleteById(id);
-}else{
-    throw new RuntimeException("Room does not found");
-}
+    public void delete(String id) {
+        Optional<Room> findId = roomRepo.findById(id);
+        if (!findId.isPresent()){
+            throw new RuntimeException("Room not Found");
+        }else {
+            roomRepo.deleteById(id);
+        }
     }
 
 

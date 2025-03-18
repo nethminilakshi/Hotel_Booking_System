@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/room")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:63342")
 public class RoomController{
     private List<RoomDTO> rooms = new ArrayList<>();
 @Autowired
@@ -33,7 +33,7 @@ private RoomService roomService;
         return new ResponseUtil(200, "Room is updated", null);
     }
     @DeleteMapping(path = "delete/{id}")
-    public ResponseUtil deleteRoom(@PathVariable(value = "id") long id){
+    public ResponseUtil deleteRoom(@PathVariable(value = "id") String id){
         roomService.delete(id);
         return new ResponseUtil(200, "Room is deleted", null);
     }

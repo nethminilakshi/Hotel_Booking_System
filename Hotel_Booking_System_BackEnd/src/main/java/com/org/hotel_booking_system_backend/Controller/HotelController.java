@@ -8,20 +8,15 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.geo.Point;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/hotel")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:63342")
 public class HotelController {
     private List<HotelDTO> hotelDTOList;
     static Logger logger = LoggerFactory.getLogger(HotelController.class);
@@ -30,45 +25,85 @@ public class HotelController {
 
     @PostMapping(path = "save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseUtil saveHotel(@Valid
-                                  @RequestPart("hotelName") String hotelName,
+                                  @RequestPart("name") String hotelName,
                                   @RequestPart("location") String location,
                                   @RequestPart("description") String description,
                                   @RequestPart("image") MultipartFile image,
-                                  @RequestPart("manager_id")String managerId){
+                                  @RequestPart("manager_id") String managerId) {
 
-        try{
+        try {
+            // Convert image to Base64
             String base64Image = AppUtil.toBase64FieldImage1(image);
+
+            // Set up hotel DTO
             var hotelDTO = new HotelDTO();
             hotelDTO.setHotelId(AppUtil.createHotelCode());
             hotelDTO.setName(hotelName);
             hotelDTO.setLocation(location);
-            hotelDTO.setDescription(location);
+            hotelDTO.setDescription(description);  // Corrected this line
             hotelDTO.setImage(base64Image);
-            hotelDTO.setManager(managerId);
+            hotelDTO.setManagerId(managerId);
 
+            // Save the hotel
             hotelService.save(hotelDTO);
-            logger.info("hotel saved :" + hotelDTO);
-            return new ResponseUtil(HttpStatus.CREATED);
+
+            // Log and return success response
+            logger.info("Hotel saved: " + hotelDTO);
+            return new ResponseUtil(200, "Success", hotelDTO);
+
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            return new ResponseUtil(HttpStatus.NOT_FOUND);
+            logger.error("Error while saving hotel: " + e.getMessage());
+            return new ResponseUtil(HttpStatus.NOT_FOUND);  // Return NOT_FOUND if something went wrong
         }
     }
 
+
     @GetMapping(path = "getAll",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseUtil getHotels(){
-        hotelService.getAll(); // Add this line to check the returned data
-        return new ResponseUtil(200, "Success",hotelService.getAll());
-    }
+        List<HotelDTO> hotelDTOS = hotelService.getAll();
+        for (HotelDTO hotel : hotelDTOS) {
+            System.out.println("Hotel ID: " + hotel.getHotelId()); // ✅ Debugging
+        }
+        return new ResponseUtil(200, "Success", hotelDTOS);    }
 
     @GetMapping(value = "/{hotelId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public HotelDTO getSelectedId(@PathVariable("hotelId") String hotelId){
         return hotelService.getHotelId(hotelId);
     }
-    @PutMapping("update")
-    public ResponseUtil updateHotel(@ModelAttribute HotelDTO hotelDTO) throws IOException {
-        hotelService.update(hotelDTO);
-        return new ResponseUtil(200, "Hotel details are updated", null);
+
+    @PatchMapping(value = "/{hotelId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseUtil update(
+            @PathVariable("hotelId") String hotelId,
+            @RequestPart("hotelName") String hotelName,
+            @RequestPart("location") String location,
+            @RequestPart("description") String description,
+            @RequestPart(value = "image", required = false) MultipartFile updatedImage,
+            @RequestPart("manager_id") String manager_id
+    ) {
+        try {
+            String updateBase64CropImage = null;
+            if (updatedImage != null && !updatedImage.isEmpty()) {
+                updateBase64CropImage = AppUtil.toBase64CropImage(updatedImage);
+            }
+
+            var updateHotelDTO = new HotelDTO();
+            updateHotelDTO.setHotelId(hotelId);
+            updateHotelDTO.setName(hotelName);
+            updateHotelDTO.setLocation(location);
+            updateHotelDTO.setDescription(description);
+            updateHotelDTO.setManagerId(manager_id);
+
+            if (updateBase64CropImage != null) {
+                updateHotelDTO.setImage(updateBase64CropImage);
+            }
+
+            hotelService.update(updateHotelDTO);
+            logger.info("Hotel details Updated :" + updateHotelDTO);
+            return new ResponseUtil(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            return new ResponseUtil(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping(value = "/{hotelId}")

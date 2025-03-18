@@ -14,6 +14,5 @@ public class HotelDTO {
     private String location; // Different locations (branches)
     private String description;
     private String image;
-    private String Manager; // Reference to User entity
-
+    private String managerId; // Correct reference to User entity
 }

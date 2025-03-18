@@ -11,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,7 +19,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("api/v1/roomType")
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:63342")
 public class RoomTypeController {
     private List<RoomTypeDTO> roomTypeDTOList;
     @Autowired
@@ -95,7 +94,7 @@ public class RoomTypeController {
     }
 
 
-    @PutMapping(value = "/{roomTypeCode}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(path = "update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseUtil update(
             @PathVariable("roomTypeCode") String roomTypeId,
             @RequestPart("description") String description,

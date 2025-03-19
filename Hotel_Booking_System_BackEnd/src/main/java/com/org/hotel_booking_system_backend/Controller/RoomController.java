@@ -1,9 +1,11 @@
 package com.org.hotel_booking_system_backend.Controller;
 
 import com.org.hotel_booking_system_backend.Dto.RoomDTO;
+import com.org.hotel_booking_system_backend.Entity.Room;
 import com.org.hotel_booking_system_backend.Service.RoomService;
 import com.org.hotel_booking_system_backend.Util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -19,13 +21,18 @@ private RoomService roomService;
 
     @PostMapping(path = "save")
     public ResponseUtil saveRoom(@RequestBody RoomDTO roomDTO){
-       roomService.save(roomDTO);
-        return new ResponseUtil(201,"Room Saved", null);
+        try{
+            Room savedRoom = roomService.save(roomDTO);
+return new ResponseUtil(201,"Room Saved", savedRoom);
+        }catch (Exception e){
+            return new ResponseUtil(500, e.getMessage(), null);
+        }
     }
     @GetMapping("getAll")
     public ResponseUtil getAllRooms(){
 
-        return new ResponseUtil(200, "Success",roomService.getAll());
+        List<RoomDTO> rooms = roomService.getAll();
+        return new ResponseUtil(200, "Room is updated", rooms);
     }
     @PutMapping("update")
     public ResponseUtil updateRoom(@RequestBody RoomDTO roomDTO){

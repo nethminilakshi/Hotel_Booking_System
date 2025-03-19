@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const addHotelButton = document.getElementById('add-hotel');
   const closeButton = document.getElementById('hotel-register-close');
   const hotelForm = document.getElementById('hotel-form');
+  document.getElementById("hotelForm").reset(); // Clear previous values
   const tableBody = document.querySelector('.hotel-table tbody');
   const formTitle = document.querySelector('.hotel-register-title');
   const managerDropdown = document.getElementById('hotel-manager');
@@ -115,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // // Save or update hotel
+  // Save or update hotel
   // hotelForm.addEventListener('submit', async (e) => {
   //   e.preventDefault();
   //
@@ -124,12 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
   //   const image = document.getElementById('hotel-image');
   //   const description = document.getElementById('hotel-description').value;
   //   const managerId = document.getElementById('hotel-manager').value;
-  //
-  //   // Ensure managerId is selected
-  //   if (!managerId) {
-  //     alert("Please select a Manager ID!");
-  //     return;
-  //   }
   //
   //   const formData = new FormData();
   //   formData.append("hotelName", hotelName);
@@ -140,21 +135,13 @@ document.addEventListener('DOMContentLoaded', () => {
   //   formData.append("description", description);
   //   formData.append("managerId", managerId);
   //
-  //   const url = currentHotelId
-  //     ? `http://localhost:8080/api/v1/hotel/update/${currentHotelId}` // Use correct update URL
-  //     : `http://localhost:8080/api/v1/hotel/save`;
-  //
   //   try {
   //     const response = await fetch(`http://localhost:8080/api/v1/hotel/save${currentHotelId ? `/${currentHotelId}` : ''}`, {
   //       method: currentHotelId ? 'PATCH' : 'POST',
   //       body: formData,
   //     });
   //
-  //     const result = await response.json();
-  //
-  //
   //     if (response.ok) {
-  //       alert("Hotel saved successfully!");
   //       fetchHotels();
   //       closeForm();
   //       currentHotelId = null;
@@ -169,51 +156,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // });
 
 
+  //save a hotel
 
-// save hotel
-  document.getElementById('hotelForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const hotelName = document.getElementById('hotel-name').value;
-    const location = document.getElementById('hotel-location').value;
-    const image = document.getElementById('hotel-image');
-    const description = document.getElementById('hotel-description').value;
-    const managerId = document.getElementById('hotel-manager').value;
-
-    if (!managerId) {
-      alert("Please select a Manager ID!");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("hotelName", hotelName);
-    formData.append("location", location);
-    if (image.files[0]) {
-      formData.append("image", image.files[0], image.files[0].name);
-    }
-    formData.append("description", description);
-    formData.append("managerId", managerId);
-
-    try {
-      const response = await fetch("http://localhost:8080/api/v1/hotel/save", {
-        method: "POST",
-        body: formData,
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        alert("Hotel added successfully!");
-        fetchHotels();
-        closeForm();
-      } else {
-        alert(`Failed to add hotel: ${result.message}`);
-      }
-    } catch (error) {
-      console.error("Error adding hotel:", error);
-      alert("An error occurred while adding the hotel.");
-    }
-  });
 
   const updateHotel = async (hotelId) => {
     const hotelName = document.getElementById('hotel-name').value;
@@ -256,14 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
       alert("An error occurred while updating the hotel.");
     }
   };
-
-
-
-
-
-
-
-
 
 
   // Add a hotel to the table

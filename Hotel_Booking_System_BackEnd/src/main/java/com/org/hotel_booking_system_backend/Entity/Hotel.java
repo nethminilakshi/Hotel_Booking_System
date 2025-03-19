@@ -27,7 +27,7 @@ public class Hotel {
 
     @Column(columnDefinition = "LONGTEXT")
     private String image;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "manager_id",nullable = false) // Managed by a Hotel Manager (User)
     private User manager;
 

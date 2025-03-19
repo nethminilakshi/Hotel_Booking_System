@@ -16,7 +16,7 @@ public class Room {
     @Id
     private String roomId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "type_id", nullable = false)
     private RoomType roomType; // Reference to RoomType entity
 
@@ -26,11 +26,10 @@ public class Room {
     @Column(name = "floor_number", nullable = false)
     private int floorNumber;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "hotel_id", nullable = false)
     private Hotel hotel; // Reference to Hotel entity
 
-    // Getters and Setters
 
 
 }

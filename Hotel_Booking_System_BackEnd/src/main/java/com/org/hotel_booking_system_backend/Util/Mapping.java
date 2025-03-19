@@ -70,8 +70,8 @@ public class Mapping {
             protected void configure() {
                 map().setRoomId(source.getRoomId()); // Assuming roomId exists in RoomDTO
                 map().setAvailability(source.getAvailability());
-                map().setRoomType(source.getRoomType());
-                map().setHotel(source.getHotel());
+                map().setRoomTypeId(source.getRoomType().getTypeId()); // Assuming RoomDTO has a roomType field
+                map().setHotelId(source.getHotel().getHotelId()); // Assuming RoomDTO has a hotel field
             }
         });
     }

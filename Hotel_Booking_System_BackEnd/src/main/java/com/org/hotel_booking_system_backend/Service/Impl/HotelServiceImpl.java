@@ -2,12 +2,16 @@ package com.org.hotel_booking_system_backend.Service.Impl;
 
 import com.org.hotel_booking_system_backend.Dto.HotelDTO;
 import com.org.hotel_booking_system_backend.Entity.Hotel;
+import com.org.hotel_booking_system_backend.Entity.User;
 import com.org.hotel_booking_system_backend.Repo.HotelRepo;
+import com.org.hotel_booking_system_backend.Repo.UserRepo;
 import com.org.hotel_booking_system_backend.Service.HotelService;
 import com.org.hotel_booking_system_backend.Util.AppUtil;
 import com.org.hotel_booking_system_backend.Util.Mapping;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
@@ -23,25 +27,32 @@ public class HotelServiceImpl implements HotelService {
     private Mapping mapper;
   static Logger logger = Logger.getLogger(HotelServiceImpl.class.getName());
 
+    @Autowired
+    private UserRepo userRepository;  // Assuming UserRepository exists for Manager
+
+    @Transactional
     @Override
     public void save(HotelDTO hotelDTO) throws IOException {
-        // Convert DTO to entity
         Hotel hotel = mapper.convertToHotelEntity(hotelDTO);
-        logger.info("Mapped Hotel Entity: " + hotel.toString());
+        logger.info("Mapped Hotel Entity: " + hotel);
 
-        // Generate hotel ID if necessary
         if (hotel.getHotelId() == null || hotel.getHotelId().isEmpty()) {
             hotel.setHotelId(AppUtil.createHotelCode());
-            logger.info("Generated hotel ID: " + hotel.getHotelId());
         }
 
-        // Log the entity before saving
-        logger.info("Saving hotel: " + hotel.toString());
+        //  Fetch the manager properly inside a transaction
+        User manager = userRepository.findById(hotelDTO.getManagerId())
+                .orElseThrow(() -> new RuntimeException("Manager not found!"));
 
-        // Save to database
+        //  Avoid Lazy Initialization Exception
+        Hibernate.initialize(manager.getManagedHotels()); // Force load if needed
+
+        hotel.setManager(manager);
+
         hotelRepo.save(hotel);
-        logger.info("Hotel saved successfully with ID: " + hotel.getHotelId());
+        logger.info("Hotel saved successfully");
     }
+
 
 
     @Override

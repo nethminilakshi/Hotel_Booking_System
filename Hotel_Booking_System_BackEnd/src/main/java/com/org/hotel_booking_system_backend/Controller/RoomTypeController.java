@@ -70,7 +70,7 @@ public class RoomTypeController {
     public ResponseUtil getRoomTypes() {
         List<RoomTypeDTO> roomTypes = roomTypeService.getAll();
         for (RoomTypeDTO room : roomTypes) {
-            System.out.println("Room ID: " + room.getTypeId()); // ✅ Debugging
+            System.out.println("Room ID: " + room.getTypeId()); //  Debugging
         }
         return new ResponseUtil(200, "Success", roomTypes);
     }

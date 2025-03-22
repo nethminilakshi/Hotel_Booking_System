@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const tableBody = document.querySelector('.room-table tbody');
   const formTitle = document.querySelector('.room-register-title');
   const hotelDropdown = document.getElementById('room-hotel-id');
-  const roomTypeDropdown = document.getElementById('room-roomType-id'); // Ensure you have the dropdown element
+  const roomTypeDropdown = document.getElementById('room-roomType-id');
 
   let currentRoomId = null;
 
@@ -15,19 +15,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const openForm = () => {
     console.log("Opening Room Form...");
     roomRegisterForm.style.display = "flex";
-    formTitle.textContent = "Register Room ";
+    formTitle.textContent = "Register Room";
     currentRoomId = null;
     clearForm();
   };
+
   // Function to close the registration form
   const closeForm = () => {
     console.log("Closing Room Form...");
     roomRegisterForm.style.display = "none";
     clearForm();
   };
+
   addRoomButton?.addEventListener("click", openForm);
   closeButton?.addEventListener("click", closeForm);
-
 
   // Close the form when clicking outside it
   window.addEventListener('click', (event) => {
@@ -36,24 +37,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-// load hotel details to dropdown
+  // Load hotel details into dropdown
   $(document).ready(() => {
     $('#load-cus-ids').click((e) => {
       e.preventDefault();
 
       $.ajax({
-        url: 'http://localhost:8080/api/v1/hotel/getAll', // Ensure this API is correct
+        url: 'http://localhost:8080/api/v1/hotel/getAll',
         type: 'GET',
         success: (res) => {
           console.log("Response from server:", res);
-
-          // Clear existing options
           $('#room-hotel-id').empty();
-
-          // Add default option
           $('#room-hotel-id').append('<option value="">-- Select Hotel --</option>');
 
-          // Check if data exists and is an array
           if (res.data && Array.isArray(res.data) && res.data.length > 0) {
             res.data.forEach(hotel => {
               $('#room-hotel-id').append(
@@ -69,35 +65,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     });
-
-    // Capture the selected hotel ID
-    $('#room-roomType-id').change(function () {
-      const selectedId = $(this).val();
-      const selectedName = $(this).find("option:selected").text();
-      console.log("Selected Hotel ID:", selectedId);
-      console.log("Selected Hotel Name:", selectedName);
-    });
   });
 
-
-// load room type details to dropdown
-
+  // Load room type details into dropdown
   $('#load-hotel-ids').click((e) => {
     e.preventDefault();
 
     $.ajax({
-      url: 'http://localhost:8080/api/v1/roomType/getAll', // Updated URL
+      url: 'http://localhost:8080/api/v1/roomType/getAll',
       type: 'GET',
       success: (res) => {
         console.log(res);
-
-        // Clear existing options
         $('#room-roomType-id').empty();
+        $('#room-roomType-id').append('<option value="">-- Select Room Type --</option>');
 
-        // Add default option
-        $('#room-roomType-id').append('<option value="">-- Select roomType --</option>');
-
-        // Check if data exists and is an array
         if (res.data && Array.isArray(res.data) && res.data.length > 0) {
           res.data.forEach(roomType => {
             $('#room-roomType-id').append(
@@ -105,39 +86,25 @@ document.addEventListener('DOMContentLoaded', () => {
             );
           });
         } else {
-          console.log("No hotel data found in response");
+          console.log("No room type data found in response");
         }
       },
       error: (err) => {
-        console.error("Error fetching hotel IDs:", err);
+        console.error("Error fetching room types:", err);
       }
     });
-
-
-  // Capture the selected hotel ID
-  $('#room-hotel-id').change(function () {
-    const selectedId = $(this).val();
-    const selectedName = $(this).find("option:selected").text();
-    console.log("Selected RoomType ID:", selectedId);
-    console.log("Selected roomType Name:", selectedName);
   });
-});
 
-
-
-// Fetch and display room data from the backend
+  // Fetch and display room data
   const fetchRooms = async () => {
     try {
       const response = await fetch("http://localhost:8080/api/v1/room/getAll");
       if (!response.ok) throw new Error("Failed to fetch rooms");
 
-      // Get raw response as text
       const rawText = await response.text();
-      console.log("🔍 Raw Response from Backend:", rawText); // Debugging
-
-      // Try parsing the JSON manually
+      console.log("Raw Response from Backend:", rawText);
       const result = JSON.parse(rawText);
-      console.log("✅ Parsed JSON:", result); // Check if JSON is valid
+      console.log("Parsed JSON:", result);
 
       const rooms = result.data || [];
       tableBody.innerHTML = "";
@@ -148,31 +115,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-
-
-// Function to dynamically add room to the table
+  // Function to dynamically add a room to the table
   const addRoomToTable = (room) => {
-    console.log("Room Data:", room); // Debugging line
+    console.log("Room Data:", room);
 
     const row = document.createElement("tr");
+    row.id = `room-${room.roomId}`; // ✅ Add ID to the row for easy deletion
 
     row.innerHTML = `
         <td>${room.roomId || "N/A"}</td>
-        <td>${room.roomTypeId || "N/A"}</td>  <!-- ✅ Corrected -->
+        <td>${room.roomTypeId || "N/A"}</td>
         <td>${room.floorNumber || "N/A"}</td>
-        <td>${room.hotelId || "N/A"}</td>  <!-- ✅ Corrected -->
+        <td>${room.hotelId || "N/A"}</td>
         <td>${room.availability ? "Available" : "Not Available"}</td>
         <td><span class="update-button"><i class="fas fa-edit">update</i></span></td>
         <td><span class="delete-button"><i class="fas fa-trash">delete</i></span></td>
     `;
 
     row.querySelector(".update-button").addEventListener("click", () => openUpdateForm(room));
-    row.querySelector(".delete-button").addEventListener("click", () => deleteRoom(room.id));
+    row.querySelector(".delete-button").addEventListener("click", () => deleteRoom(room.roomId));
 
     tableBody.appendChild(row);
   };
 
-  // Save Room Type (Create or Update)
+  // Save or Update Room
   roomForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -182,8 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const roomTypeId = document.getElementById("room-roomType-id").value;
 
     const roomData = {
-      availability: availability === "true", // Ensure boolean conversion
-      floorNumber: parseInt(floorNumber), // Ensure it's a number
+      availability: availability === "true",
+      floorNumber: parseInt(floorNumber),
       hotelId: hotelId,
       roomTypeId: roomTypeId
     };
@@ -192,21 +158,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const url = currentRoomId
         ? `http://localhost:8080/api/v1/room/update/${currentRoomId}`
         : "http://localhost:8080/api/v1/room/save";
-      const method = currentRoomId ? "PATCH" : "POST"; // PATCH for update, POST for create
+      const method = currentRoomId ? "PATCH" : "POST";
 
       const response = await fetch(url, {
         method: method,
         headers: {
-          "Content-Type": "application/json", //  Send JSON
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(roomData), //  Convert data to JSON
+        body: JSON.stringify(roomData),
       });
 
       if (!response.ok) throw new Error(`Failed to save room: ${response.statusText}`);
 
-      await fetchRooms(); // Refresh room list
-      closeForm(); // Close the form
-      currentRoomId = null; // Reset room ID after saving
+      await fetchRooms();
+      closeForm();
+      currentRoomId = null;
     } catch (error) {
       console.error("Error saving room:", error);
       alert(error.message);
@@ -219,33 +185,41 @@ document.addEventListener('DOMContentLoaded', () => {
     currentRoomId = null;
   };
 
-  // Delete room
+  // ✅ Fixed Delete Room Function
   const deleteRoom = async (id) => {
-    if (!confirm("Are you sure you want to remove this room?")) return;
+    if (!id) {
+      console.error("Invalid room ID:", id);
+      return;
+    }
+
+    if (!confirm("Are you sure you want to delete this room?")) return;
 
     try {
-      const response = await fetch(`http://localhost:8080/api/v1/room/${id}`, {
+      const response = await fetch(`http://localhost:8080/api/v1/room/delete/${id}`, {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
       });
 
-      //  Check if the response is okay
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to remove room: ${errorText}`);
+        const result = await response.json();
+        throw new Error(`Failed to delete room: ${result.message}`);
       }
-      fetchRooms();
-      //  Handle successful deletion
+
+      console.log(`Room with ID ${id} deleted successfully.`);
+
+      const roomElement = document.getElementById(`room-${id}`);
+      if (roomElement) {
+        roomElement.remove();
+      } else {
+        console.warn(`Room element with ID "room-${id}" not found in DOM.`);
+      }
+
+      alert("Room deleted successfully!");
     } catch (error) {
-      console.error(" Error removing room:", error);
-      alert("An error occurred while removing the room.");
+      console.error("Error deleting room:", error);
+      alert(error.message);
     }
   };
 
-
-  // Initial fetches
+  // Initial Fetch
   fetchRooms();
-
 });

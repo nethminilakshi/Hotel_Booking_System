@@ -30,39 +30,47 @@ public class HotelController {
                                   @RequestPart("description") String description,
                                   @RequestPart("image") MultipartFile image,
                                   @RequestPart("manager_id") String managerId) {
-
         try {
+            // Log incoming data
+            logger.info("Received hotel details - Name: {}, Location: {}, Description: {}, Manager ID: {}",
+                    hotelName, location, description, managerId);
+
+
+            // save file into path
+
             // Convert image to Base64
             String base64Image = AppUtil.toBase64FieldImage1(image);
+            logger.info("Converted image to Base64");
 
             // Set up hotel DTO
             var hotelDTO = new HotelDTO();
             hotelDTO.setHotelId(AppUtil.createHotelCode());
             hotelDTO.setName(hotelName);
             hotelDTO.setLocation(location);
-            hotelDTO.setDescription(description);  // Corrected this line
+            hotelDTO.setDescription(description);
             hotelDTO.setImage(base64Image);
             hotelDTO.setManagerId(managerId);
 
             // Save the hotel
             hotelService.save(hotelDTO);
 
-            // Log and return success response
-            logger.info("Hotel saved: " + hotelDTO);
+            //  Return a proper response
+            logger.info("Hotel saved successfully: " + hotelDTO);
             return new ResponseUtil(200, "Success", hotelDTO);
 
         } catch (Exception e) {
-            logger.error("Error while saving hotel: " + e.getMessage());
-            return new ResponseUtil(HttpStatus.NOT_FOUND);  // Return NOT_FOUND if something went wrong
+            logger.error("Error while saving hotel: ", e);
+            return new ResponseUtil(500, "Failed to save hotel: " + e.getMessage(), null);
         }
     }
+
 
 
     @GetMapping(path = "getAll",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseUtil getHotels(){
         List<HotelDTO> hotelDTOS = hotelService.getAll();
         for (HotelDTO hotel : hotelDTOS) {
-            System.out.println("Hotel ID: " + hotel.getHotelId()); // ✅ Debugging
+            System.out.println("Hotel ID: " + hotel.getHotelId()); //  Debugging
         }
         return new ResponseUtil(200, "Success", hotelDTOS);    }
 
@@ -71,7 +79,7 @@ public class HotelController {
         return hotelService.getHotelId(hotelId);
     }
 
-    @PatchMapping(value = "/{hotelId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "update/{hotelId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseUtil update(
             @PathVariable("hotelId") String hotelId,
             @RequestPart("hotelName") String hotelName,
@@ -81,6 +89,8 @@ public class HotelController {
             @RequestPart("manager_id") String manager_id
     ) {
         try {
+            logger.info("Updating Hotel ID: " + hotelId); //  Debugging
+
             String updateBase64CropImage = null;
             if (updatedImage != null && !updatedImage.isEmpty()) {
                 updateBase64CropImage = AppUtil.toBase64CropImage(updatedImage);
@@ -98,13 +108,15 @@ public class HotelController {
             }
 
             hotelService.update(updateHotelDTO);
-            logger.info("Hotel details Updated :" + updateHotelDTO);
-            return new ResponseUtil(HttpStatus.NO_CONTENT);
+            logger.info("Hotel details Updated: " + updateHotelDTO);
+
+            return new ResponseUtil(200, "Success", updateHotelDTO);
         } catch (Exception e) {
-            logger.error(e.getMessage());
-            return new ResponseUtil(HttpStatus.NOT_FOUND);
+            logger.error("Error updating hotel: " + e.getMessage());
+            return new ResponseUtil(500, "Error updating hotel: " + e.getMessage(), null);
         }
     }
+
 
     @DeleteMapping(value = "/{hotelId}")
     public ResponseUtil delete(@PathVariable("hotelId") String hotelId) {

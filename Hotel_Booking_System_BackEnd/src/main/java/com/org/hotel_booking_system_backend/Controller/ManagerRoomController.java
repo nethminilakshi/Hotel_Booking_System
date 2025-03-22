@@ -5,7 +5,6 @@ import com.org.hotel_booking_system_backend.Entity.Room;
 import com.org.hotel_booking_system_backend.Service.RoomService;
 import com.org.hotel_booking_system_backend.Util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -14,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/room")
 @CrossOrigin(origins = "http://localhost:63342")
-public class RoomController{
+public class ManagerRoomController {
     private List<RoomDTO> rooms = new ArrayList<>();
 @Autowired
 private RoomService roomService;

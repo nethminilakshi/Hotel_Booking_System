@@ -20,11 +20,11 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/roomType")
 @CrossOrigin(origins = "http://localhost:63342")
-public class RoomTypeController {
+public class ManagerRoomTypeController {
     private List<RoomTypeDTO> roomTypeDTOList;
     @Autowired
     private RoomTypeService roomTypeService;
-    static Logger logger = LoggerFactory.getLogger(RoomTypeController.class);
+    static Logger logger = LoggerFactory.getLogger(ManagerRoomTypeController.class);
 
 
     @PostMapping(path = "save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

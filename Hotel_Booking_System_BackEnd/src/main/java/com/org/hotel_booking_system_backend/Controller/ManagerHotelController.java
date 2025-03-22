@@ -17,9 +17,9 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/hotel")
 @CrossOrigin(origins = "http://localhost:63342")
-public class HotelController {
+public class ManagerHotelController {
     private List<HotelDTO> hotelDTOList;
-    static Logger logger = LoggerFactory.getLogger(HotelController.class);
+    static Logger logger = LoggerFactory.getLogger(ManagerHotelController.class);
     @Autowired
     private HotelService hotelService;
 

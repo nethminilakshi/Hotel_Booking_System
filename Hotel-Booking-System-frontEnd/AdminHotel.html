@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hotel Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="css/AdminHotel.css">
+  <link rel="stylesheet" href="css/AdminDashboard.css">
+</head>
+<body>
+<div class="wrapper">
+<!-- Sidebar -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <img src="https://via.placeholder.com/40" alt="Logo" class="logo">
+  </div>
+
+  <div class="sidebar-content">
+    <div class="menu-category">Main Menu</div>
+    <ul class="list-unstyled components">
+      <li class="active">
+        <a href="AdminDashboard.html"><i class="bi bi-grid-1x2"></i> Overview</a>
+      </li>
+      <li>
+        <a href="AdminHotel.html"><i class="bi bi-people"></i> Hotels</a>
+      </li>
+      <li>
+        <a href="AdminRoom.html"><i class="bi bi-calendar-check"></i>Rooms</a>
+      </li>
+      <li>
+        <a href="AdminRoomType.html"><i class="bi bi-door-open"></i> RoomTypes</a>
+      <li>
+        <a href="Bookings.html"><i class="bi bi-file-text"></i>Bookings</a>
+      </li>
+    </ul>
+
+    <div class="menu-category">Other Menu</div>
+    <ul class="list-unstyled components">
+      <li>
+        <a href="Payment.html"><i class="bi bi-building"></i> Payments</a>
+      </li>
+      <li>
+        <a href="#"><i class="bi bi-credit-card"></i> Reviews</a>
+      </li>
+      <li>
+        <a href="login.html"><i class="bi bi-box-seam"></i> SignOut</a>
+      </li>
+    </ul>
+
+    <div class="menu-category"> Settings</div>
+    <ul class="list-unstyled components">
+      <li>
+        <a href="#"><i class="bi bi-gear"></i>User Settings</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Page Content -->
+  <div id="content">
+<section id="HotelsForm">
+  <div id="hotelHeaderSection" class="hotel-header-section">
+    <h2> Hotels Manage</span></h2>
+   </div>
+
+  <!-- Hotel Table -->
+  <div class="table-container">
+    <table class="hotel-table">
+      <thead>
+      <tr>
+        <th>Hotel ID</th>
+        <th>Name</th>
+        <th>Location</th>
+        <th>Description</th>
+        <th>Image</th>
+        <th>Manager</th>
+      </tr>
+      </thead>
+      <tbody>
+      <!-- Rows with hotel data will be dynamically inserted here -->
+      </tbody>
+    </table>
+  </div>
+
+</section>
+</div>
+</div>
+</body>
+</html>

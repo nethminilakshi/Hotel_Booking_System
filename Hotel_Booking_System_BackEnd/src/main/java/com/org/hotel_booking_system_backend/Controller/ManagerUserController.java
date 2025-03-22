@@ -1,6 +1,5 @@
 package com.org.hotel_booking_system_backend.Controller;
 
-import com.org.hotel_booking_system_backend.Dto.RoomTypeDTO;
 import com.org.hotel_booking_system_backend.Dto.UserDTO;
 import com.org.hotel_booking_system_backend.Service.UserService;
 import com.org.hotel_booking_system_backend.Util.ResponseUtil;
@@ -18,11 +17,11 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/user")
 @CrossOrigin(origins = "http://localhost:63342")
-public class UserController {
+public class ManagerUserController {
     private List<UserDTO> userDTOList;
     @Autowired
     private UserService userService;
-    static Logger logger = LoggerFactory.getLogger(UserController.class);
+    static Logger logger = LoggerFactory.getLogger(ManagerUserController.class);
 
     @GetMapping(path = "getAll", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseUtil getHotel() {

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class PaymentDTO {
 
     private String paymentId;
-    private Booking booking;
+    private String bookingId;
     private Double amount;
     private LocalDateTime paymentDate;
     private String paymentMethod;

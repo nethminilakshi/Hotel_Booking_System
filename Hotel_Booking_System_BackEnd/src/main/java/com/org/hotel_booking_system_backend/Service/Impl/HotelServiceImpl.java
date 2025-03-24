@@ -1,6 +1,6 @@
 package com.org.hotel_booking_system_backend.Service.Impl;
 
-import com.org.hotel_booking_system_backend.Dto.HotelDTO;
+import  com.org.hotel_booking_system_backend.Dto.HotelDTO;
 import com.org.hotel_booking_system_backend.Entity.Hotel;
 import com.org.hotel_booking_system_backend.Entity.User;
 import com.org.hotel_booking_system_backend.Repo.HotelRepo;

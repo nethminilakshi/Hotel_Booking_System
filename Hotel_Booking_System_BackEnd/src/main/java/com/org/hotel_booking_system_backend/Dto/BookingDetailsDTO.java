@@ -14,13 +14,13 @@ import java.time.LocalDate;
 public class BookingDetailsDTO {
 
     private String bookingId;
-    private Customer customer;
-    private Room room;
+    private String customerId;
+    private String customerName;
+    private String roomId;
     private LocalDate checkIn;
     private LocalDate checkOut;
     private String PhoneNumber;
     private String status;
-    private Payment payment;
 
 
 }

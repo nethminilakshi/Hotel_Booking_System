@@ -1,13 +1,7 @@
 package com.org.hotel_booking_system_backend.Util;
 
-import com.org.hotel_booking_system_backend.Dto.HotelDTO;
-import com.org.hotel_booking_system_backend.Dto.RoomDTO;
-import com.org.hotel_booking_system_backend.Dto.RoomTypeDTO;
-import com.org.hotel_booking_system_backend.Dto.UserDTO;
-import com.org.hotel_booking_system_backend.Entity.Hotel;
-import com.org.hotel_booking_system_backend.Entity.Room;
-import com.org.hotel_booking_system_backend.Entity.RoomType;
-import com.org.hotel_booking_system_backend.Entity.User;
+import com.org.hotel_booking_system_backend.Dto.*;
+import com.org.hotel_booking_system_backend.Entity.*;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.modelmapper.TypeToken;
@@ -36,7 +30,7 @@ public class Mapping {
             }
         });
 
-        // ✅ Hotel to HotelDTO mapping (Fixing managerId mapping)
+        //  Hotel to HotelDTO mapping (Fixing managerId mapping)
         modelMapper.addMappings(new PropertyMap<Hotel, HotelDTO>() {
             @Override
             protected void configure() {
@@ -64,7 +58,7 @@ public class Mapping {
             }
         });
 
-        // ✅ Room to RoomDTO mapping
+        //  Room to RoomDTO mapping
         modelMapper.addMappings(new PropertyMap<Room, RoomDTO>() {
             @Override
             protected void configure() {
@@ -76,7 +70,7 @@ public class Mapping {
         });
     }
 
-    // ✅ RoomType and DTO conversions
+    //  RoomType and DTO conversions
     public RoomTypeDTO convertToRoomTypeDTO(RoomType roomType) {
         return modelMapper.map(roomType, RoomTypeDTO.class);
     }
@@ -89,7 +83,7 @@ public class Mapping {
         return modelMapper.map(roomTypes, new TypeToken<List<RoomTypeDTO>>() {}.getType());
     }
 
-    // ✅ Hotel and DTO conversions
+    //  Hotel and DTO conversions
     public HotelDTO convertToHotelDTO(Hotel hotel) {
         return modelMapper.map(hotel, HotelDTO.class);
     }
@@ -102,7 +96,7 @@ public class Mapping {
         return modelMapper.map(hotels, new TypeToken<List<HotelDTO>>() {}.getType());
     }
 
-    // ✅ User and DTO conversions
+    //  User and DTO conversions
     public UserDTO convertToUserDTO(User user) {
         return user == null ? null : modelMapper.map(user, UserDTO.class);
     }
@@ -115,7 +109,7 @@ public class Mapping {
         return modelMapper.map(users, new TypeToken<List<UserDTO>>() {}.getType());
     }
 
-    // ✅ Room and DTO conversions
+    //  Room and DTO conversions
     public RoomDTO convertToRoomDTO(Room room) {
         return modelMapper.map(room, RoomDTO.class);
     }
@@ -127,4 +121,17 @@ public class Mapping {
     public List<RoomDTO> convertRoomToDTOList(List<Room> rooms) {
         return modelMapper.map(rooms, new TypeToken<List<RoomDTO>>() {}.getType());
     }
+    // paymet to paymentDTO
+    public PaymentDTO convertToPaymentDTO(Payment payment) {
+        return modelMapper.map(payment, PaymentDTO.class);
+    }
+
+    public Payment convertToPaymentEntity(PaymentDTO dto) {
+        return modelMapper.map(dto, Payment.class);
+    }
+
+    public List<PaymentDTO> convertPaymentToDTOList(List<Payment> payments) {
+        return modelMapper.map(payments, new TypeToken<List<PaymentDTO>>() {}.getType());
+    }
+
 }

@@ -31,7 +31,7 @@ return new ResponseUtil(201,"Room Saved", savedRoom);
     public ResponseUtil getAllRooms(){
 
         List<RoomDTO> rooms = roomService.getAll();
-        return new ResponseUtil(200, "Room is updated", rooms);
+        return new ResponseUtil(200, "Room details are retrieved", rooms);
     }
     @PutMapping("update")
     public ResponseUtil updateRoom(@RequestBody RoomDTO roomDTO){

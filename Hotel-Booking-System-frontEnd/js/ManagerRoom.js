@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("Room Data:", room);
 
     const row = document.createElement("tr");
-    row.id = `room-${room.roomId}`; // ✅ Add ID to the row for easy deletion
+    row.id = `room-${room.roomId}`; //  Add ID to the row for easy deletion
 
     row.innerHTML = `
         <td>${room.roomId || "N/A"}</td>

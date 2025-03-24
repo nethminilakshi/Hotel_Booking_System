@@ -1,18 +1,22 @@
 package com.org.hotel_booking_system_backend.Entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Entity
 @Table(name = "payments")
 public class Payment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long paymentId;
+    private String paymentId;
 
     @OneToOne
-    @JoinColumn(name = "booking_id")
+    @JoinColumn(name = "booking_id", nullable = false)
     private Booking booking;
 
     @Column(nullable = false)
@@ -21,81 +25,18 @@ public class Payment {
     @Column(nullable = false)
     private LocalDateTime paymentDate = LocalDateTime.now();
 
-    @Column(nullable = false, length = 50)
-    private String paymentMethod; // CREDIT_CARD, PAYPAL, STRIPE
+    @Enumerated(EnumType.STRING)
+    private PaymentMethod paymentMethod; // CREDIT_CARD, PAYPAL, STRIPE
 
-    @Column(nullable = false, length = 50)
-    private String status ; // SUCCESS, FAILED,
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus status ; // SUCCESS, FAILED
 
-    public Payment() {
+
+    public enum PaymentMethod {
+        CREDIT_CARD, PAYPAL, STRIPE
     }
 
-    public Payment(Long paymentId, Booking booking, Double amount, LocalDateTime paymentDate, String paymentMethod, String status) {
-        this.paymentId = paymentId;
-        this.booking = booking;
-        this.amount = amount;
-        this.paymentDate = paymentDate;
-        this.paymentMethod = paymentMethod;
-        this.status = status;
-    }
-
-    public Long getPaymentId() {
-        return paymentId;
-    }
-
-    public void setPaymentId(Long paymentId) {
-        this.paymentId = paymentId;
-    }
-
-    public Booking getBooking() {
-        return booking;
-    }
-
-    public void setBooking(Booking booking) {
-        this.booking = booking;
-    }
-
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public LocalDateTime getPaymentDate() {
-        return paymentDate;
-    }
-
-    public void setPaymentDate(LocalDateTime paymentDate) {
-        this.paymentDate = paymentDate;
-    }
-
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    @Override
-    public String toString() {
-        return "Payment{" +
-                "paymentId=" + paymentId +
-                ", booking=" + booking +
-                ", amount=" + amount +
-                ", paymentDate=" + paymentDate +
-                ", paymentMethod='" + paymentMethod + '\'' +
-                ", status='" + status + '\'' +
-                '}';
+    public enum PaymentStatus {
+        SUCCESS, FAILED
     }
 }

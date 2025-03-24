@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // Add Room Type to Table
+  // Add Hotel to Table
   const addRoomToTable = (hotel) => {
     console.log("Room Data:", hotel); // Debugging line
 

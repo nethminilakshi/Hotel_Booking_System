@@ -17,11 +17,11 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/user")
 @CrossOrigin(origins = "http://localhost:63342")
-public class ManagerUserController {
+public class AdminUserController {
     private List<UserDTO> userDTOList;
     @Autowired
     private UserService userService;
-    static Logger logger = LoggerFactory.getLogger(ManagerUserController.class);
+    static Logger logger = LoggerFactory.getLogger(AdminUserController.class);
 
     @GetMapping(path = "getAll", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseUtil getHotel() {

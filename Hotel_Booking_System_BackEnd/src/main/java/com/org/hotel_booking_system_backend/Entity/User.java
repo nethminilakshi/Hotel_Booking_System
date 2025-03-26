@@ -22,11 +22,16 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false, unique = true)
+    private String contact;
+
+
     @Column(nullable = false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @Column(nullable = false)
+    private String role; // ADMIN, CUSTOMER, MANAGER
+
 
     @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL)
     private List<Hotel> managedHotels;

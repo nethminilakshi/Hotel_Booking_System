@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -123,10 +122,10 @@ public class ManagerHotelController {
         try {
             hotelService.delete(hotelId);
             logger.info("Hotel deleted :" + hotelId);
-            return new ResponseUtil(HttpStatus.NO_CONTENT);
+            return new ResponseUtil();
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return new ResponseUtil(HttpStatus.NOT_FOUND);
+            return new ResponseUtil();
         }
     }
     }

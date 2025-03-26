@@ -13,8 +13,9 @@ public class UserDTO {
     private String userId;
     private String username;
     private String email;
+    private String contact;
     private String password;
-    private Role role; // ADMIN, HOTEL_OWNER, HOTEL_MANAGER
+    private String role; // ADMIN, HOTEL_OWNER, HOTEL_MANAGER
 
 
 }

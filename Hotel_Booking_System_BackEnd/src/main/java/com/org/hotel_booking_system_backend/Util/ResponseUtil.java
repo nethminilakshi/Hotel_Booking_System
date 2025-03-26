@@ -1,13 +1,11 @@
 package com.org.hotel_booking_system_backend.Util;
 
-import org.springframework.http.HttpStatus;
-
 public class ResponseUtil {
     private int code;
     private String message;
     private  Object data;
 
-    public ResponseUtil(HttpStatus created) {
+    public ResponseUtil() {
     }
 
     public ResponseUtil(int code, String message, Object data) {

@@ -9,6 +9,7 @@ public class AppUtil {
     private static int roomTypeCount = 0;
     private static int hotelCount = 0;
     private static int roomCount = 0;
+    private static int userCount = 0;
 
     public static synchronized String createRoomTypeCode(){
         roomTypeCount++;
@@ -23,6 +24,11 @@ public class AppUtil {
         roomCount++;
         return String.format("R%03d", roomCount);
     }
+    public static synchronized String createUserCode(){
+        userCount++;
+        return String.format("U%03d", userCount);
+    }
+
     public static String toBase64CropImage(MultipartFile cropImage) throws IOException {
         if (cropImage == null || cropImage.isEmpty()) {
             return null;

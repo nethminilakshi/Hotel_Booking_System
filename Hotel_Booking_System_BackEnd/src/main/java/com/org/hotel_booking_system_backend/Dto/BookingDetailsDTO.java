@@ -1,8 +1,4 @@
 package com.org.hotel_booking_system_backend.Dto;
-
-import com.org.hotel_booking_system_backend.Entity.Customer;
-import com.org.hotel_booking_system_backend.Entity.Payment;
-import com.org.hotel_booking_system_backend.Entity.Room;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

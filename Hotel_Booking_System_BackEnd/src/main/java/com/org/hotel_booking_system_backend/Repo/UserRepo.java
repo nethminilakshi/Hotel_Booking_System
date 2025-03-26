@@ -11,4 +11,10 @@ import java.util.List;
 public interface UserRepo extends JpaRepository<User,String> {
     @Query("SELECT u.userId FROM User u")
     List<String> findAllUserIds();
+
+    User findByEmail(String email);
+
+    boolean existsByEmail(String email);
+
+    void deleteByEmail(String email);
 }

@@ -12,31 +12,28 @@ $(document).ready(function () {
       return;
     }
 
+    let userData = {
+      username: username,
+      email: email,
+      contact: contact,
+      password: password,
+      role: "USER"
+    };
+
+    console.log(" Sending Data: ", userData); // Debugging
+
     $.ajax({
       url: "http://localhost:8080/api/v1/user/register",
       method: "POST",
       contentType: "application/json",
-      data: JSON.stringify({
-        "username": username,
-        "email": email,
-        "contact": contact,
-        "password": password,
-        "confirmPassword": confirmPassword,
-        "role": "USER"
-      }),
-      success: (res) => {
-        localStorage.setItem("email", email);
-        console.log(res);
-        if (res.message === "Success") {
-          console.log("Registration successful");
-          alert("Registration successful");
-        } else {
-          alert("Failed: " + (res.message || "Unknown error"));
-        }
+      data: JSON.stringify(userData),
+      success: function (res) {
+        console.log(" Success Response: ", res);
+        alert("Registration successful");
       },
-      error: (error) => {
-        console.error(error);
-        alert("Something went wrong");
+      error: function (xhr) {
+        console.error(" Error Response: ", xhr.responseText);
+        alert("Failed: " + xhr.responseText);
       }
     });
   });

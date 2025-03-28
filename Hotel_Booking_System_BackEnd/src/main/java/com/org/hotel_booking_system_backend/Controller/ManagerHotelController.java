@@ -116,8 +116,8 @@ public class ManagerHotelController {
         }
     }
 
-
-    @DeleteMapping(value = "/{hotelId}")
+@CrossOrigin(origins = "*")
+    @DeleteMapping(value = "delete/{hotelId}")
     public ResponseUtil delete(@PathVariable("hotelId") String hotelId) {
         try {
             hotelService.delete(hotelId);

@@ -18,15 +18,15 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("api/v1/roomType")
-@CrossOrigin(origins = "http://localhost:63342")
+@CrossOrigin("*")
 public class ManagerRoomTypeController {
     private List<RoomTypeDTO> roomTypeDTOList;
     @Autowired
     private RoomTypeService roomTypeService;
     static Logger logger = LoggerFactory.getLogger(ManagerRoomTypeController.class);
 
-
-    @PostMapping(path = "save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+@CrossOrigin(origins = "*")
+    @PostMapping(path = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseUtil saveRoomType(@Valid
                                      @RequestParam("description") String description,
                                      @RequestParam("price") Double price,
@@ -64,8 +64,7 @@ public class ManagerRoomTypeController {
         }
     }
 
-
-    @GetMapping(path = "getAll", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseUtil getRoomTypes() {
         List<RoomTypeDTO> roomTypes = roomTypeService.getAll();
         for (RoomTypeDTO room : roomTypes) {
@@ -93,7 +92,7 @@ public class ManagerRoomTypeController {
     }
 
 
-    @PutMapping(path = "update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(path = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseUtil update(
             @PathVariable("roomTypeCode") String roomTypeId,
             @RequestPart("description") String description,
@@ -126,8 +125,6 @@ public class ManagerRoomTypeController {
             return new ResponseUtil();
         }
     }
-
-
 
 }
 

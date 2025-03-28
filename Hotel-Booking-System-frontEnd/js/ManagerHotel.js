@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const deleteHotel = async (hotelId) => {
     if (confirm('Are you sure you want to delete this hotel?')) {
       try {
-        const response = await fetch(`http://localhost:8080/api/v1/hotel/${hotelId}`, {
+        const response = await fetch(`http://localhost:8080/api/v1/hotel/delete/${hotelId}`, {
           method: 'DELETE'
         });
         if (response.ok) fetchHotel();

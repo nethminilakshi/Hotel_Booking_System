@@ -1,0 +1,136 @@
+
+/*--------book---------*/
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 15px;
+}
+
+input {
+  outline: none;
+  border: none;
+  width: 100%;
+}
+
+.book {
+  padding: 15px 0;
+  background: #282834;
+  color: #fff;
+}
+
+h1 {
+  font-family: serif;
+}
+
+.book h1 {
+  font-size: 28px;
+}
+
+.book h1 span {
+  color: #a2622b;
+}
+
+.book input {
+  padding: 20px;
+}
+
+.book input:nth-last-child(1) {
+  background: #8a6913;
+  color: #fff;
+}
+.mtop {
+  margin-top: 40px;
+}
+.container {
+  max-width: 85%;
+  margin: auto;
+}
+
+.rooms {
+  position: relative;
+}
+
+.rooms .text {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: none;
+  padding: 30px;
+}
+
+.rooms i {
+  font-size: 12px;
+  color: #fbb234;
+  margin: 15px 0;
+  margin-right: 5px;
+}
+
+.rooms p {
+  margin: 20px 0;
+  opacity: 0.7;
+}
+
+.rooms h3 {
+  font-size: 30px;
+  line-height: 20px;
+  margin-left: 20px;
+  font-weight: 500;
+  color: #7fc142;
+}
+
+.rooms h3 span {
+  font-size: 15px;
+  font-weight: 400;
+  color: #000;
+}
+.heading h1 {
+  font-size: 100px;
+  font-weight: 500;
+  opacity: 0.1;
+  font-family: serif;
+  position: absolute;
+  top: -30px;
+}
+
+.heading h2 {
+  margin: 30px 0;
+  font-size: 45px;
+  font-family: serif;
+  font-weight: 400;
+}
+
+/* Table */
+.table-container {
+  overflow-x: auto;
+  width: 60%;
+  margin: 40px ;
+}
+
+.room-table {
+  width: 100%;
+  border-collapse: collapse;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.room-image-table {
+  width: 100px; /* Adjust width as needed */
+  height: 100px; /* Adjust height as needed */
+  object-fit: cover; /* Ensures the image maintains aspect ratio and fills the box */
+  border-radius: 5px; /* Optional: Makes the image corners rounded */
+}
+.room-table th,
+.room-table td {
+  padding: 10px;
+  border: 2px solid #ddd;
+  text-align: center;
+}
+
+.room-table th {
+  background-color: #8fbdd1;
+  color: #333;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+.room-table tr:hover {
+  background-color: #f9f9f9;
+}
+.room-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}

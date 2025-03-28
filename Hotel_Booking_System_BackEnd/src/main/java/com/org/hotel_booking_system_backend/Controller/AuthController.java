@@ -30,7 +30,7 @@ public class AuthController {
         this.responseUtil = responseUtil;
     }
 
-    @PostMapping("/authenticate")
+        @PostMapping("/authenticate")
     public ResponseEntity<ResponseUtil> authenticate(@RequestBody UserDTO userDTO) {
         try {
             authenticationManager.authenticate(

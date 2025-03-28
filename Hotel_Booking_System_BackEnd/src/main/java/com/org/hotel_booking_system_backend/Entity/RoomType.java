@@ -16,6 +16,7 @@ public class RoomType implements Serializable {
     @Id
     private String typeId;
 
+
     @Column(name = "description", nullable = false)
     private String description;
 

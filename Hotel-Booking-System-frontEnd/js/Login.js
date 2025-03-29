@@ -1,57 +1,41 @@
-("#login-btn").click(function () {
-  $.ajax({
-    url: "http://localhost:8080/api/v1/auth/authenticate",
-    method: "POST",
-    contentType: "application/json",
-    data: JSON.stringify({
-      "email": $("#emailSignIn").val(),
-      "password": $("#passwordSignIn").val()
-    }),
-    success: (res) => {
-      console.log(res);
-      if (res.message === "Success") {
-        console.log("Login successful");
-        alert("Login successful");
+// Form submission
+document.querySelector(".login-form").addEventListener("submit", async function (event) {
+  event.preventDefault();
+
+  const email = document.getElementById("emailSignIn").value;
+  const password = document.getElementById("passwordSignIn").value;
+
+  try {
+    const response = await fetch("http://localhost:8080/api/v1/auth/authenticate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      localStorage.setItem("token", data.data.token);
+      localStorage.setItem("role", data.data.role);
+
+      if (data.data.role === "ADMIN") {
+        window.location.href = "AdminDashboard.html";
+      } else if (data.data.role === "MANAGER") {
+        window.location.href = "ManagerDashboard.html";
+      } else if (data.data.role === "USER") {
+        window.location.href = "index.html";
       } else {
-        alert("Failed: " + (res.message || "Unknown error"));
+        alert("Invalid Role Assigned!");
       }
-    },
-    error: (error) => {
-      console.error(error);
-      alert("Something went wrong");
+    } else {
+      alert(data.message || "Invalid email or password!");
     }
-  });
-})
-
-
-//
-// async function login() {
-//   try {
-//     const response = await fetch('http://localhost:8080/api/v1/auth/authenticate', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json'
-//       },
-//       body: JSON.stringify({
-//         email: 'user@example.com',
-//         password: 'password123'
-//       })
-//     });
-//
-//     const data = await response.json();
-//
-//     if (response.status === 201) {
-//       // Successful login
-//       localStorage.setItem('authToken', data.data.token);
-//       localStorage.setItem('userEmail', data.data.email);
-//
-//       // Redirect or perform next action
-//       window.location.href = '/dashboard';
-//     } else {
-//       // Login failed
-//       alert(data.message || 'Login failed');
-//     }
-//   } catch (error) {
-//     console.error('Login error:', error);
-//   }
-// }
+  } catch (error) {
+    console.log('Error:', error);
+    if (error.status === 401) {
+      Swal.fire('Invalid Credentials. Please try again.');
+    } else {
+      Swal.fire('Something went wrong! Error: ' + error.responseText);
+    }
+  }
+});

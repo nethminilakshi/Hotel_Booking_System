@@ -22,9 +22,6 @@ $(document).ready(function () {
       contact: contact,
       password: password,
       role: "USER"
-      // Add any other fields required by UserDTO
-      // userId: null, // If required
-      // createdDate: null, // If required
     };
 
     console.log("Sending Data: ", userData);

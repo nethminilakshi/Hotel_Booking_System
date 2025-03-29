@@ -13,5 +13,5 @@ public interface UserService {
 
     int save(UserDTO user);
 
-    void deleteUser(String email);
+    int deleteUserByEmail(String email);
 }

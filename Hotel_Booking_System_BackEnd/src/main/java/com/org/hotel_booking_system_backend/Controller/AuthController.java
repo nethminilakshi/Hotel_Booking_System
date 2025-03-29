@@ -42,8 +42,8 @@ public class AuthController {
 
         UserDTO loadedUser = userService.loadUserDetailsByUsername(userDTO.getEmail());
         if (loadedUser == null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(new ResponseUtil(VarList.Conflict, "Authorization Failure! Please Try Again", null));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseUtil(VarList.Not_Found, "Authorization Failure! Please Try Again", null));
         }
 
         String token = jwtUtil.generateToken(loadedUser);

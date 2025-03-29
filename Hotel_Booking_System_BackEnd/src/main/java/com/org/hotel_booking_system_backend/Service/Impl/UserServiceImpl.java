@@ -88,12 +88,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
     }
 
+
+
     @Override
-    public void deleteUser(String email) {
+    public int deleteUserByEmail(String email) {
         if (userRepo.existsByEmail(email)) {
             userRepo.deleteByEmail(email);
+            return VarList.OK;
         } else {
-            throw new RuntimeException("User not Found");
+            return VarList.Not_Found;
         }
     }
 
@@ -111,7 +114,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found with email: " + email);
         }
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(),  getAuthority(user));
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                getAuthority(user));
     }
 
 

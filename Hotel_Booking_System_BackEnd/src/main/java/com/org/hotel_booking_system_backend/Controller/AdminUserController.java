@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,7 +35,8 @@ public class AdminUserController {
         this.userService = userService;
     }
     @GetMapping(path = "getAll", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseUtil getUsers() {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseUtil getAllUsers() {
         List<UserDTO> allUsers = userService.getAllUsers();
         for (UserDTO hotelDTO : allUsers) {
             System.out.println("Room ID: " + hotelDTO.getUserId()); // ✅ Debugging
@@ -43,10 +46,25 @@ public class AdminUserController {
 
 
     @DeleteMapping("/delete/{email}")
+    @PreAuthorize("hasAuthority('ADMIN') or authentication.name == #email")
     public ResponseEntity<ResponseUtil> deleteUser(@PathVariable("email") String email) {
-        userService.deleteUser(email);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponseUtil(200, "User Deleted Successfully", null));
+        try {
+            System.out.println("Attempting to delete user: " + email + ", Authenticated user: " + SecurityContextHolder.getContext().getAuthentication().getName());
+            int res = userService.deleteUserByEmail(email);
+            if (res == VarList.OK) {
+                return ResponseEntity.ok(new ResponseUtil(VarList.OK, "User deleted successfully", null));
+            } else if (res == VarList.Forbidden) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(new ResponseUtil(VarList.Forbidden, "Cannot delete admin users unless by self", null));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ResponseUtil(VarList.Not_Found, "User not found", null));
+            }
+        } catch (Exception e) {
+            System.err.println("Error deleting user: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseUtil(VarList.Internal_Server_Error, e.getMessage(), null));
+        }
     }
 
     @GetMapping(value = "getAll/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)

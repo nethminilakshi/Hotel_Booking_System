@@ -20,6 +20,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+/**
+ * @author udarasan
+ * @TimeStamp 2023-07-15 15:00
+ * @ProjectDetails invoice_service
+ */
 @Component
 public class JwtFilter extends OncePerRequestFilter {
     @Autowired

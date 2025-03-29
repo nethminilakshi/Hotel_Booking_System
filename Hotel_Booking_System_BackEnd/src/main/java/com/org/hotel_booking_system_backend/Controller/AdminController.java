@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
 @RequestMapping("api/v1/admin")
 public class AdminController {
@@ -14,6 +13,7 @@ public class AdminController {
     public String check(){
         return "passed~!1";
     }
+
     @GetMapping("/test2")
     @PreAuthorize("hasAuthority('USER')")
     public String checks(){
@@ -24,5 +24,4 @@ public class AdminController {
     public String checkss(){
         return "passed~!2";
     }
-
 }

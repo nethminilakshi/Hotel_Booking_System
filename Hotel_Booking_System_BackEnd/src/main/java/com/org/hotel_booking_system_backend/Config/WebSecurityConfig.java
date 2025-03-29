@@ -16,11 +16,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
+
+/**
+ * @author Nethmi
+ * @TimeStamp 2023-07-15 15:00
+ * @ProjectDetails invoice_service
+ */
 
 @EnableWebSecurity
 @Configuration
@@ -46,41 +48,12 @@ public class WebSecurityConfig {
     @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/v1/auth/authenticate",
                                 "/api/v1/user/register",
                                 "/api/v1/auth/refreshToken",
-                                "/api/v1/user/delete/{id}",
-                                "/api/v1/user/update/{id}",
-                                "/api/v1/user/getAll",
-                                "/api/v1/hotel/save",
-                                "/api/v1/hotel/delete/{id}",
-                                "/api/v1/hotel/update/{id}",
-                                "/api/v1/hotel/getAll",
-                                "/api/v1/room/save",
-                                "/api/v1/room/delete/{id}",
-                                "/api/v1/room/update/{id}",
-                                "/api/v1/room/getAll",
-                                "/api/v1/review/save",
-                                "/api/v1/review/delete/{id}",
-                                "/api/v1/review/update/{id}",
-                                "/api/v1/review/getAll",
-                                "/api/v1/booking/save",
-                                "/api/v1/booking/delete/{id}",
-                                "/api/v1/booking/update/{id}",
-                                "/api/v1/booking/getAll",
-                                "/api/v1/payment/save",
-                                "/api/v1/payment/delete/{id}",
-                                "/api/v1/payment/update/{id}",
-                                "/api/v1/payment/getAll",
-                                "/api/v1/hotelManager/getAll",
-                                "/api/v1/ManagerRoom/getAllRoomByHotelID",
-                                "/api/v1/ManagerBooking/getAllHotelBookings",
-                                "/api/v1/ManagerPayment/getAllPaymentsByHotel",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html").permitAll()
@@ -91,18 +64,5 @@ public class WebSecurityConfig {
                 .build();
     }
 
-
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:63342"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
 
 }

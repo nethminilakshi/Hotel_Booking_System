@@ -10,27 +10,27 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("api/v1/auth")
 public class AuthController {
-
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final UserServiceImpl userService;
-    private final ResponseUtil responseUtil;
+    private final ResponseUtil responseDTO;
 
-    //constructor injection
-    public AuthController(JwtUtil jwtUtil, AuthenticationManager authenticationManager, UserServiceImpl userService, ResponseUtil responseUtil) {
+    public AuthController(JwtUtil jwtUtil, AuthenticationManager authenticationManager, UserServiceImpl userService, ResponseUtil responseDTO) {
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
         this.userService = userService;
-        this.responseUtil = responseUtil;
+        this.responseDTO = responseDTO;
     }
 
-        @PostMapping("/authenticate")
+    @PostMapping("/authenticate")
     public ResponseEntity<ResponseUtil> authenticate(@RequestBody UserDTO userDTO) {
         try {
             authenticationManager.authenticate(
@@ -61,4 +61,3 @@ public class AuthController {
     }
 
 }
-

@@ -17,6 +17,7 @@ public class RoomTypeDTO implements Serializable {
     private double price;
     private int qtyOnHand;
     private String image;
+    private int noOfPersons;
 
 
 }

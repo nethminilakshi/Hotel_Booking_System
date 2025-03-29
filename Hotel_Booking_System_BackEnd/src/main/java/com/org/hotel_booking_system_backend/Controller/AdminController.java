@@ -8,20 +8,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/v1/admin")
 public class AdminController {
-    @GetMapping("/test1")
+    @GetMapping("/adminCheck")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public String check(){
-        return "passed~!1";
+    public String adminCheck(){
+      return  "Admin access passed!";    }
+
+    @GetMapping("/userCheck")
+    @PreAuthorize("hasAuthority('USER')")
+    public String userCheck(){
+        return "User access passed!";
     }
 
-    @GetMapping("/test2")
-    @PreAuthorize("hasAuthority('USER')")
-    public String checks(){
-        return "passed~!2";
-    }
-    @GetMapping("/test3")
-    @PreAuthorize("hasAuthority('USER')")
-    public String checkss(){
-        return "passed~!2";
+    @GetMapping("/managerCheck")
+    @PreAuthorize("hasAuthority('MANAGER')")
+    public String managerCheck(){
+        return "Manager access passed!";
     }
 }

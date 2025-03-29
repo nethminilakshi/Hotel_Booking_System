@@ -16,12 +16,13 @@ public class RoomType implements Serializable {
     @Id
     private String typeId;
 
-
     @Column(name = "description", nullable = false)
     private String description;
 
     @Column(columnDefinition = "LONGTEXT")
     private String image;
+    @Column(name = "noOfBeds", nullable = false)
+    private int noOfPersons;
 
     @Column(name = "price", nullable = false)
     private double price;

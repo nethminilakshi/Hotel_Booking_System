@@ -84,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td>${room.description || "N/A"}</td>
         <td>${room.price || "N/A"}</td>
         <td>${room.qtyOnHand || "N/A"}</td>
+        <td>${room.noOfBeds || "N/A"}</td>
         <td>
             <img src="data:image/png;base64,${room.image || ''}"
                  alt="Room Image"
@@ -111,6 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("room-description").value = room.description;
     document.getElementById("room-price").value = room.price;
     document.getElementById("room-qty").value = room.qtyOnHand;
+    document.getElementById("room-beds").value = room.noOfBeds;
 
     if (room.image) {
       imagePreview.src = `data:image/png;base64,${room.image}`;
@@ -125,12 +127,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const description = document.getElementById("room-description").value;
     const price = document.getElementById("room-price").value;
     const quantity = document.getElementById("room-qty").value;
+    const noOfBeds = document.getElementById("room-beds").value;
     const roomImage = imageInput.files[0];
 
     const formData = new FormData();
     formData.append("description", description);
     formData.append("price", price);
     formData.append("qtyOnHand", quantity);
+    formData.append("noOfBeds", noOfBeds);
     if (roomImage) {
       formData.append("image", roomImage);
     }

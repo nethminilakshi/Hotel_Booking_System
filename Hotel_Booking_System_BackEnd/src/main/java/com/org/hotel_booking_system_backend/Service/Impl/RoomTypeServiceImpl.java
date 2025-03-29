@@ -71,6 +71,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
             roomType1.setPrice(updateRoomTypeDTO.getPrice());
             roomType1.setQtyOnHand(updateRoomTypeDTO.getQtyOnHand());
             roomType1.setImage(updateRoomTypeDTO.getImage());
+            roomType1.setNoOfPersons(updateRoomTypeDTO.getNoOfPersons());
 
             // Save the updated entity
             roomTypeRepo.save(roomType1);  // This line ensures the entity is saved to the database

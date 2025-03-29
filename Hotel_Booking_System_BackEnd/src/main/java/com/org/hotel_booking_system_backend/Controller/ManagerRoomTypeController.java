@@ -31,10 +31,11 @@ public class ManagerRoomTypeController {
                                      @RequestParam("description") String description,
                                      @RequestParam("price") Double price,
                                      @RequestParam("qtyOnHand") Integer qtyOnHand,
+                                        @RequestParam("noOfPersons") Integer noOfPersons,
                                      @RequestParam(value = "image", required = false) MultipartFile image) {
 
         try {
-            logger.info("Received request to save Room Type. Description: {}, Price: {}, Qty: {}", description, price, qtyOnHand);
+            logger.info("Received request to save Room Type. Description: {}, Price: {}, Qty: {}, noOfPersons: {}", description, price, qtyOnHand, noOfPersons);
 
             // Convert image to Base64 if provided
             String base64Image = null;
@@ -49,6 +50,7 @@ public class ManagerRoomTypeController {
             roomTypeDTO.setDescription(description);
             roomTypeDTO.setPrice(price);
             roomTypeDTO.setQtyOnHand(qtyOnHand);
+            roomTypeDTO.setNoOfPersons(noOfPersons);
             roomTypeDTO.setImage(base64Image);
 
             logger.info("Saving RoomTypeDTO: {}", roomTypeDTO);
@@ -98,6 +100,7 @@ public class ManagerRoomTypeController {
             @RequestPart("description") String description,
             @RequestPart("price") String price,
             @RequestPart("qtyOnHand") String qtyOnHand,
+            @RequestPart("noOfPersons") String noOfPersons,
             @RequestPart(value = "image", required = false) MultipartFile updatedImage
 
     ) {
@@ -112,6 +115,7 @@ public class ManagerRoomTypeController {
             updateRoomTypeDTO.setDescription(description);
             updateRoomTypeDTO.setPrice(Double.parseDouble(price));
             updateRoomTypeDTO.setQtyOnHand(Integer.parseInt(qtyOnHand));
+            updateRoomTypeDTO.setNoOfPersons(Integer.parseInt(noOfPersons));
 
             if (updateBase64Image != null) {
                 updateRoomTypeDTO.setImage(updateBase64Image);

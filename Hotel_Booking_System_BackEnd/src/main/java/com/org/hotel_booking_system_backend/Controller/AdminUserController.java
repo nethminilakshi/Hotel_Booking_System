@@ -20,23 +20,20 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/user")
-@CrossOrigin(origins = "http://localhost:63342", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:63342")
 public class AdminUserController {
     private List<UserDTO> userDTOList;
     private final JwtUtil jwtUtil;
-    private final UserServiceImpl userServiceImpl;
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     static Logger logger = LoggerFactory.getLogger(AdminUserController.class);
 
-    public AdminUserController(UserService userService, JwtUtil jwtUtil, UserServiceImpl userServiceImpl) {
-        this.userService = userService;
+    public AdminUserController(UserService userService, JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
-        this.userServiceImpl = userServiceImpl;
+        this.userService = userService;
     }
     @GetMapping(path = "getAll", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseUtil getHotel() {
+    public ResponseUtil getUsers() {
         List<UserDTO> allUsers = userService.getAllUsers();
         for (UserDTO hotelDTO : allUsers) {
             System.out.println("Room ID: " + hotelDTO.getUserId()); // ✅ Debugging
@@ -65,10 +62,8 @@ public class AdminUserController {
     public ResponseEntity<ResponseUtil> registerUser(@RequestBody @Valid UserDTO userDTO) {
         try {
             int res = userService.save(userDTO);
-            System.out.println(userDTO.getUsername() + " " + userDTO.getEmail() + " " + userDTO.getRole() + " " + userDTO.getPassword());
             switch (res) {
                 case VarList.Created -> {
-                    System.out.println("Created");
                     String token = jwtUtil.generateToken(userDTO);
                     AuthDTO authDTO = new AuthDTO();
                     authDTO.setEmail(userDTO.getEmail());

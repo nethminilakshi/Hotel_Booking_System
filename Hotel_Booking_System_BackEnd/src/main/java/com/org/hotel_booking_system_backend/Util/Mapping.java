@@ -26,7 +26,7 @@ public class Mapping {
             @Override
             protected void configure() {
                 map().setUserId(source.getUserId()); // Assuming UserDTO has a userId field
-                map().setUsername(source.getUsername()); // Add more fields if needed
+                map().setName(source.getName()); // Add more fields if needed
             }
         });
 

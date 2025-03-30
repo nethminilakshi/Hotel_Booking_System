@@ -77,7 +77,7 @@ public class AdminUserController {
     }
 
     @PostMapping(value = "/register")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseUtil> registerUser(@RequestBody @Valid UserDTO userDTO) {
         try {
             int res = userService.save(userDTO);

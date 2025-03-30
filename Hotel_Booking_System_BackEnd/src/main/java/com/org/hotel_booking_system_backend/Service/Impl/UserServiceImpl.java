@@ -67,25 +67,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepo.findAllUserIds();
 
     }
-
+    @Transactional
     @Override
     public int save(UserDTO userDTO) {
         User user = mapping.convertToUserEntity(userDTO);
 
-        if (user.getUserId() == null || user.getUserId().isEmpty()){
+        if (user.getUserId() == null || user.getUserId().isEmpty()) {
             user.setUserId(AppUtil.createUserCode());
         }
-        if (userRepo.existsByEmail(userDTO.getEmail())) {
-            System.out.println("Email Already Used");
-            return VarList.Not_Acceptable;
-        } else {
-            System.out.println("Created");
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            user.setPassword(passwordEncoder.encode(userDTO.getPassword())); // Fix: Encode the password of the User entity
-            user.setRole("USER");
-            userRepo.save(user);
-            return VarList.Created;
+
+        // Check if a user with the same email already exists
+        if (userRepo.existsByEmail(user.getEmail())) {
+            throw new RuntimeException("User with this email already exists");
         }
+
+        userRepo.save(user);
+        return VarList.OK;
     }
 
 

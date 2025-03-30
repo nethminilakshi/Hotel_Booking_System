@@ -52,11 +52,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if (event.target === hotelRegisterForm) closeForm();
   });
 
+  // Function to get the authentication token
+  const getAuthToken = () => {
+    // Replace with your actual method of retrieving the token
+    return localStorage.getItem('authToken');
+  };
+
   // Populate manager dropdown
   const loadManagers = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/v1/user/getAll');
-      if (!response.ok) throw new Error("Failed to load managers.");
+      const response = await fetch('http://localhost:8080/api/v1/user/getAll', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getAuthToken()}`
+        }
+      });
+      if (!response.ok) throw new Error(`Failed to load managers. Status: ${response.status}`);
 
       const result = await response.json();
       managerDropdown.innerHTML = '<option value="">-- Select Manager --</option>';
@@ -78,8 +90,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Fetch hotels for the table
   const fetchHotels = async () => {
     try {
-      const response = await fetch('http://localhost:8080/api/v1/hotel/getAll');
-      if (!response.ok) throw new Error("Failed to fetch hotels.");
+      const response = await fetch('http://localhost:8080/api/v1/hotel/getAll', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getAuthToken()}`
+        }
+      });
+      if (!response.ok) throw new Error(`Failed to fetch hotels. Status: ${response.status}`);
 
       const result = await response.json();
       tableBody.innerHTML = "";
@@ -136,6 +154,9 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const response = await fetch('http://localhost:8080/api/v1/hotel/save', {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${getAuthToken()}`
+        },
         body: formData
       });
 
@@ -156,6 +177,9 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const response = await fetch(`http://localhost:8080/api/v1/hotel/update/${currentHotelId}`, {
         method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${getAuthToken()}`
+        },
         body: formData
       });
 
@@ -186,7 +210,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (confirm('Are you sure you want to delete this hotel?')) {
       try {
         const response = await fetch(`http://localhost:8080/api/v1/hotel/delete/${hotelId}`, {
-          method: 'DELETE'
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${getAuthToken()}`
+          }
         });
         if (!response.ok) throw new Error(`Failed to delete hotel: ${response.statusText}`);
         fetchHotels();

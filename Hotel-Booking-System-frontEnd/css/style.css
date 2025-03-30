@@ -1197,7 +1197,7 @@ footer .content {
 
   .head {
     height: 20vh;
-    line-height:auto;
+    line-height: auto;
     text-align: center;
   }
 
@@ -1259,3 +1259,47 @@ footer .content {
     height: 170vh;
   }
 }
+
+/*visit section*/
+.section {
+  padding: 7em 0;
+}
+
+.visit-section .heading {
+  font-size: 15px;
+  text-transform: uppercase;
+  font-family: "Mukta Mahee", arial, sans-serif;
+  color: #b3b3b3;
+  letter-spacing: .2em;
+  margin-bottom: 30px;
+}
+
+.visit-section .visit a {
+  color: #000;
+}
+
+.visit-section .visit a:hover {
+  color: #e61c5d;
+}
+
+.visit-section .visit img {
+  -webkit-box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2);
+  margin-bottom: 15px;
+}
+
+.visit-section .visit h3 {
+  font-size: 20px;
+  margin-bottom: 0;
+}
+
+.visit-section .reviews-star span {
+  font-size: 18px;
+  color: #e61c5d;
+}
+
+.visit-section .reviews-count {
+  color: #adb5bd;
+  font-style: italic;
+}
+

@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (event.target === hotelRegisterForm) closeForm();
   });
 
+<<<<<<< HEAD
   // Function to get the authentication token
   const getAuthToken = () => {
     // Replace with your actual method of retrieving the token
@@ -69,6 +70,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
       if (!response.ok) throw new Error(`Failed to load managers. Status: ${response.status}`);
+=======
+  // Populate manager dropdown
+  const loadManagers = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/v1/user/getAll');
+      if (!response.ok) throw new Error("Failed to load managers.");
+>>>>>>> fcb58502c0b0943a69c63034e7109f2be8cb1e9d
 
       const result = await response.json();
       managerDropdown.innerHTML = '<option value="">-- Select Manager --</option>';
@@ -90,6 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Fetch hotels for the table
   const fetchHotels = async () => {
     try {
+<<<<<<< HEAD
       const response = await fetch('http://localhost:8080/api/v1/hotel/getAll', {
         method: 'GET',
         headers: {
@@ -98,6 +107,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
       if (!response.ok) throw new Error(`Failed to fetch hotels. Status: ${response.status}`);
+=======
+      const response = await fetch('http://localhost:8080/api/v1/hotel/getAll');
+      if (!response.ok) throw new Error("Failed to fetch hotels.");
+>>>>>>> fcb58502c0b0943a69c63034e7109f2be8cb1e9d
 
       const result = await response.json();
       tableBody.innerHTML = "";
@@ -154,9 +167,12 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const response = await fetch('http://localhost:8080/api/v1/hotel/save', {
         method: 'POST',
+<<<<<<< HEAD
         headers: {
           'Authorization': `Bearer ${getAuthToken()}`
         },
+=======
+>>>>>>> fcb58502c0b0943a69c63034e7109f2be8cb1e9d
         body: formData
       });
 
@@ -177,9 +193,12 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const response = await fetch(`http://localhost:8080/api/v1/hotel/update/${currentHotelId}`, {
         method: 'PUT',
+<<<<<<< HEAD
         headers: {
           'Authorization': `Bearer ${getAuthToken()}`
         },
+=======
+>>>>>>> fcb58502c0b0943a69c63034e7109f2be8cb1e9d
         body: formData
       });
 

@@ -1,5 +1,7 @@
 $(document).ready(function () {
-  $("#signUpBtn").click(function () {
+  $("#signUpBtn").click(function (event) {
+    event.preventDefault(); // Prevent the default form submission
+
     let username = $("#nameSignUp").val().trim();
     let email = $("#emailSignUp").val().trim();
     let contact = $("#contactSignUp").val().trim();
@@ -17,7 +19,7 @@ $(document).ready(function () {
     }
 
     let userData = {
-      username: username,
+      name: username, // Ensure the field name matches the expected backend field
       email: email,
       contact: contact,
       password: password,

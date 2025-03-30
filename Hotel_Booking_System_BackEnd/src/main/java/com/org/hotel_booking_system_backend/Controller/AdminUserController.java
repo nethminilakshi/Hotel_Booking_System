@@ -35,11 +35,11 @@ public class AdminUserController {
         this.userService = userService;
     }
     @GetMapping(path = "getAll", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseUtil getAllUsers() {
         List<UserDTO> allUsers = userService.getAllUsers();
         for (UserDTO hotelDTO : allUsers) {
-            System.out.println("Room ID: " + hotelDTO.getUserId()); // ✅ Debugging
+            System.out.println("Room ID: " + hotelDTO.getUserId());
         }
         return new ResponseUtil(200, "Success", allUsers);
     }
@@ -77,6 +77,7 @@ public class AdminUserController {
     }
 
     @PostMapping(value = "/register")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseUtil> registerUser(@RequestBody @Valid UserDTO userDTO) {
         try {
             int res = userService.save(userDTO);

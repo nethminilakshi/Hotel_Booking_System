@@ -1,17 +1,16 @@
 package com.org.hotel_booking_system_backend.Controller;
 
+import com.org.hotel_booking_system_backend.Dto.AuthDTO;
 import com.org.hotel_booking_system_backend.Dto.UserDTO;
-import com.org.hotel_booking_system_backend.Service.Impl.UserServiceImpl;
+import com.org.hotel_booking_system_backend.Service.UserService;
+import com.org.hotel_booking_system_backend.Util.JwtUtil;
 import com.org.hotel_booking_system_backend.Util.ResponseUtil;
 import com.org.hotel_booking_system_backend.Util.VarList;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -19,8 +18,13 @@ import java.util.List;
 @RequestMapping("api/v1/admin")
 @CrossOrigin(origins = "http://localhost:63342")
 public class AdminController {
-    @Autowired
-    private UserServiceImpl userService;
+    private final JwtUtil jwtUtil;
+    private final UserService userService;
+
+    public AdminController(JwtUtil jwtUtil, UserService userService) {
+        this.jwtUtil = jwtUtil;
+        this.userService = userService;
+    }
 
     @GetMapping("/adminCheck")
     @PreAuthorize("hasRole('ADMIN')")
@@ -50,6 +54,35 @@ public class AdminController {
             System.err.println("Error: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseUtil(VarList.Internal_Server_Error, "Error retrieving users: " + e.getMessage(), null));
+        }
+    }
+
+    @PostMapping(value = "/register")
+//    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ResponseUtil> registerAdmin(@RequestBody @Valid UserDTO userDTO) {
+        try {
+            int res = userService.saveAdmin(userDTO);
+            switch (res) {
+                case VarList.Created -> {
+                    String token = jwtUtil.generateToken(userDTO);
+                    AuthDTO authDTO = new AuthDTO();
+                    authDTO.setEmail(userDTO.getEmail());
+                    authDTO.setToken(token);
+                    return ResponseEntity.status(HttpStatus.CREATED)
+                            .body(new ResponseUtil(VarList.Created, "Success", authDTO));
+                }
+                case VarList.Not_Acceptable -> {
+                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                            .body(new ResponseUtil(VarList.Not_Acceptable, "Email Already Used", null));
+                }
+                default -> {
+                    return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+                            .body(new ResponseUtil(VarList.Bad_Gateway, "Error", null));
+                }
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseUtil(VarList.Internal_Server_Error, e.getMessage(), null));
         }
     }
 

@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -53,7 +54,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserDTO getSelectedUser(String userId) {
+    public UserDTO getSelectedUser(UUID userId) {
         if (userRepo.existsById(userId)) {
             User userEntityByID = userRepo.getReferenceById(userId);
             return mapping.convertToUserDTO(userEntityByID);
@@ -67,24 +68,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepo.findAllUserIds();
 
     }
-    @Transactional
-    @Override
-    public int save(UserDTO userDTO) {
-        User user = mapping.convertToUserEntity(userDTO);
-
-        if (user.getUserId() == null || user.getUserId().isEmpty()) {
-            user.setUserId(AppUtil.createUserCode());
-        }
-
-        // Check if a user with the same email already exists
-        if (userRepo.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("User with this email already exists");
-        }
-
-        userRepo.save(user);
-        return VarList.OK;
-    }
-
 
 
     @Override
@@ -94,6 +77,31 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             return VarList.OK;
         } else {
             return VarList.Not_Found;
+        }
+    }
+
+    @Override
+    public int saveUser(UserDTO userDTO) {
+        return save(userDTO, "USER");
+    }
+
+    @Override
+    public int saveAdmin(UserDTO userDTO) {
+        return save(userDTO, "ADMIN");
+    }
+
+    @Transactional
+    @Override
+    public int save(UserDTO userDTO, String role) {
+        User user = mapping.convertToUserEntity(userDTO);
+
+        if (userRepo.existsByEmail(user.getEmail())) {
+            return VarList.Not_Acceptable;
+        } else {
+            user.setRole(role);
+            user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+            userRepo.save(user);
+            return VarList.Created;
         }
     }
 

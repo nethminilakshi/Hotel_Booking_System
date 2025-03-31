@@ -4,12 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.UUID;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class HotelDTO {
 
-    private String hotelId;
+    private UUID hotelId;
     private String name;
     private String location; // Different locations (branches)
     private String description;

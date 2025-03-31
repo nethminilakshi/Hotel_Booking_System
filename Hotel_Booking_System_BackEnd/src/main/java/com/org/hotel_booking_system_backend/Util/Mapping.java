@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class Mapping {
@@ -34,8 +35,8 @@ public class Mapping {
         modelMapper.addMappings(new PropertyMap<Hotel, HotelDTO>() {
             @Override
             protected void configure() {
-                map().setHotelId(source.getHotelId());
-                map().setName(source.getName());
+                map().setHotelId(UUID.fromString(source.getHotelId()));
+                map().setName(String.valueOf(source.getName()));
                 map().setLocation(source.getLocation());
                 map().setDescription(source.getDescription());
                 map().setImage(source.getImage());

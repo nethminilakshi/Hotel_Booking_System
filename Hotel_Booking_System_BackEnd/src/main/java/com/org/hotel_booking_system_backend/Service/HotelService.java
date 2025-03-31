@@ -5,6 +5,7 @@ import com.org.hotel_booking_system_backend.Util.ResponseUtil;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 public interface HotelService {
     void save(HotelDTO hotelDTO) throws IOException;
@@ -13,7 +14,7 @@ public interface HotelService {
 
     void update(HotelDTO hotelDTO) throws IOException;
 
-    void delete(String id);
+    void delete(UUID id);
 
-    HotelDTO getHotelId(String hotelId);
+    HotelDTO getHotelId(UUID hotelId);
 }

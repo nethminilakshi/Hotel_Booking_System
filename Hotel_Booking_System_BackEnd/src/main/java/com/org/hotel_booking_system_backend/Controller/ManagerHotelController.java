@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/hotel")
@@ -43,7 +44,6 @@ public class ManagerHotelController {
 
             // Set up hotel DTO
             var hotelDTO = new HotelDTO();
-            hotelDTO.setHotelId(AppUtil.createHotelCode());
             hotelDTO.setName(hotelName);
             hotelDTO.setLocation(location);
             hotelDTO.setDescription(description);
@@ -74,7 +74,7 @@ public class ManagerHotelController {
         return new ResponseUtil(200, "Success", hotelDTOS);    }
 
     @GetMapping(value = "/{hotelId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public HotelDTO getSelectedId(@PathVariable("hotelId") String hotelId){
+    public HotelDTO getSelectedId(@PathVariable("hotelId") UUID hotelId){
         return hotelService.getHotelId(hotelId);
     }
 
@@ -96,7 +96,6 @@ public class ManagerHotelController {
             }
 
             var updateHotelDTO = new HotelDTO();
-            updateHotelDTO.setHotelId(hotelId);
             updateHotelDTO.setName(hotelName);
             updateHotelDTO.setLocation(location);
             updateHotelDTO.setDescription(description);
@@ -118,7 +117,7 @@ public class ManagerHotelController {
 
 @CrossOrigin(origins = "*")
     @DeleteMapping(value = "delete/{hotelId}")
-    public ResponseUtil delete(@PathVariable("hotelId") String hotelId) {
+    public ResponseUtil delete(@PathVariable("hotelId") UUID hotelId) {
         try {
             hotelService.delete(hotelId);
             logger.info("Hotel deleted :" + hotelId);

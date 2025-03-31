@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @Service
@@ -34,23 +35,16 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public void save(HotelDTO hotelDTO) throws IOException {
         Hotel hotel = mapper.convertToHotelEntity(hotelDTO);
-        logger.info("Mapped Hotel Entity: " + hotel);
 
-        if (hotel.getHotelId() == null || hotel.getHotelId().isEmpty()) {
-            hotel.setHotelId(AppUtil.createHotelCode());
+        // Check if the manager exists
+        Optional<User> manager = userRepository.findById(UUID.fromString(hotelDTO.getManagerId()));
+        if (!manager.isPresent()) {
+            throw new RuntimeException("Manager not found");
         }
-
-        //  Fetch the manager properly inside a transaction
-        User manager = userRepository.findById(hotelDTO.getManagerId())
-                .orElseThrow(() -> new RuntimeException("Manager not found!"));
-
-        //  Avoid Lazy Initialization Exception
-        Hibernate.initialize(manager.getManagedHotels()); // Force load if needed
-
-        hotel.setManager(manager);
+        hotel.setManager(manager.get());
 
         hotelRepo.save(hotel);
-        logger.info("Hotel saved successfully");
+
     }
 
 
@@ -61,15 +55,14 @@ public class HotelServiceImpl implements HotelService {
         return mapper.convertHotelToDTOList(getAllHotels);
     }
 
-
     @Override
     public void update(HotelDTO hotelDTO) throws IOException {
-        Optional<Hotel> hotel = hotelRepo.findById(hotelDTO.getHotelId());
+        Optional<Hotel> hotel = hotelRepo.findById(UUID.fromString(String.valueOf(hotelDTO.getHotelId())));
         if (!hotel.isPresent()) {
             throw new RuntimeException("Hotel not Found");
         } else {
             Hotel hotelEntity = hotel.get();
-            hotelEntity.setName(hotelDTO.getName());
+            hotelEntity.setName(UUID.fromString(hotelDTO.getName()));
             hotelEntity.setLocation(hotelDTO.getLocation());
             hotelEntity.setDescription(hotelDTO.getDescription());
             hotelEntity.setImage(hotelDTO.getImage());
@@ -80,7 +73,7 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(UUID id) {
         Optional<Hotel> findId = hotelRepo.findById(id);
         if (!findId.isPresent()){
             throw new RuntimeException("Hotel not Found");
@@ -90,7 +83,7 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public HotelDTO getHotelId(String hotelId) {
+    public HotelDTO getHotelId(UUID hotelId) {
         if (hotelRepo.existsById(hotelId)) {
             Hotel getById = hotelRepo.getReferenceById(hotelId);
             return mapper.convertToHotelDTO(getById);

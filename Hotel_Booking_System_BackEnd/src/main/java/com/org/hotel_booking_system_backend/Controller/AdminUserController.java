@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/user")
@@ -38,6 +39,7 @@ public class AdminUserController {
 //    @PreAuthorize("hasRole('ADMIN')")
     public ResponseUtil getAllUsers() {
         List<UserDTO> allUsers = userService.getAllUsers();
+        System.out.println(allUsers);
         for (UserDTO hotelDTO : allUsers) {
             System.out.println("Room ID: " + hotelDTO.getUserId());
         }
@@ -68,7 +70,7 @@ public class AdminUserController {
     }
 
     @GetMapping(value = "getAll/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserDTO getSelectedUser(@PathVariable("userId") String userId){
+    public UserDTO getSelectedUser(@PathVariable("userId") UUID userId){
         return userService.getSelectedUser(userId);
     }
     @GetMapping("/getAllUserIds")
@@ -77,14 +79,10 @@ public class AdminUserController {
     }
 
     @PostMapping(value = "/register")
-<<<<<<< HEAD
 //    @PreAuthorize("hasRole('ADMIN')")
-=======
-    @PreAuthorize("hasRole('ADMIN')")
->>>>>>> fcb58502c0b0943a69c63034e7109f2be8cb1e9d
     public ResponseEntity<ResponseUtil> registerUser(@RequestBody @Valid UserDTO userDTO) {
         try {
-            int res = userService.save(userDTO);
+            int res = userService.saveUser(userDTO);
             switch (res) {
                 case VarList.Created -> {
                     String token = jwtUtil.generateToken(userDTO);

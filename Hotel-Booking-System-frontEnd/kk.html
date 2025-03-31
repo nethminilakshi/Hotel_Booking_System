@@ -3,89 +3,211 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title></title>
-
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
+  <title>Scope Cinemas - Buy Tickets</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
-    body {
-      background-color: #1C1C3F; /* Set the background color to black */
-      color: white; /* Optional: Set text color to white for better visibility */
+    .navbar-custom {
+      background-color: #0c0c2f;
+    }
+    .navbar-custom .nav-link {
+      color: white;
+      margin-right: 15px;
+    }
+    .navbar-custom .nav-link:hover {
+      color: #f8f9fa;
+    }
+    .buy-tickets-section {
+      background-color: #f4f4f4;
+      padding: 20px 0;
+    }
+    .select-container {
+      background-color: white;
+      border-radius: 5px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .btn-purple {
+      background-color: #4a148c;
+      color: white;
+    }
+    .btn-purple:hover {
+      background-color: #6a1b9a;
+      color: white;
     }
 
 
-    .now-showing {
-      text-align: center;
-      margin-top: 50px;
-    }
-    .nav-links a {
-      color: pink; /* Pink color for links */
-      padding: 0 15px;
-    }
-    .nav-links a:hover {
-      text-decoration: underline;
-    }
-    .separator {
-      border-top: 1px solid white;
-      margin: 20px auto;
-      width: 50%; /* Adjust the width of the separator */
+
+    #filmRegistration {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      padding: 20px;
     }
 
+    #filmRegistration .container {
+      margin: 0;
+      padding: 0;
+      width: auto;
+    }
 
+    #filmRegistration .row {
+      margin: 0;
+      display: flex;
+      align-items: center;
+    }
 
+    #filmRegistration .col-md-4 {
+      width: auto;
+      flex: 0 0 auto;
+    }
+
+    #filmRegistration .mb-3 {
+      margin-bottom: 0;
+      width: 200px; /* Fixed width for consistent look */
+    }
+
+    #filmRegistration .form-label {
+      white-space: nowrap;
+      margin-bottom: 5px;
+    }
+
+    #filmRegistration .form-select {
+      width: 100%;
+      max-width: 200px;
+    }
+
+    @media (max-width: 768px) {
+      #filmRegistration {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #filmRegistration .mb-3 {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
   </style>
 </head>
 <body>
-<!-- Navigation Bar -->
-<nav class="navbar navbar-expand-lg navbar-dark  ">
-  <a class="navbar-brand" href="#">SCOPE CINEMAS</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" href="#">Home</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link text-danger" href="movies.html">Movies</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="location.html">Locations</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Deals and Exclusives</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Advertise</a>
-      </li>
-    </ul>
-    <a class="btn btn-primary" href="#">Buy Tickets</a>
-    <a class="btn btn-secondary ml-2" href="#">Login</a>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-custom">
+  <div class="container-fluid">
+    <a class="navbar-brand text-white" href="#">
+
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="#">HOME</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">MOVIES</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">LOCATIONS</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">DEALS AND EXCLUSIVES</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">ADVERTISE</a>
+        </li>
+      </ul>
+      <div class="d-flex">
+        <a href="#" class="btn btn-purple me-2">BUY TICKETS</a>
+        <a href="#" class="btn btn-outline-light">LOGIN</a>
+      </div>
+    </div>
   </div>
 </nav>
 
-
-
-<div class="container">
-  <div class="now-showing">
-    <h1>NOW SHOWING</h1>
-    <div class="separator"></div>
-    <div class="nav-links">
-      <a href="#">HOME</a> /
-      <a href="#">MOVIES</a>
+<div id="filmRegistration">
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="mb-3">
+          <label for="locationSelect" class="form-label">Select Film</label>
+          <select id="locationSelect" class="form-select">
+            <option selected value="">All Locations</option>
+            <!-- Locations will be dynamically added here -->
+          </select>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-<div class="container mt-4">
-  <h2></h2>
 
-  <div class="row" id="spiceContainer">
-    <!-- Spice cards will be dynamically generated here -->
+
+
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="mb-3">
+          <label for="FilmSelect" class="form-label">Select Film Hall </label>
+          <select id="FilmSelect" class="form-select">
+            <option selected value="">All Locations</option>
+            <!-- Locations will be dynamically added here -->
+          </select>
+        </div>
+      </div>
+    </div>
   </div>
+
+
+
+
+
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="mb-3">
+          <label for="DateSelect" class="form-label">Select  Date </label>
+          <select id="DateSelect" class="form-select">
+            <option selected value="">All Locations</option>
+            <!-- Locations will be dynamically added here -->
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="mb-3">
+          <label for="TimeSelect" class="form-label">Select  Time</label>
+          <select id="TimeSelect" class="form-select">
+            <option selected value="">All Locations</option>
+            <!-- Locations will be dynamically added here -->
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button id="nextButton" class="btn btn-primary w-100" onclick="navigateToNextPage()">
+    Next
+  </button>
 </div>
+<div class="row" id="spiceContainer">
+
+
+</div>
+
+
+
+
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="js/show.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<script src="js/booking.js"></script>
 </body>
 </html>

@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+
 @Entity
 @Table(name = "hotels")
 @AllArgsConstructor
@@ -15,9 +17,10 @@ import java.util.List;
 public class Hotel {
     @Id
     private String hotelId;
-
-    @Column(nullable = false)
-    private String name;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(updatable = false, nullable = false)
+    private UUID name;
 
     @Column(nullable = false)
     private String location; // Different locations (branches)

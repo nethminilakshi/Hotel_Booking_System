@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -14,7 +16,9 @@ import java.util.List;
 @Table(name = "users")
 public class User {
     @Id
-    private String userId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(updatable = false, nullable = false)
+    private UUID userId;
 
     @Column(nullable = false)
     private String name;
@@ -36,6 +40,6 @@ public class User {
     @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL)
     private List<Hotel> managedHotels;
 
-    
+
 
 }

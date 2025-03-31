@@ -36,20 +36,8 @@ if(roomRepo.existsById(room.getRoomId())){
 
     @Override
     public List<RoomDTO> getAll() {
-        List<Room> rooms = roomRepo.findAll();
-        List<RoomDTO> roomDTOList = new ArrayList<>();
-
-        for (Room room : rooms) {
-            RoomDTO roomDTO = new RoomDTO();
-            roomDTO.setRoomId(room.getRoomId());
-            roomDTO.setAvailability(room.getAvailability());
-            roomDTO.setRoomTypeId(room.getRoomType().getTypeId());
-            roomDTO.setFloorNumber(room.getFloorNumber());
-            roomDTO.setHotelId(room.getHotel().getHotelId());
-            roomDTOList.add(roomDTO);
-        }
-
-        return roomDTOList;
+        List<Room> getAllRooms = roomRepo.findAll();
+        return mapper.convertRoomToDTOList(getAllRooms);
     }
 
 

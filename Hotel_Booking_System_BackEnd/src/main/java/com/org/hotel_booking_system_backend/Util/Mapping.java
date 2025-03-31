@@ -35,7 +35,7 @@ public class Mapping {
         modelMapper.addMappings(new PropertyMap<Hotel, HotelDTO>() {
             @Override
             protected void configure() {
-                map().setHotelId(UUID.fromString(source.getHotelId()));
+                map().setHotelId(source.getHotelId()); // Assuming HotelDTO has a hotelId field
                 map().setName(String.valueOf(source.getName()));
                 map().setLocation(source.getLocation());
                 map().setDescription(source.getDescription());
@@ -66,7 +66,7 @@ public class Mapping {
                 map().setRoomId(source.getRoomId()); // Assuming roomId exists in RoomDTO
                 map().setAvailability(source.getAvailability());
                 map().setRoomTypeId(source.getRoomType().getTypeId()); // Assuming RoomDTO has a roomType field
-                map().setHotelId(source.getHotel().getHotelId()); // Assuming RoomDTO has a hotel field
+                map().setHotelId(String.valueOf(source.getHotel().getHotelId())); // Assuming RoomDTO has a hotel field
             }
         });
     }

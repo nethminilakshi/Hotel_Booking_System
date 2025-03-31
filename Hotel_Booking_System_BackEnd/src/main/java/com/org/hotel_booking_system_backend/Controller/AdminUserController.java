@@ -73,10 +73,10 @@ public class AdminUserController {
     public UserDTO getSelectedUser(@PathVariable("userId") UUID userId){
         return userService.getSelectedUser(userId);
     }
-    @GetMapping("/getAllUserIds")
-    public ResponseEntity<List<String>> getAllUserIds() {
-        return ResponseEntity.ok((List<String>) userService.getAllUserIds());
-    }
+//    @GetMapping("/getAllUserIds")
+//    public ResponseEntity<List<String>> getAllUserIds() {
+//        return ResponseEntity.ok((List<String>) userService.getAllUserIds());
+//    }
 
     @PostMapping(value = "/register")
 //    @PreAuthorize("hasRole('ADMIN')")

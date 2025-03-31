@@ -62,7 +62,7 @@ public class HotelServiceImpl implements HotelService {
             throw new RuntimeException("Hotel not Found");
         } else {
             Hotel hotelEntity = hotel.get();
-            hotelEntity.setName(UUID.fromString(hotelDTO.getName()));
+            hotelEntity.setName(hotelDTO.getName());
             hotelEntity.setLocation(hotelDTO.getLocation());
             hotelEntity.setDescription(hotelDTO.getDescription());
             hotelEntity.setImage(hotelDTO.getImage());

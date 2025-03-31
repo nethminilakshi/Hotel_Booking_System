@@ -16,11 +16,12 @@ import java.util.UUID;
 @Data
 public class Hotel {
     @Id
-    private String hotelId;
-    @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(updatable = false, nullable = false)
-    private UUID name;
+    private UUID hotelId;
+
+    @Column(nullable = false)
+    private String name;
 
     @Column(nullable = false)
     private String location; // Different locations (branches)

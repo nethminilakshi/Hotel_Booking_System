@@ -18,6 +18,10 @@ document.querySelector(".login-form").addEventListener("submit", async function 
       localStorage.setItem("token", data.data.token);
       localStorage.setItem("role", data.data.role);
 
+      // Add these two lines right here
+      console.log("Role received:", data.data.role);
+      console.log("Role type:", typeof data.data.role);
+
       if (data.data.role === "ADMIN") {
         window.location.href = "AdminDashboard.html";
       } else if (data.data.role === "MANAGER") {

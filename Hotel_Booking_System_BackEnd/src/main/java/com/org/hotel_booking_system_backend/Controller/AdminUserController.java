@@ -41,7 +41,7 @@ public class AdminUserController {
         List<UserDTO> allUsers = userService.getAllUsers();
         System.out.println(allUsers);
         for (UserDTO hotelDTO : allUsers) {
-            System.out.println("Room ID: " + hotelDTO.getUserId());
+            System.out.println("User ID: " + hotelDTO.getUserId());
         }
         return new ResponseUtil(200, "Success", allUsers);
     }

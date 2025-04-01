@@ -1,235 +1,268 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const hotelRegisterForm = document.getElementById('hotel-register-form');
-  const addHotelButton = document.getElementById('add-hotel');
-  const closeButton = document.getElementById('hotel-register-close');
-  const hotelForm = document.getElementById('hotel-form');
-  const tableBody = document.querySelector('.hotel-table tbody');
-  const formTitle = document.querySelector('.hotel-register-title');
-  const imageInput = document.getElementById("hotel-image");
-  const imagePreview = document.getElementById("hotel-image-preview");
-  const imagePreviewContainer = document.getElementById("hotel-image-preview-container");
-  const removeImageButton = document.getElementById("hotel-remove-image");
-  const managerDropdown = document.getElementById('managerId'); // Corrected ID
+$(document).ready(function() {
+  const hotelRegisterForm = $('#hotel-register-form');
+  const addHotelButton = $('#add-hotel');
+  const closeButton = $('#hotel-register-close');
+  const hotelForm = $('#hotel-form');
+  const tableBody = $('.hotel-table tbody');
+  const formTitle = $('.hotel-register-title');
+  const imageInput = $("#hotel-image");
+  const imagePreview = $("#hotel-image-preview");
+  const imagePreviewContainer = $("#hotel-image-preview-container");
+  const removeImageButton = $("#hotel-remove-image");
+  const managerDropdown = $('#managerId');
   let currentHotelId = null;
 
   // Image handling setup
-  imageInput?.addEventListener("change", (event) => {
+  imageInput.on("change", function(event) {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
-        imagePreview.src = e.target.result;
-        imagePreviewContainer.style.display = "flex";
+      reader.onload = function(e) {
+        imagePreview.attr("src", e.target.result);
+        imagePreviewContainer.css("display", "flex");
       };
       reader.readAsDataURL(file);
     }
   });
 
   // Remove image functionality
-  removeImageButton?.addEventListener("click", () => {
-    imageInput.value = "";
-    imagePreview.src = "";
-    imagePreviewContainer.style.display = "none";
+  removeImageButton.on("click", function() {
+    imageInput.val("");
+    imagePreview.attr("src", "");
+    imagePreviewContainer.css("display", "none");
   });
 
   // Open and close registration form
-  const openForm = () => {
-    hotelRegisterForm.style.display = "flex";
-    formTitle.textContent = "Register Hotel";
-    currentHotelId = null;
+  const openForm = function() {
+    hotelRegisterForm.css("display", "flex");
+    formTitle.text(currentHotelId ? "Update Hotel" : "Register Hotel");
+    if (!currentHotelId) {
+      clearForm();
+    }
+  };
+
+  const closeForm = function() {
+    hotelRegisterForm.css("display", "none");
     clearForm();
   };
 
-  const closeForm = () => {
-    hotelRegisterForm.style.display = "none";
-    clearForm();
-  };
+  addHotelButton.on("click", openForm);
+  closeButton.on("click", closeForm);
 
-  addHotelButton?.addEventListener("click", openForm);
-  closeButton?.addEventListener("click", closeForm);
-
-  window.addEventListener('click', (event) => {
-    if (event.target === hotelRegisterForm) closeForm();
+  $(window).on('click', function(event) {
+    if (event.target === hotelRegisterForm[0]) closeForm();
   });
 
   // Function to get the authentication token
-  const getAuthToken = () => {
+  const getAuthToken = function() {
     // Replace with your actual method of retrieving the token
     return localStorage.getItem('authToken');
   };
 
   // Populate manager dropdown
-  const loadManagers = async () => {
-    try {
-      const response = await fetch('http://localhost:8080/api/v1/user/getAll', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${getAuthToken()}`
+  const loadManagers = function() {
+    $.ajax({
+      url: 'http://localhost:8080/api/v1/user/getAll',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`
+      },
+      success: function(result) {
+        managerDropdown.html('<option value="">-- Select Manager --</option>');
+        if (result.data && Array.isArray(result.data)) {
+          result.data.forEach(function(manager) {
+            const option = $('<option></option>');
+            option.val(manager.userId);
+            option.text(manager.name || "Unknown");
+            managerDropdown.append(option);
+          });
         }
-      });
-      if (!response.ok) throw new Error(`Failed to load managers. Status: ${response.status}`);
-
-      const result = await response.json();
-      managerDropdown.innerHTML = '<option value="">-- Select Manager --</option>';
-
-      if (result.data && Array.isArray(result.data)) {
-        result.data.forEach(manager => {
-          const option = document.createElement('option');
-          option.value = manager.userId;
-          option.textContent = manager.username || "Unknown";
-          managerDropdown.appendChild(option);
-        });
+      },
+      error: function(error) {
+        console.error("Error loading managers:", error);
+        alert("Unable to fetch managers. Please try again.");
       }
-    } catch (error) {
-      console.error("Error loading managers:", error);
-      alert("Unable to fetch managers. Please try again.");
-    }
+    });
   };
 
   // Fetch hotels for the table
-  const fetchHotels = async () => {
-    try {
-      const response = await fetch('http://localhost:8080/api/v1/hotel/getAll', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${getAuthToken()}`
+  const fetchHotels = function() {
+    $.ajax({
+      url: 'http://localhost:8080/api/v1/hotel/getAll',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`
+      },
+      success: function(result) {
+        tableBody.html("");
+        if (result && result.data && Array.isArray(result.data)) {
+          result.data.forEach(function(hotel) {
+            addHotelToTable(hotel);
+          });
+        } else {
+          console.error("Invalid data format received:", result);
         }
-      });
-      if (!response.ok) throw new Error(`Failed to fetch hotels. Status: ${response.status}`);
-
-      const result = await response.json();
-      tableBody.innerHTML = "";
-      (result.data || []).forEach(hotel => addHotelToTable(hotel));
-    } catch (error) {
-      console.error("Error fetching hotels:", error);
-      alert("An error occurred while fetching hotels.");
-    }
+      },
+      error: function(error) {
+        console.error("Error fetching hotels:", error);
+        alert("An error occurred while fetching hotels.");
+      }
+    });
   };
 
   // Add hotel data to table
-  const addHotelToTable = (hotel) => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
+  const addHotelToTable = function(hotel) {
+    const row = $('<tr></tr>');
+    row.html(`
       <td>${hotel.hotelId || "N/A"}</td>
       <td>${hotel.name || "N/A"}</td>
       <td>${hotel.location || "N/A"}</td>
       <td>${hotel.description || "N/A"}</td>
       <td>
-        <img src="data:image/png;base64,${hotel.image || ''}" alt="Hotel Image" class="hotel-image-table" />
+        ${hotel.image ? `<img src="data:image/png;base64,${hotel.image}" alt="Hotel Image" class="hotel-image-table" />` : 'No Image'}
       </td>
       <td>${hotel.managerId || "N/A"}</td>
       <td><span class="update-button">Update</span></td>
       <td><span class="delete-button">Delete</span></td>
-    `;
-    row.querySelector('.update-button').addEventListener('click', () => openUpdateForm(hotel));
-    row.querySelector('.delete-button').addEventListener('click', () => deleteHotel(hotel.hotelId));
-    tableBody.appendChild(row);
+    `);
+    row.find('.update-button').on('click', function() {
+      openUpdateForm(hotel);
+    });
+    row.find('.delete-button').on('click', function() {
+      deleteHotel(hotel.hotelId);
+    });
+    tableBody.append(row);
   };
 
   // Open update form
-  const openUpdateForm = (hotel) => {
+  const openUpdateForm = function(hotel) {
     currentHotelId = hotel.hotelId;
-    openForm();
+    formTitle.text("Update Hotel");
     populateForm(hotel);
+    openForm();
   };
 
   // Populate form fields for updating
-  const populateForm = (hotel) => {
-    document.getElementById('hotel-name').value = hotel.name || '';
-    document.getElementById('hotel-location').value = hotel.location || '';
-    document.getElementById('hotel-description').value = hotel.description || '';
-    document.getElementById('managerId').value = hotel.managerId || '';
+  const populateForm = function(hotel) {
+    $('#hotel-name').val(hotel.name || '');
+    $('#hotel-location').val(hotel.location || '');
+    $('#hotel-description').val(hotel.description || '');
+    $('#managerId').val(hotel.managerId || '');
     if (hotel.image) {
-      imagePreview.src = `data:image/png;base64,${hotel.image}`;
-      imagePreviewContainer.style.display = "flex";
+      imagePreview.attr("src", `data:image/png;base64,${hotel.image}`);
+      imagePreviewContainer.css("display", "flex");
+    } else {
+      imagePreviewContainer.css("display", "none");
     }
   };
 
+  // Submit form handler
+  hotelForm.on('submit', function(e) {
+    e.preventDefault();
+    if (currentHotelId) {
+      updateHotel();
+    } else {
+      saveHotel();
+    }
+  });
+
   // Save hotel data
-  const saveHotel = async () => {
+  const saveHotel = function() {
     const formData = getFormData();
 
-    try {
-      const response = await fetch('http://localhost:8080/api/v1/hotel/save', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${getAuthToken()}`
-        },
-        body: formData
-      });
-
-      if (!response.ok) throw new Error(`Failed to save hotel: ${response.statusText}`);
-      alert('Hotel saved successfully!');
-      fetchHotels();
-      closeForm();
-    } catch (error) {
-      console.error("Error saving hotel:", error);
-      alert("An error occurred while saving the hotel.");
-    }
+    $.ajax({
+      url: 'http://localhost:8080/api/v1/hotel/save',
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${getAuthToken()}`
+      },
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function(response) {
+        console.log('Save response:', response);
+        alert('Hotel saved successfully!');
+        fetchHotels();
+        closeForm();
+      },
+      error: function(error) {
+        console.error("Error saving hotel:", error);
+        alert("An error occurred while saving the hotel: " + (error.responseJSON?.message || error.statusText));
+      }
+    });
   };
 
   // Update hotel data
-  const updateHotel = async () => {
+  const updateHotel = function() {
     const formData = getFormData();
 
-    try {
-      const response = await fetch(`http://localhost:8080/api/v1/hotel/update/${currentHotelId}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${getAuthToken()}`
-        },
-        body: formData
-      });
-
-      if (!response.ok) throw new Error(`Failed to update hotel: ${response.statusText}`);
-      alert('Hotel updated successfully!');
-      fetchHotels();
-      closeForm();
-    } catch (error) {
-      console.error("Error updating hotel:", error);
-      alert("An error occurred while updating the hotel.");
-    }
+    $.ajax({
+      url: `http://localhost:8080/api/v1/hotel/update/${currentHotelId}`,
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${getAuthToken()}`
+      },
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function(response) {
+        console.log('Update response:', response);
+        alert('Hotel updated successfully!');
+        fetchHotels();
+        closeForm();
+      },
+      error: function(error) {
+        console.error("Error updating hotel:", error);
+        alert("An error occurred while updating the hotel: " + (error.responseJSON?.message || error.statusText));
+      }
+    });
   };
 
   // Get form data
-  const getFormData = () => {
+  const getFormData = function() {
     const formData = new FormData();
-    formData.append('name', document.getElementById('hotel-name').value);
-    formData.append('location', document.getElementById('hotel-location').value);
-    formData.append('description', document.getElementById('hotel-description').value);
-    formData.append('manager_id', document.getElementById('managerId').value);
-    const image = imageInput.files[0];
+    formData.append('name', $('#hotel-name').val());
+    formData.append('location', $('#hotel-location').val());
+    formData.append('description', $('#hotel-description').val());
+    formData.append('manager_id', $('#managerId').val()); // Changed back to manager_id to match backend expectation
+
+    const image = imageInput[0].files[0];
     if (image) formData.append('image', image);
+
     return formData;
   };
 
-  // Delete a hotel
-  const deleteHotel = async (hotelId) => {
-    if (confirm('Are you sure you want to delete this hotel?')) {
-      try {
-        const response = await fetch(`http://localhost:8080/api/v1/hotel/delete/${hotelId}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${getAuthToken()}`
-          }
-        });
-        if (!response.ok) throw new Error(`Failed to delete hotel: ${response.statusText}`);
-        fetchHotels();
-      } catch (error) {
+  function deleteHotel(hotelId) {
+    if (!confirm("Are you sure you want to delete this hotel?")) return;
+
+    console.log("Deleting hotel ID:", hotelId);
+
+    $.ajax({
+      url: `http://localhost:8080/api/v1/hotel/delete/${hotelId}`,
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${getAuthToken()}`
+      },
+      success: function(response) {
+        console.log("Delete Success:", response);
+        alert("Hotel deleted successfully!");
+        fetchHotels(); // Refresh table
+      },
+      error: function(error) {
         console.error("Error deleting hotel:", error);
-        alert("An error occurred while deleting the hotel.");
+        alert("Failed to delete hotel.");
       }
-    }
-  };
+    });
+  }
+
 
   // Clear form fields
-  const clearForm = () => {
-    hotelForm.reset();
-    imagePreview.src = '';
-    imagePreviewContainer.style.display = 'none';
-    currentHotelId = null;
+  const clearForm = function() {
+    hotelForm[0].reset();
+    imagePreview.attr("src", '');
+    imagePreviewContainer.css("display", 'none');
   };
 
   // Fetch hotels and load managers on page load

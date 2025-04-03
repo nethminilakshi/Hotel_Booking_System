@@ -47,8 +47,8 @@ public class AdminUserController {
     }
 
 
-    @DeleteMapping("/delete/{email}")
-    @PreAuthorize("hasAuthority('ADMIN') or authentication.name == #email")
+    @DeleteMapping("delete/{email}")
+//    @PreAuthorize("hasAuthority('ADMIN') or authentication.name == #email")
     public ResponseEntity<ResponseUtil> deleteUser(@PathVariable("email") String email) {
         try {
             System.out.println("Attempting to delete user: " + email + ", Authenticated user: " + SecurityContextHolder.getContext().getAuthentication().getName());
@@ -78,17 +78,16 @@ public class AdminUserController {
 //        return ResponseEntity.ok((List<String>) userService.getAllUserIds());
 //    }
 
-    @PostMapping(value = "/register")
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping(value = "register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseUtil> registerUser(@RequestBody @Valid UserDTO userDTO) {
         try {
+            System.out.println("Received user registration request: " + userDTO);
+
             int res = userService.saveUser(userDTO);
             switch (res) {
                 case VarList.Created -> {
                     String token = jwtUtil.generateToken(userDTO);
-                    AuthDTO authDTO = new AuthDTO();
-                    authDTO.setEmail(userDTO.getEmail());
-                    authDTO.setToken(token);
+                    AuthDTO authDTO = new AuthDTO(userDTO.getEmail(), token, userDTO.getRole());
                     return ResponseEntity.status(HttpStatus.CREATED)
                             .body(new ResponseUtil(VarList.Created, "Success", authDTO));
                 }
@@ -106,4 +105,22 @@ public class AdminUserController {
                     .body(new ResponseUtil(VarList.Internal_Server_Error, e.getMessage(), null));
         }
     }
+
+    @PutMapping(value = "update/{email}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseUtil> updateUser(@PathVariable("email") String email, @RequestBody UserDTO userDTO) {
+        try {
+            System.out.println("Received user update request: " + userDTO);
+            int res = userService.updateUser(email, userDTO);
+            if (res == VarList.OK) {
+                return ResponseEntity.ok(new ResponseUtil(VarList.OK, "User updated successfully", null));
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ResponseUtil(VarList.Not_Found, "User not found", null));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseUtil(VarList.Internal_Server_Error, e.getMessage(), null));
+        }
+    }
+
 }

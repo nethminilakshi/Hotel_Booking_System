@@ -8,5 +8,5 @@ import java.awt.*;
 import java.util.UUID;
 
 @Repository
-public interface RoomTypeRepo extends JpaRepository<RoomType, String> {
+public interface RoomTypeRepo extends JpaRepository<RoomType, UUID> {
 }

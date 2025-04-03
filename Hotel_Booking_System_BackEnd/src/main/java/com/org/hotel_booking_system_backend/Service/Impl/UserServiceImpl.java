@@ -81,6 +81,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public int updateUser(String email, UserDTO userDTO) {
+        User user = userRepo.findByEmail(email);
+        if (user == null) {
+            return VarList.Not_Found;
+        }
+        user.setName(userDTO.getName());
+        user.setEmail(userDTO.getEmail());
+        user.setContact(userDTO.getContact());
+        user.setRole(userDTO.getRole());
+        userRepo.save(user);
+        return VarList.OK;
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepo.findByEmail(email);
         if (user == null) {

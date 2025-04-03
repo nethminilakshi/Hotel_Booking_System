@@ -12,7 +12,8 @@ import java.util.UUID;
 @Data
 public class RoomTypeDTO implements Serializable {
 
-    private String typeId;
+    private UUID typeId;
+    private String name;
     private String description;
     private double price;
     private int qtyOnHand;

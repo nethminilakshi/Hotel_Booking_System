@@ -127,7 +127,7 @@
   padding: 10px;
   font-size: 14px;
   font-weight: bold;
-  background-color: #6B9071;
+  background-color: #444787;
   color: white;
   border: none;
   border-radius: 5px;
@@ -210,7 +210,7 @@
 }
 
 .user-table th {
-  background-color: #f5f5f5;
+  background-color: #caccd6;
   color: #333;
   font-weight: bold;
 }
@@ -229,18 +229,32 @@
   object-fit: cover;
   border-radius: 4px;
 }
-
-/* Button Styling */
+/* Buttons */
 .update-button, .delete-button {
-  background: none;
+  padding: 5px 10px;
   border: none;
   cursor: pointer;
-  color: #375534;
-  font-size: 18px;
-  padding: 0;
+  border-radius: 5px;
+  color: white;
 }
 
-/* Ensure icons are styled appropriately */
+.update-button {
+  background-color: #ffc107;
+}
+
+.update-button:hover {
+  background-color: #e0a800;
+}
+
+.delete-button {
+  background-color: #dc3545;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+  /* Ensure icons are styled appropriately */
 .update-button i, .delete-button i {
   color: #375534;
   font-size: 20px;

@@ -12,17 +12,44 @@
 <nav id="sidebar">
   <div class="sidebar-header">
     <img src="https://via.placeholder.com/40" alt="Logo" class="logo">
+    <!--      <h3>WeCare</h3>-->
     <p class="text-muted small"> Admin Dashboard</p>
   </div>
-  <div class="sidebar-content">
-    <ul class="list-unstyled components">
-      <li><a href="AdminDashboard.html"><i class="bi bi-grid-1x2"></i> Overview</a></li>
-      <li><a href="Hotels.html"><i class="bi bi-building"></i> Hotels</a></li>
-      <li class="active"><a href="managerRoomsType.html"><i class="bi bi-door-open"></i> Room Types</a></li>
-      <li><a href="Bookings.html"><i class="bi bi-calendar-check"></i> Bookings</a></li>
-      <li><a href="Payments.html"><i class="bi bi-credit-card"></i> Payments</a></li>
-      <li><a href="AdminUser.html"><i class="bi bi-credit-card"></i> User</a></li>
 
+  <div class="sidebar-content">
+    <div class="menu-category">Main Menu</div>
+    <ul class="list-unstyled components">
+      <li class="active">
+        <a href="AdminDashboard.html"><i class="bi bi-grid-1x2"></i> Overview</a>
+      </li>
+      <li>
+        <a href="ManagerHotel.html"><i class="bi bi-people"></i> Hotels</a>
+      </li>
+      <li>
+        <a href="ManagerRoom.html"><i class="bi bi-calendar-check"></i>Rooms</a>
+      </li>
+      <li>
+        <a href="managerRoomsType.html"><i class="bi bi-door-open"></i> RoomTypes</a>
+      <li>
+        <a href="Bookings.html"><i class="bi bi-file-text"></i>Bookings</a>
+      </li>
+    </ul>
+
+    <div class="menu-category">Other Menu</div>
+    <ul class="list-unstyled components">
+      <li>
+        <a href="Payment.html"><i class="bi bi-building"></i> Payments</a>
+      </li>
+      <li>
+        <a href="#"><i class="bi bi-credit-card"></i> Reviews</a>
+      </li>
+    </ul>
+
+    <div class="menu-category"> Settings</div>
+    <ul class="list-unstyled components">
+      <li>
+        <a href="AdminUser.html"><i class="bi bi-gear"></i>User Settings</a>
+      </li>
     </ul>
   </div>
 </nav>
@@ -41,12 +68,17 @@
       <h2 class="user-register-title">Register User</h2>
 
       <form id="user-form">
+        <!-- name -->
         <div class="user-form-row">
-          <input type="text" id="user-Id" name="user-Id" placeholder="userId" required>
+          <input type="text" id="user-name" name="user-name" placeholder="userName" required>
         </div>
         <!-- Email -->
         <div class="user-form-row">
           <input type="email" id="user-email" name="user-email" placeholder="Email" required>
+        </div>
+        <!-- Contact -->
+        <div class="user-form-row">
+          <input type="text" id="user-contact" name="user-contact" placeholder="Contact" required>
         </div>
 
         <!-- Password with Show/Hide Option -->
@@ -67,17 +99,17 @@
           </div>
         </div>
 
-        <!-- Role Dropdown -->
-        <div class="user-form-row">
-          <div class="user-dropdown-group">
-            <label for="user-role"></label>
-            <select id="user-role" name="user-role" required>
-              <option value="">Select Role</option>
-              <option value="MANAGER">MANAGER</option>
-              <option value="ADMIN">ADMIN</option>
-            </select>
-          </div>
-        </div>
+<!--        &lt;!&ndash; Role Dropdown &ndash;&gt;-->
+<!--        <div class="user-form-row">-->
+<!--          <div class="user-dropdown-group">-->
+<!--            <label for="user-role"></label>-->
+<!--            <select id="user-role" name="user-role" required>-->
+<!--              <option value="">Select Role</option>-->
+<!--              <option value="MANAGER">MANAGER</option>-->
+<!--              <option value="ADMIN">ADMIN</option>-->
+<!--            </select>-->
+<!--          </div>-->
+<!--        </div>-->
 
         <!-- Submit Button -->
         <button id="user-register-submit" type="submit" class="user-register-submit">Submit</button>
@@ -91,7 +123,9 @@
       <thead>
       <tr>
         <th>userId</th>
+        <th>Name</th>
         <th>Email</th>
+        <th>Contact</th>
         <th>Password</th>
         <th>Role</th>
         <th>Update</th>
@@ -109,6 +143,6 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/jquery-3.7.1.min.js"></script>
-<script src="js/ManagerRoomsType.js"></script>
+<script src="js/AdminUser.js"></script>
 </body>
 </html>

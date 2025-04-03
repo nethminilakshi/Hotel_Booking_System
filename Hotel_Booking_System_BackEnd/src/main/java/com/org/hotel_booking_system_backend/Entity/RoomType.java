@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 
 
 import java.io.Serializable;
+import java.util.UUID;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -14,14 +16,20 @@ import java.io.Serializable;
 @Table(name = "room_type")
 public class RoomType implements Serializable {
     @Id
-    private String typeId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(updatable = false, nullable = false)
+    private UUID typeId;
+
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @Column(name = "description", nullable = false)
     private String description;
 
     @Column(columnDefinition = "LONGTEXT")
     private String image;
-    @Column(name = "noOfBeds", nullable = false)
+
+    @Column(name = "noOfPersons", nullable = false)
     private int noOfPersons;
 
     @Column(name = "price", nullable = false)

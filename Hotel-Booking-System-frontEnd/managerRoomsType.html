@@ -53,7 +53,7 @@
       <div class="menu-category"> Settings</div>
       <ul class="list-unstyled components">
         <li>
-          <a href="#"><i class="bi bi-gear"></i>User Settings</a>
+          <a href="AdminUser.html"><i class="bi bi-gear"></i>User Settings</a>
         </li>
       </ul>
     </div>
@@ -77,6 +77,12 @@
         <h2 class="room-register-title">Register Room Type</h2>
 
         <form id="room-form">
+
+<!--          roomType name-->
+          <div class="room-form-row">
+            <input type="text" id="room-name" name="roomType" placeholder="Room Type" required>
+          </div>
+
           <!-- Room Description -->
           <div class="room-form-row">
             <input type="text" id="room-description" name="description" placeholder="Room Description" required>
@@ -89,7 +95,7 @@
           </div>
 
           <div class="room-form-row">
-            <input type="number" id="room-beds-" name="noOfBeds" placeholder="Max Occupancy" required>
+            <input type="text" id="room-persons" name="noOfPersons" placeholder="no of persons" required>
           </div>
 
           <!-- Image Upload Field -->
@@ -120,9 +126,11 @@
         <thead>
         <tr>
           <th>Type ID</th>
+          <th>Name</th>
           <th>Description</th>
           <th>Price</th>
           <th>Quantity</th>
+          <th>No of Persons</th>
           <th>Room Image</th>
           <th>Update</th>
           <th>Delete</th>

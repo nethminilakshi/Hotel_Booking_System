@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class RoomTypeServiceImpl implements RoomTypeService {
@@ -26,10 +27,6 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     public void save(RoomTypeDTO roomTypeDTO) {
         RoomType roomType = mapping.convertToRoomTypeEntity(roomTypeDTO);
 
-        if (roomType.getTypeId() == null || roomType.getTypeId().isEmpty()){
-            roomType.setTypeId(AppUtil.createRoomTypeCode());
-        }
-
         roomTypeRepo.save(roomType);
     }
 
@@ -42,7 +39,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public void delete(String id) {
+    public void delete(UUID id) {
         Optional<RoomType> findId = roomTypeRepo.findById(id);
         if (!findId.isPresent()){
             throw new RuntimeException("RoomType not Found");
@@ -52,7 +49,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public RoomTypeDTO getSelectedType(String roomTypeCode) {
+    public RoomTypeDTO getSelectedType(UUID roomTypeCode) {
         if (roomTypeRepo.existsById(roomTypeCode)) {
             RoomType roomTypeById = roomTypeRepo.getReferenceById(roomTypeCode);
             return mapping.convertToRoomTypeDTO(roomTypeById);
@@ -67,6 +64,7 @@ public class RoomTypeServiceImpl implements RoomTypeService {
             throw new RuntimeException("Crop not Found");
         } else {
             RoomType roomType1 = roomType.get();
+            roomType1.setName(updateRoomTypeDTO.getName());
             roomType1.setDescription(updateRoomTypeDTO.getDescription());
             roomType1.setPrice(updateRoomTypeDTO.getPrice());
             roomType1.setQtyOnHand(updateRoomTypeDTO.getQtyOnHand());

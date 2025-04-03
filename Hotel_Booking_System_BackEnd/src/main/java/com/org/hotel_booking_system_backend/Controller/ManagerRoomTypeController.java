@@ -14,29 +14,29 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RestController
 @RequestMapping("api/v1/roomType")
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:63342")
 public class ManagerRoomTypeController {
     private List<RoomTypeDTO> roomTypeDTOList;
     @Autowired
     private RoomTypeService roomTypeService;
     static Logger logger = LoggerFactory.getLogger(ManagerRoomTypeController.class);
 
-@CrossOrigin(origins = "*")
-    @PostMapping(path = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseUtil saveRoomType(@Valid
+                                         @RequestParam("name") String name,
                                      @RequestParam("description") String description,
                                      @RequestParam("price") Double price,
                                      @RequestParam("qtyOnHand") Integer qtyOnHand,
-                                        @RequestParam("noOfPersons") Integer noOfPersons,
-                                     @RequestParam(value = "image", required = false) MultipartFile image) {
+                                     @RequestParam("noOfPersons") Integer noOfPersons,
+                                     @RequestParam(value = "image") MultipartFile image) {
 
         try {
-            logger.info("Received request to save Room Type. Description: {}, Price: {}, Qty: {}, noOfPersons: {}", description, price, qtyOnHand, noOfPersons);
-
+        logger.info("Saving Room Type...");
             // Convert image to Base64 if provided
             String base64Image = null;
             if (image != null && !image.isEmpty()) {
@@ -47,6 +47,7 @@ public class ManagerRoomTypeController {
 
             // Create DTO
             RoomTypeDTO roomTypeDTO = new RoomTypeDTO();
+            roomTypeDTO.setName(name);
             roomTypeDTO.setDescription(description);
             roomTypeDTO.setPrice(price);
             roomTypeDTO.setQtyOnHand(qtyOnHand);
@@ -66,7 +67,7 @@ public class ManagerRoomTypeController {
         }
     }
 
-    @GetMapping(path = "/getAll", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(path = "getAll", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseUtil getRoomTypes() {
         List<RoomTypeDTO> roomTypes = roomTypeService.getAll();
         for (RoomTypeDTO room : roomTypes) {
@@ -76,46 +77,49 @@ public class ManagerRoomTypeController {
     }
 
     @DeleteMapping(value = "delete/{id}")
-    public ResponseUtil deleteRoomType(@PathVariable(value = "id") String id) {
+    public ResponseUtil deleteRoomType(@PathVariable(value = "id") UUID id) {
         try{
             roomTypeService.delete(id);
-            logger.info("Crop deleted :" + id);
+            logger.info("room removed :" + id);
             return new ResponseUtil();
         }catch (Exception e){
             logger.error(e.getMessage());
-            return new ResponseUtil();
+            return new ResponseUtil(201, "RoomType Deleted Successfully", null);
         }
     }
 
 
     @GetMapping(value = "/{roomTypeCode}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public RoomTypeDTO getSelectedType(@PathVariable("roomTypeCode") String roomTypeCode) {
+    public RoomTypeDTO getSelectedType(@PathVariable("roomTypeCode") UUID roomTypeCode) {
         return roomTypeService.getSelectedType(roomTypeCode);
     }
 
 
-    @PutMapping(path = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(path = "update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseUtil update(
-            @PathVariable("roomTypeCode") String roomTypeId,
+            @PathVariable("id") UUID roomTypeId,
+            @RequestPart("name") String name,
             @RequestPart("description") String description,
             @RequestPart("price") String price,
-            @RequestPart("qtyOnHand") String qtyOnHand,
-            @RequestPart("noOfPersons") String noOfPersons,
+            @RequestPart("qtyOnHand") Integer qtyOnHand,
+            @RequestPart("noOfPersons") Integer noOfPersons,
             @RequestPart(value = "image", required = false) MultipartFile updatedImage
 
     ) {
         try {
+            logger.info("Updating RoomType ID: " + roomTypeId); //  Debugging
+
             String updateBase64Image = null;
             if (updatedImage != null && !updatedImage.isEmpty()) {
                 updateBase64Image = AppUtil.toBase64CropImage(updatedImage);
             }
 
             var updateRoomTypeDTO = new RoomTypeDTO();
-            updateRoomTypeDTO.setTypeId(roomTypeId);
+            updateRoomTypeDTO.setName(name);
             updateRoomTypeDTO.setDescription(description);
             updateRoomTypeDTO.setPrice(Double.parseDouble(price));
-            updateRoomTypeDTO.setQtyOnHand(Integer.parseInt(qtyOnHand));
-            updateRoomTypeDTO.setNoOfPersons(Integer.parseInt(noOfPersons));
+            updateRoomTypeDTO.setQtyOnHand(qtyOnHand);
+            updateRoomTypeDTO.setNoOfPersons(noOfPersons);
 
             if (updateBase64Image != null) {
                 updateRoomTypeDTO.setImage(updateBase64Image);

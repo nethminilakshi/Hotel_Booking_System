@@ -23,7 +23,7 @@ $(document).ready(function () {
       email: email,
       contact: contact,
       password: password,
-      role: "ADMIN"
+      role: "USER"
     };
 
     console.log("Sending Data: ", userData);

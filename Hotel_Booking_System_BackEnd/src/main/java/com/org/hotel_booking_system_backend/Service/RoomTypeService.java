@@ -3,6 +3,7 @@ package com.org.hotel_booking_system_backend.Service;
 import com.org.hotel_booking_system_backend.Dto.RoomTypeDTO;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface RoomTypeService {
 
@@ -11,9 +12,10 @@ public interface RoomTypeService {
     List<RoomTypeDTO> getAll();
 
 
-    void delete(String id);
+    void delete(UUID id);
 
-    RoomTypeDTO getSelectedType(String roomTypeCode);
+    RoomTypeDTO getSelectedType(UUID roomTypeCode);
+
 
     void update(RoomTypeDTO updateRoomTypeDTO);
 }

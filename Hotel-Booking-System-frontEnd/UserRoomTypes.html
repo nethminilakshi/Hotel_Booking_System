@@ -112,9 +112,6 @@
 
     <section class="hp-room-section">
       <div class="container-fluid">
-        <div class="mb-3">
-          <input type="text" id="filterInput" class="form-control" onkeyup="fetchRooms()" placeholder="Filter by name">
-        </div>
         <div id="roomItems">
 
         </div>
@@ -122,6 +119,27 @@
     </section>
   </div>
 
+  <!-- Room Details Modal -->
+  <div id="roomDetailsModal" class="modal">
+    <div class="modal-content">
+      <span id="closeModal" class="close">&times;</span>
+      <img id="modal-room-img" src="" alt="Room Image">
+      <h2 id="modal-room-title"></h2>
+      <p id="modal-room-price"></p>
+      <p id="modal-room-capacity"></p>
+      <p id="modal-room-available"></p>
+      <p id="modal-room-description"></p>
+    </div>
+  </div>
+</section>
+
+<section class="gallary">
+  <div class="container top">
+    <div class="heading">
+      <h1>EXPOLRE</h1>
+      <h2>Gallery</h2>
+    </div>
+  </div>
 </section>
 
 

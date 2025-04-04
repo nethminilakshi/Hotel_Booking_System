@@ -3,94 +3,150 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 function fetchRooms() {
-  fetch('http://localhost:8080/api/v1/roomType/getAll')
-    .then(response => response.json())
-    .then(data => {
-      const carouselContainer = document.getElementById('roomCarousel');
-      carouselContainer.innerHTML = '';
+  $.ajax({
+    url: `http://localhost:8080/api/v1/roomType/getAll`,
+    method: 'GET',
+    dataType: 'json',
+    success: function (data) {
+      const roomContainer = $('#roomItems');
+      roomContainer.empty();
+      roomContainer.addClass('room-container'); // Use CSS Grid
 
-      data.data.forEach(room => {
-        const imageUrl = room.image
-          ? `data:image/png;base64,${room.image}`
-          : 'https://via.placeholder.com/350x250';
+      if (data && data.data && Array.isArray(data.data)) {
+        data.data.forEach(function (room) {
+          const card = $('<div>').addClass('room-card');
 
-        const roomItem = document.createElement('div');
-        roomItem.className = 'items';
-        roomItem.innerHTML = `
-          <div class="image">
-            <img src="${imageUrl}" alt="${room.description}">
-          </div>
-          <div class="text">
-            <h2>${room.description}</h2>
-            <div class="rate flex">
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
+          const imageUrl = room.image
+            ? `data:image/png;base64,${room.image}`
+            : 'https://via.placeholder.com/400x250';
+
+          card.html(`
+                    <div class="room-card-inner">
+        <div class="room-image-container">
+            <img src="${imageUrl}" class="room-img" alt="${room.name}">
+            <div class="room-details">
+            <div class="room-overlay">
+                <p class="room-title">${room.name}</p>
+                <h2 class="room-price">$${room.price}<span>/Pernight</span></h2>
             </div>
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</p>
-            <div class="button flex">
-              <button class="primary-btn">BOOK NOW</button>
-              <h3>$${room.price} <span> <br> Per Night </span> </h3>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td class="r-o">Capacity:</td>
+                            <td>Max person ${room.noOfPersons}</td>
+                        </tr>
+                        <tr>
+                            <td class="r-o">Available:</td>
+                            <td>${room.qtyOnHand} rooms</td>
+                        </tr>
+                        <tr>
+                            <td class="r-o">Services:</td>
+                            <td>Wifi, Television, Bathroom,...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-          </div>
-        `;
+        </div>
+        <p class="room-description">
+            ${room.description || 'No description available.'}
+        </p>
+        <a href="booking.html" class="book-now-btn" data-room-id="${room.room_type_id}">
+            Book Now
+        </a>
+    </div>
+                    `);
 
-        carouselContainer.appendChild(roomItem);
-      });
+          // Add event listener for book now button
+          card.find('.book-now-btn').on('click', function (e) {
+            localStorage.setItem('selectedRoomTypeId', room.roomTypeId);
+          });
 
-      // Initialize Owl Carousel after dynamically adding items
-      $(".owl-carousel1").owlCarousel({
-        loop: true,
-        margin: 10,
-        nav: true,
-        autoplay: true,
-        autoplayTimeout: 3000,
-        responsive: {
-          0: { items: 1 },
-          600: { items: 2 },
-          1000: { items: 3 }
-        }
-      });
-    })
-    .catch(error => console.error('Error fetching room types:', error));
-
-
+          roomContainer.append(card);
+        });
+      } else {
+        console.error("Invalid data format received:", data);
+        roomContainer.html('<div class="col-12 text-center"><p>No rooms available at the moment.</p></div>');
+      }
+    },
+    error: function (error) {
+      console.error("Error fetching rooms:", error);
+      $('#roomGallery').html('<div class="col-12 text-center"><p>Error loading rooms. Please try again later.</p></div>');
+    }
+  });
 }
 
 
-const tableBody = document.querySelector(".room-table tbody");
-// Fetch Room Types
-const fetchRooms = async () => {
-  try {
-    const response = await fetch("http://localhost:8080/api/v1/roomTypeController/getAll");
-    if (!response.ok) throw new Error("Failed to fetch room types");
+// CSS Styling
+const style = document.createElement('style');
+style.textContent = `
+.room-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    padding: 20px;
+    margin: 0 auto;
+}
 
-    const result = await response.json();
-    const rooms = result.data || []; // Ensure it's an array
-    tableBody.innerHTML = "";
-    rooms.forEach(addRoomToTable);
-  } catch (error) {
-    console.error("Error fetching rooms:", error);
-    alert("An error occurred while fetching room types.");
-  }
-};
+.room-image-container {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+    border-radius: 10px;
+}
 
-// Add Room Type to Table
-const addRoomToTable = (room) => {
-  console.log("Room Data:", room); // Debugging line
+.room-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease-in-out;
+}
 
-  const row = document.createElement("tr");
+.room-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 15px;
+    transition: transform 0.6s ease-in-out;
+    z-index: 2;
+}
 
-  row.innerHTML = `
-        <td>${room.name || room.name || "N/A"}</td>
-        <td>${room.description || "N/A"}</td>
-        <td>${room.price || "N/A"}</td>
-        <td>${room.qtyOnHand || "N/A"}</td>
+.room-details {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 15px;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
+    z-index: 1;
+}
 
-    `;
-  tableBody.appendChild(row);
-};
-// Fetch Initial Data
-fetchRooms();
+/* Hover effect - Move overlay up and show details */
+.room-card:hover .room-overlay {
+    transform: translateY(-100%);
+}
+
+.room-card:hover .room-details {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Room description below the image */
+.room-description {
+    padding: 10px;
+    font-size: 1rem;
+    color: #333;
+    background: white;
+    margin-top: 5px;
+    text-align: center;
+}
+
+`;
+document.head.appendChild(style);

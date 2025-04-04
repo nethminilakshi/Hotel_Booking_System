@@ -39,10 +39,6 @@ function fetchHotels() {
                     </ul>
                   </div>
 
-                  <p class="hotel-description">
-                    ${hotel.description?.substring(0, 100)}${hotel.description?.length > 100 ? '...' : ''}
-                  </p>
-
                   <div class="text-center mt-3">
                     <button class="btn btn-light view-details">
                       <a href="UserRoomTypes.html" class="text-decoration-none"
@@ -50,6 +46,12 @@ function fetchHotels() {
                     </button>
                   </div>
                 </div>
+              </div>
+
+              <div class="hotel-description-section">
+                <p class="hotel-description">
+                  ${hotel.description || 'No description available.'}
+                </p>
               </div>
             </div>
           `);
@@ -78,7 +80,6 @@ const style = document.createElement('style');
 style.textContent = `
   .hotel-card {
     padding: 10px;
-    width: 60%
   }
 
   .hotel-card-inner {
@@ -86,14 +87,14 @@ style.textContent = `
     overflow: hidden;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    width:60%
-    height: 450px;
+    width: 60%;
+    margin-left: 0; /* Align to the left */
   }
 
   .hotel-image-container {
     position: relative;
     width: 100%;
-    height: 100%;
+    height: 350px;
   }
 
   .hotel-img {
@@ -152,11 +153,16 @@ style.textContent = `
     color: #f0f0f0;
   }
 
+  .hotel-description-section {
+    background-color: white;
+    padding: 15px;
+  }
+
   .hotel-description {
     font-size: 0.9rem;
-    margin-top: auto;
-    margin-bottom: 20px;
+    margin: 0;
     line-height: 1.4;
+    color: #333;
   }
 
   .view-details {
@@ -167,6 +173,7 @@ style.textContent = `
     border-radius: 4px;
     font-weight: 500;
     transition: all 0.3s ease;
+    margin-top: auto;
   }
 
   .view-details:hover {

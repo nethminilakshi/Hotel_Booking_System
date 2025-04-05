@@ -59,6 +59,7 @@ public class WebSecurityConfig {
                                 "/api/v1/hotel/delete/**",
                                 "/api/v1/room/**",
                                 "/api/v1/roomType/**",
+                                "/api/v1/review/**",
                                 "/api/v1/user/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",

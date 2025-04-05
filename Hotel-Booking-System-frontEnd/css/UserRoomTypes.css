@@ -224,6 +224,23 @@ h1 {
   margin: 20px 0px  35px 0px;
 }
 
+.gallary {
+position: relative;
+  background: #e8e7e6;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.gallary-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  margin-top: 30px;
+}
+
 .rooms .text {
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-top: none;
@@ -265,7 +282,7 @@ h1 {
 }
 
 .heading h2 {
-  margin: 30px 0;
+  margin: 15px 0;
   font-size: 45px;
   font-family: serif;
   font-weight: 400;

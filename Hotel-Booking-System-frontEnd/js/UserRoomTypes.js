@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
   fetchRooms();
+  fetchGalleryImages();
+
 });
 
 function fetchRooms() {
@@ -119,6 +121,34 @@ $(document).ready(function () {
   });
 });
 
+function fetchGalleryImages() {
+  $.ajax({
+    url: `http://localhost:8080/api/v1/roomType/getAll`,
+    method: 'GET',
+    dataType: 'json',
+    success: function (data) {
+      const galleryContainer = $('#roomGallery');
+      galleryContainer.empty();
+
+      if (data && data.data && Array.isArray(data.data)) {
+        data.data.forEach(function (room) {
+          const imageUrl = room.image
+            ? `data:image/png;base64,${room.image}`
+            : 'https://via.placeholder.com/200x150';
+
+          const img = $(`<img src="${imageUrl}" alt="${room.name}">`);
+          galleryContainer.append(img);
+        });
+      } else {
+        galleryContainer.html('<p>No images available.</p>');
+      }
+    },
+    error: function (error) {
+      console.error("Error loading gallery:", error);
+    }
+  });
+}
+
 
 // CSS Styling
 const style = document.createElement('style');
@@ -235,7 +265,6 @@ style.textContent = `
     font-size: 1rem;
     font-weight: bold;
     margin-top: 10px;
-
 }
 
 /* Hover effect: Expand overlay & show extra details + View Details link */
@@ -311,6 +340,40 @@ style.textContent = `
 
 .close:hover {
   color: red;
+}
+ /* Gallery Section */
+
+.gallery-container {
+ margin-top: 30px;
+ text-align: center;
+ padding: 20px;
+        }
+
+ .gallery-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  }
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 images per row */
+    gap: 20px;
+    justify-items: center;
+    align-items: center;
+      background: #e8e7e6;
+}
+
+.gallery img {
+ width: 280px;
+ height: 240px;
+ border-radius: 6px;
+ object-fit: cover;
+ transition: transform 0.3s ease-in-out;
+}
+
+.gallery img:hover {
+ transform: scale(1.1);
 }
 
 `;

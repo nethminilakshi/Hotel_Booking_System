@@ -121,6 +121,7 @@ public class Mapping {
     public List<RoomDTO> convertRoomToDTOList(List<Room> rooms) {
         return modelMapper.map(rooms, new TypeToken<List<RoomDTO>>() {}.getType());
     }
+
     // payment to paymentDTO
     public PaymentDTO convertToPaymentDTO(Payment payment) {
         return modelMapper.map(payment, PaymentDTO.class);
@@ -142,5 +143,21 @@ public class Mapping {
 public List<BookingDetailsDTO> convertBookingToDTOList(List<Booking> bookings) {
         return modelMapper.map(bookings, new TypeToken<List<BookingDetailsDTO>>() {}.getType());
     }
+
+    public Booking convertToBookingEntity(BookingDetailsDTO dto) {
+        return modelMapper.map(dto, Booking.class);
+    }
+
+    // review to reviewDTO
+    public ReviewDTO convertToReviewDTO(Review review) {
+        return modelMapper.map(review, ReviewDTO.class);
+    }
+    public Review convertToReviewEntity(ReviewDTO dto) {
+        return modelMapper.map(dto, Review.class);
+    }
+    public List<ReviewDTO> convertReviewToDTOList(List<Review> reviews) {
+        return modelMapper.map(reviews, new TypeToken<List<ReviewDTO>>() {}.getType());
+    }
+
 
 }

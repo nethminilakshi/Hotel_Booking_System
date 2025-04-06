@@ -1,214 +1,206 @@
+let bookingValues;
+let seatidentify;
+let id =1;
+
+
+function createSeatMap() {
+
+
+  // Do something with currentSeat
+
+  const container = document.getElementById('seat-container');
+
+  rowLetters.forEach(row => {
+    const rowElement = document.createElement('div');
+    rowElement.className = 'seat-row';
+
+    const rowLabel = document.createElement('div');
+    rowLabel.className = 'seat-label';
+    rowLabel.textContent = row;
+    rowElement.appendChild(rowLabel);
+
+    // Determine which seats to use based on the row
+    const rowSeats = rowLettersWithFullColumns.includes(row) ? seats[row] : seats['default'];
+
+    rowSeats.forEach((seat, index) => {
+      // Add aisle space after the 3rd seat
+      if (index === 3) {
+        const aisleSpace = document.createElement('div');
+        aisleSpace.className = 'aisle-space';
+        rowElement.appendChild(aisleSpace);
+      }
+
+      const seatElement = document.createElement('div');
+      seatElement.className = 'seat';
+      seatElement.textContent = seat;
+
+      const seatId = row + seat;
+
+      if (reservedSeats.includes(seatId)) {
+        seatElement.classList.add('reserved');
+      } else {
+        seatElement.classList.add('available');
+
+        // Add click event to toggle selection
+        seatElement.addEventListener('click', function() {
+          if (this.classList.contains('available')) {
+            if (this.classList.contains('selected')) {
+              this.classList.remove('selected');
+              // Remove from selected seats array
+              const index = selectedSeats.indexOf(seatId);
+              if (index > -1) {
+                selectedSeats.splice(index, 1);
+              }
+            } else {
+              this.classList.add('selected');
+              // Add to selected seats array
+              selectedSeats.push(seatId);
+            }
+
+            // Print the row letter and seat number
+            console.log("Selected seat:", row + seat);
+            console.log("Row Letter:", row);
+            console.log("Seat Number:", seat);
+            seatidentify =seatId;
+
+          }
+        });
+      }
+
+      rowElement.appendChild(seatElement);
+    });
+
+    container.appendChild(rowElement);
+  });
+
+  console.log("create")
+
+}
+
+
+
+
+function getAllDivValues() {
+  // Get all divs inside the container
+  const divs = bookingInfoContainer.querySelectorAll('.booking-info-item');
+
+  // Map through the div elements to get their values
+  const values = Array.from(divs).map(div => {
+    return {
+      textValue: div.textContent,
+      dataValue: div.getAttribute('data-value')
+
+    };
+  });
+  console.log(values)
+  bookingValues= values;
+  return values;
+
+}
 $(document).ready(function() {
-  loadFilms();
-  loadFilmsHalls();
-  fetchSpices();
-  loadTimeTable();
+  getAllDivValues()
+  colouringSeats()
+
+
 });
 
-// Function to load films into dropdown
-function loadFilms() {
+
+
+
+function booking() {
+
+
+  console.log("===================")
+  console.log(bookingValues);
+  console.log(seatidentify);
+
+
+  const film =  bookingValues[0].textValue.substring(14);
+  const filmHall = bookingValues[1].textValue.substring(15);
+  const date =   bookingValues[2].textValue.substring(15);
+  const time =  bookingValues[3].textValue.substring(14);
+
+
+
+  const seat = seatidentify
+
+
+
+  const customerData ={
+    id: id,
+
+    bookingDate: date,
+    film:  film,
+    filmHall:  filmHall,
+    time:  time,
+    seat: seat
+  };
+
+
+
   $.ajax({
-    url: 'http://localhost:8080/api/v1/film/get',
-    type: 'GET',
-    success: (res) => {
-      console.log(res);
-
-      // Clear existing options
-      $('#locationSelect').empty();
-
-      // Add default option
-      $('#locationSelect').append('<option value="">select film</option>');
-
-      // Add options from response data
-      if (res.data && res.data.length > 0) {
-        res.data.forEach(film => {
-          $('#locationSelect').append(<option value="${film.title}">${film.title}</option>);
-        });
-      } else {
-        console.log("No data found in response");
-      }
+    url:'http://localhost:8080/api/v1/booking/save',
+    type:"POST",
+    data:JSON.stringify(
+      customerData
+    ),
+    contentType:"application/json",
+    success:(res) =>{
+      id++;
+      console.log(res)
     },
-    error: (err) => {
-      console.log(err);
+    errors:(err) =>{
+      console.log(err)
     }
-  });
+
+  })
+
+
+
 }
 
-function loadFilmsHalls() {
+
+function colouringSeats() {
   $.ajax({
-    url: 'http://localhost:8080/api/v1/example/get',
-    type: 'GET',
-    success: (res) => {
-      console.log(res);
-
-      // Clear existing options
-      $('#FilmSelect').empty();
-
-      // Add default option
-      $('#FilmSelect').append('<option value="">select film</option>');
-
-      // Add options from response data
-      if (res.data && res.data.length > 0) {
-        res.data.forEach(film => {
-          $('#FilmSelect').append(<option value="${film.name}">${film.name}</option>);
-        });
-      } else {
-        console.log("No data found in response");
-      }
-    },
-    error: (err) => {
-      console.log(err);
-    }
-  });
-}
-
-function loadTimeTable() {
-  $.ajax({
-    url: 'http://localhost:8080/api/v1/time-table/getAll',
-    type: 'GET',
-    success: (res) => {
-      console.log(res);
-
-      // Clear existing options
-      $('#TimeSelect').empty();
-
-      // Add default option
-      $('#TimeSelect').append('<option value="">select film</option>');
-
-      // Add options from response data
-      if (res.data && res.data.length > 0) {
-        res.data.forEach(film => {
-          $('#TimeSelect').append(<option value="${film.description}">${film.description}</option>);
-        });
-      } else {
-        console.log("No data found in response");
-      }
-    },
-    error: (err) => {
-      console.log(err);
-    }
-  });
-}
-
-$(document).ready(function() {
-  // Function to format date as YYYY-MM-DD
-  function formatDate(date) {
-    return date.toISOString().split('T')[0];
-  }
-
-  // Function to generate date options
-  function populateDateDropdown() {
-    const $select = $('#DateSelect');
-
-    // Clear existing options except the first one
-    $select.find('option:not(:first)').remove();
-
-    // Get current date
-    const today = new Date();
-
-    // Generate options for today and next 5 days
-    for (let i = 0; i < 6; i++) {
-      // Create a new date by adding days to the current date
-      const currentDate = new Date(today);
-      currentDate.setDate(today.getDate() + i);
-
-      // Format for display and value
-      const formattedDate = formatDate(currentDate);
-
-      // Create readable date string
-      const displayDate = currentDate.toLocaleDateString('en-US', {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric'
-      });
-
-      // Add option to dropdown
-      $select.append(
-        `<option value="${formattedDate}" ${i === 0 ? 'selected' : ''}>
-          ${i === 0 ? 'Today - ' : ''} ${displayDate}
-        </option>`
-      );
-    }
-  }
-
-  // Call the function to populate dropdown
-  populateDateDropdown();
-
-  // Optional: Refresh dates daily at midnight
-  setInterval(populateDateDropdown, 24 * 60 * 60 * 1000);
-});
-
-function fetchSpices() {
-  fetch('http://localhost:8080/api/v1/film-registration/getAll')
-    .then(response => response.json())
-    .then(data => {
-      const spiceContainer = document.getElementById('spiceContainer');
-      spiceContainer.innerHTML = '';
-      data.data.forEach(spice => {
-        const card = document.createElement('div');
-        card.className = 'col-md-4 spice-card';
-
-        card.innerHTML = `
-          <div class="card mb-4">
-            <div class="card-body">
-              <h5 class="card-title">${spice.hallName}</h5>
-              <h5 class="card-title">${spice.filmTitle}</h5>
-              <h5 class="card-title">${spice.timeDescription}</h5>
-            </div>
-          </div>
-        `;
-        spiceContainer.appendChild(card);
-      });
-    })
-    .catch(error => console.error('Error fetching spices:', error));
-}
-
-function navigateToNextPage() {
-  // Store the selected values in localStorage before navigating
-  const selectedFilm = $('#locationSelect').val() || '';
-  const selectedHall = $('#FilmSelect').val() || '';
-  const selectedDate = $('#DateSelect').val() || '';
-  const selectedTime = $('#TimeSelect').val() || '';
-
-  // Save to localStorage
-  localStorage.setItem('selectedFilm', selectedFilm);
-  localStorage.setItem('selectedHall', selectedHall);
-  localStorage.setItem('selectedDate', selectedDate);
-  localStorage.setItem('selectedTime', selectedTime);
-
-  $.ajax({
-    url: 'http://localhost:8080/api/v1/film-registration/getAll',
+    url: 'http://localhost:8080/api/v1/booking/getAll',
     type: "GET",
     success: (res) => {
-      let matchFound = false;
+      console.log(res);
 
       res.data.forEach(customer => {
-        let hall = customer.hallName;
-        let film = customer.filmTitle;
-        let time = customer.timeDescription;
+        const Id = customer.id;
+        const bookingDate = customer.bookingDate;
+        const films = customer.film;
+        const filmHalls = customer.filmHall;
+        const times = customer.time;
+        const seats = customer.seat;
 
-        // Get values from dropdowns
-        let selectedHallValue = $('#FilmSelect').val();
-        let selectedFilmValue = $('#locationSelect').val();
-        let selectedTimeValue = $('#TimeSelect').val();
+        console.log("Customer Seats: " + seats);
+        console.log("Customer Time: " + times);
+        console.log("Customer Booking Date: " + bookingDate);
 
-        // Check if the selected values match the current customer's details
-        if ((film === selectedFilmValue) &&
-          (hall === selectedHallValue) &&
-          (time === selectedTimeValue)) {
-          matchFound = true;
+        const film = bookingValues[0].textValue.substring(14);
+        const filmHall = bookingValues[1].textValue.substring(15);
+        const date = bookingValues[2].textValue.substring(14);
+        const time = bookingValues[3].textValue.substring(13);
 
-          if(hall === "SCOPE CINEMAS MULTIPLEX - Colombo City Centre") {
-            window.location.href = hh.html;
-            return false;
-          }
+        console.log("Film: " + film);
+        console.log("Film Hall: " + filmHall);
+        console.log("Date: " + date);
+        console.log("Time: " + time);
 
-          if(hall === "SCOPE CINEMAS MULTIPLEX - Havelock City Mall") {
-            window.location.href = ss.html;
-            return false;
-          }
+        if ((film === films) &&
+          (filmHall === filmHalls) &&
+          (time.trim() === times.trim()) &&
+          (date.trim() === bookingDate.trim())) {
+          console.log("Match found! Adding seats: " + seats);
+          reservedSeats.push(seats);
+
         }
       });
+      createSeatMap()
+
+
     }
   });
 }

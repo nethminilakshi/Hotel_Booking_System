@@ -14,8 +14,10 @@ public class ReviewDTO implements Serializable {
 
 private UUID reviewId;
     private UUID userId;
+    private String userName;
     private UUID hotelId;
+    private String location;
     private int rating; // 1-5 stars
     private String comment;
-    private String createdAt; // LocalDateTime as String for simplicity
+    private String reviewDate; // LocalDateTime as String for simplicity
 }

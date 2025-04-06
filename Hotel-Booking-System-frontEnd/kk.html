@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Scope Cinemas - Buy Tickets</title>
-  <!-- Bootstrap CSS -->
+  <title>Seat Selection - Scope Cinemas</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <style>
@@ -18,15 +17,31 @@
     .navbar-custom .nav-link:hover {
       color: #f8f9fa;
     }
-    .buy-tickets-section {
+    .booking-info {
       background-color: #f4f4f4;
-      padding: 20px 0;
+      border-radius: 5px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-    .select-container {
+    .booking-info-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    .booking-info-item {
+      flex: 1;
+      min-width: 200px;
       background-color: white;
       border-radius: 5px;
       padding: 15px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .booking-info-item h5 {
+      color: #0c0c2f;
+      margin-bottom: 8px;
     }
     .btn-purple {
       background-color: #4a148c;
@@ -36,59 +51,49 @@
       background-color: #6a1b9a;
       color: white;
     }
-
-
-
-    #filmRegistration {
+    #seat-map {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .seat-row {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
-      gap: 15px;
-      padding: 20px;
-    }
-
-    #filmRegistration .container {
-      margin: 0;
-      padding: 0;
-      width: auto;
-    }
-
-    #filmRegistration .row {
-      margin: 0;
-      display: flex;
       align-items: center;
-    }
-
-    #filmRegistration .col-md-4 {
-      width: auto;
-      flex: 0 0 auto;
-    }
-
-    #filmRegistration .mb-3 {
-      margin-bottom: 0;
-      width: 200px; /* Fixed width for consistent look */
-    }
-
-    #filmRegistration .form-label {
-      white-space: nowrap;
       margin-bottom: 5px;
     }
-
-    #filmRegistration .form-select {
-      width: 100%;
-      max-width: 200px;
+    .seat-label {
+      width: 30px;
+      text-align: right;
+      margin-right: 10px;
+      color: #6c757d;
     }
-
-    @media (max-width: 768px) {
-      #filmRegistration {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      #filmRegistration .mb-3 {
-        width: 100%;
-        max-width: 300px;
-      }
+    .seat {
+      width: 40px;
+      height: 40px;
+      margin: 2px;
+      border: 1px solid #ddd;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+    .available { background-color: white; }
+    .reserved { background-color: red; color: white; }
+    .selected { background-color: blue; color: white; }
+    .unavailable { background-color: pink; }
+    .screen {
+      width: 100%;
+      height: 50px;
+      background-color: #333;
+      color: white;
+      text-align: center;
+      line-height: 50px;
+      margin-bottom: 20px;
+    }
+    .aisle-space {
+      width: 40px;
+      border-right: 2px solid #dee2e6;
+      margin-right: 10px;
     }
   </style>
 </head>
@@ -96,9 +101,7 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-custom">
   <div class="container-fluid">
-    <a class="navbar-brand text-white" href="#">
-
-    </a>
+    <a class="navbar-brand text-white" href="#"></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -128,84 +131,179 @@
   </div>
 </nav>
 
-<div id="filmRegistration">
-  <div class="container mt-5">
-    <div class="row">
-      <div class="col-md-4">
-        <div class="mb-3">
-          <label for="locationSelect" class="form-label">Select Film</label>
-          <select id="locationSelect" class="form-select">
-            <option selected value="">All Locations</option>
-            <!-- Locations will be dynamically added here -->
-          </select>
+<div class="container mt-4">
+  <h2 class="mb-4">Seat Selection</h2>
+
+  <!-- Booking Information Section -->
+  <div class="booking-info-container" id="bookingInfoContainer">
+    <!-- Dynamic divs will be added here -->
+  </div>
+
+  <!-- Seat Map Section -->
+  <div class="row">
+    <div class="col-12 text-center">
+      <div class="screen">SCREEN</div>
+    </div>
+  </div>
+
+  <div id="seat-map">
+    <div id="seat-container"></div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-12 text-center">
+      <div class="d-inline-block">
+        <div class="d-flex align-items-center mb-2">
+          <div class="seat available me-2"></div>
+          <span>Available</span>
+        </div>
+        <div class="d-flex align-items-center mb-2">
+          <div class="seat reserved me-2"></div>
+          <span>Reserved</span>
+        </div>
+        <div class="d-flex align-items-center">
+          <div class="seat selected me-2"></div>
+          <span>Selected</span>
         </div>
       </div>
     </div>
   </div>
 
+  <div class="row mt-4 mb-5">
+    <div class="col-12 d-flex justify-content-between">
 
-
-  <div class="container mt-5">
-    <div class="row">
-      <div class="col-md-4">
-        <div class="mb-3">
-          <label for="FilmSelect" class="form-label">Select Film Hall </label>
-          <select id="FilmSelect" class="form-select">
-            <option selected value="">All Locations</option>
-            <!-- Locations will be dynamically added here -->
-          </select>
-        </div>
-      </div>
+      <button id="continueButton" class="btn btn-purple" onclick="booking()">Continue</button>
     </div>
   </div>
-
-
-
-
-
-  <div class="container mt-5">
-    <div class="row">
-      <div class="col-md-4">
-        <div class="mb-3">
-          <label for="DateSelect" class="form-label">Select  Date </label>
-          <select id="DateSelect" class="form-select">
-            <option selected value="">All Locations</option>
-            <!-- Locations will be dynamically added here -->
-          </select>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="container mt-5">
-    <div class="row">
-      <div class="col-md-4">
-        <div class="mb-3">
-          <label for="TimeSelect" class="form-label">Select  Time</label>
-          <select id="TimeSelect" class="form-select">
-            <option selected value="">All Locations</option>
-            <!-- Locations will be dynamically added here -->
-          </select>
-        </div>
-      </div>
-    </div>
-  </div>
-  <button id="nextButton" class="btn btn-primary w-100" onclick="navigateToNextPage()">
-    Next
-  </button>
-</div>
-<div class="row" id="spiceContainer">
-
-
 </div>
 
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Retrieve values from localStorage
+    const selectedFilm = localStorage.getItem('selectedFilm') || 'Not selected';
+    const selectedHall = localStorage.getItem('selectedHall') || 'Not selected';
+    const selectedDate = localStorage.getItem('selectedDate') || 'Not selected';
+    const selectedTime = localStorage.getItem('selectedTime') || 'Not selected';
+
+    // Create the booking info container
+    const bookingInfoContainer = document.getElementById('bookingInfoContainer');
+
+    // Create and append 4 divs with the booking information
+    const infoItems = [
+      { label: 'Movie', value: selectedFilm, icon: 'fas fa-film' },
+      { label: 'Cinema', value: selectedHall, icon: 'fas fa-building' },
+      { label: 'Date', value: selectedDate, icon: 'far fa-calendar-alt' },
+      { label: 'Time', value: selectedTime, icon: 'far fa-clock' }
+    ];
+
+    infoItems.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'booking-info-item';
+      div.innerHTML = `
+        <h5><i class="${item.icon} me-2"></i>${item.label}</h5>
+        <p class="mb-0">${item.value}</p>
+      `;
+      bookingInfoContainer.appendChild(div);
+    });
+
+    // Initialize seat map
+    // createSeatMap();
+  });
+
+  // Seat map functionality
+  const rowLetters = ['F', 'E', 'D', 'C', 'B', 'A'];
+  const rowLettersWithFullColumns = ['F', 'E'];
+  const seats = {
+    'E': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'],
+    'F': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'],
+    'default': ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13']
+  };
+  const reservedSeats = [
+
+  ];
+
+  console.log("pk" + reservedSeats)
+  let selectedSeats = [];
+
+  function createSeatMap() {
+    const container = document.getElementById('seat-container');
+
+    rowLetters.forEach(row => {
+      const rowElement = document.createElement('div');
+      rowElement.className = 'seat-row';
+
+      const rowLabel = document.createElement('div');
+      rowLabel.className = 'seat-label';
+      rowLabel.textContent = row;
+      rowElement.appendChild(rowLabel);
+
+      // Determine which seats to use based on the row
+      const rowSeats = rowLettersWithFullColumns.includes(row) ? seats[row] : seats['default'];
+
+      rowSeats.forEach((seat, index) => {
+        // Add aisle space after the 3rd seat
+        if (index === 3) {
+          const aisleSpace = document.createElement('div');
+          aisleSpace.className = 'aisle-space';
+          rowElement.appendChild(aisleSpace);
+        }
+
+        const seatElement = document.createElement('div');
+        seatElement.className = 'seat';
+        seatElement.textContent = seat;
+
+        const seatId = row + seat;
+        if (reservedSeats.includes(seatId)) {
+          seatElement.classList.add('reserved');
+        } else {
+          seatElement.classList.add('available');
+
+          // Add click event to toggle selection
+          seatElement.addEventListener('click', function() {
+            if (this.classList.contains('available')) {
+              if (this.classList.contains('selected')) {
+                this.classList.remove('selected');
+                // Remove from selected seats array
+                const index = selectedSeats.indexOf(seatId);
+                if (index > -1) {
+                  selectedSeats.splice(index, 1);
+                }
+              } else {
+                this.classList.add('selected');
+                // Add to selected seats array
+                selectedSeats.push(seatId);
+              }
+            }
+          });
+        }
+
+        rowElement.appendChild(seatElement);
+      });
+
+      container.appendChild(rowElement);
+    });
+  }
+
+  // Continue button functionality
+  document.getElementById('continueButton').addEventListener('click', function() {
+    if (selectedSeats.length > 0) {
+      // Store selected seats in localStorage
+      localStorage.setItem('selectedSeats', JSON.stringify(selectedSeats));
+
+      // Navigate to payment page (you can replace this with your actual payment page)
+      alert('Selected seats: ' + selectedSeats.join(', '));
+      // window.location.href = 'payment.html';
+    } else {
+      alert('Please select at least one seat to continue.');
+    }
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="js/jquery-3.7.1.min.js"></script>
 
 
-
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 <script src="js/fake.js"></script>
 </body>
 </html>

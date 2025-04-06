@@ -9,11 +9,17 @@
   <link rel="stylesheet" href="css/owl.carousel.min.css">
   <link rel="stylesheet" href="css/aos.css">
   <link rel="stylesheet" href="css/bootstrap.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+  <!-- Owl Carousel CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css"/>
+  <!-- Font Awesome for stars -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css" />
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.countdown/2.2.0/jquery.countdown.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
 </head>
 
@@ -203,7 +209,6 @@
   </div>
 </section>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.js"></script>
 <script>
   $('.owl-carousel').owlCarousel({
@@ -237,37 +242,41 @@
     <div class="context grid mtop">
       <h2>Trending destinations</h2>
       <div class="box-bar">
-      <div class="box">
-       <img src="image/Ella.jpg" alt="Ella image" class="destination-img">
-        <h3>Ella</h3>
-        <p>parkn ipsum dolor sit amet, consectetur adiing elit sed do eiu</p>
-        <span class='far fa-long-arrow-alt-right'></span>
-      </div>
-      <div class="box">
-        <img src="image/NuwaraEliya.jpg" alt="Nuwara Eliya" class="destination-img">
-        <h3>NuwaraEliya</h3>
-        <p>parkn ipsum dolor sit amet, consectetur adiing elit sed do eiu</p>
-        <span class='far fa-long-arrow-alt-right'></span>
-      </div>
-      <div class="box">
-       <img src="image/Colombo.jpg" alt="Colombo" class="destination-img">
-        <h3>Colombo</h3>
-        <p>parkn ipsum dolor sit amet, consectetur adiing elit sed do eiu</p>
-        <span class='far fa-long-arrow-alt-right'></span>
-      </div>
-      <div class="box">
-      <img src="image/Kandy.jpg" alt="Kandy" class="destination-img">
-        <h3>kandy</h3>
-        <p>parkn ipsum dolor sit amet, consectetur adiing elit sed do eiu</p>
-        <span class='far fa-long-arrow-alt-right'></span>
-      </div>
+        <div class="box" data-aos="fade-up" data-aos-delay="100">
+          <img src="image/Ella.jpg" alt="Ella image" class="destination-img">
+          <h3>Ella</h3>
+          <p>parkn ipsum dolor sit amet, consectetur adiing elit sed do eiu</p>
+          <span class='fas fa-long-arrow-alt-right'></span>
+        </div>
+
+        <div class="box" data-aos="fade-up" data-aos-delay="200">
+          <img src="image/NuwaraEliya.jpg" alt="Nuwara Eliya" class="destination-img">
+          <h3>NuwaraEliya</h3>
+          <p>parkn ipsum dolor sit amet, consectetur adiing elit sed do eiu</p>
+          <span class='far fa-long-arrow-alt-right'></span>
+        </div>
+
+        <div class="box" data-aos="fade-up" data-aos-delay="300">
+          <img src="image/Colombo.jpg" alt="Colombo" class="destination-img">
+          <h3>Colombo</h3>
+          <p>parkn ipsum dolor sit amet, consectetur adiing elit sed do eiu</p>
+          <span class='far fa-long-arrow-alt-right'></span>
+        </div>
+
+        <div class="box" data-aos="fade-up" data-aos-delay="400">
+          <img src="image/Kandy.jpg" alt="Kandy" class="destination-img">
+          <h3>Kandy</h3>
+          <p>parkn ipsum dolor sit amet, consectetur adiing elit sed do eiu</p>
+          <span class='far fa-long-arrow-alt-right'></span>
+        </div>
+
       </div>
     </div>
   </div>
 </section>
 
 
-<section class="room wrapper2 top" id="room">
+<section class="room wrapper2 top" id="room" data-aos="fade-up" data-aos-duration="2000" data-aos-offset="200">
   <div class="container">
     <div class="heading">
       <h5>OUR ROOMS</h5>
@@ -312,6 +321,47 @@
     </div>
   </div>
 </section>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  const roomSection = document.querySelector(".room");
+
+  const observer = new IntersectionObserver(
+    function (entries, observer) {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("animate");
+          observer.unobserve(entry.target); // Remove observer after animation triggers
+        }
+      });
+    },
+    {
+      threshold: 0.3, // Trigger when 30% of the element is in view
+    }
+  );
+
+  if (roomSection) {
+    observer.observe(roomSection);
+  }
+});
+</script>
+
+<section class="testimonial-section spad">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="section-title">
+          <p id="reviewT">Testimonials</p>
+          <p class="testimonial-title">What Customers Say?</p>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-8 offset-lg-2">
+        <div class="testimonial-slider owl-carousel" id="testimonial-carousel">
+          <!-- JS will inject slides here -->
+        </div>      </div>
+    </div>
+  </div>
+</section>
 
 <section class="timer about wrapper">
   <div class="background"> </div>
@@ -324,18 +374,6 @@
     <div id="time" class="flex1 mtop"> </div>
   </div>
 </section>
-<script src="js/jquery.countdown.js" charset="utf-8"></script>
-<script src="js/jquery.countdown.min.js" charset="utf-8"></script>
-<script type="text/javascript">
-  $('#time').countdown('2024/01/01', function(event) {
-    $(this).html(event.strftime(
-      '<div class="clock"><span>%d</span> <p>Days</p></div> ' +
-      '<div class="clock"><span>%H</span> <p>Hours</p></div> ' +
-      '<div class="clock"><span>%M</span> <p>Minutes</p></div> ' +
-      '<div class="clock"><span>%S</span> <p>Seconds</p></div> '
-    ));
-  });
-</script>
 <!--<section class="gallary top" id="gallary">-->
 <!--  <div class="owl-carousel owl-theme">-->
 <!--    <div class="item">-->
@@ -414,16 +452,6 @@
     }
   })
 </script>
-
-
-<!-- -->
-
-
-<section class="map top">
-  <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d14131.036667732067!2d85.32395955!3d27.69383745!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2snp!4v1638187678048!5m2!1sen!2snp" width="600" height="450" style="border:0;"
-          allowfullscreen="" loading="lazy"></iframe>
-</section>
-
 
 <footer>
   <div class="container top">
@@ -510,11 +538,30 @@
     </div>
   </div>
 </footer>
+<!-- jQuery (first) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+<!-- Waypoints (for scroll animations) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+
+<!-- AOS (Animate On Scroll) -->
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
+<script src="js/owl.carousel.min.js"></script>
 <!-- <script src="js/jquery.waypoints.min.js"></script> -->
 <script src="js/aos.js"></script>
 <script src="js/main.js"></script>
+<script src="js/UserReview.js"></script>
+
+
+<!-- Owl Carousel JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 
 </body>
 

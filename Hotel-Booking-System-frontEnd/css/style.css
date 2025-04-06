@@ -366,11 +366,10 @@ h1 {
 /*--------about---------*/
 .left, .right {
   width: 50%;
-  padding: 30px;
 }
 
 .top {
-  margin-top: 80px;
+  margin-top: 50px;
 }
 
 .mtop {
@@ -635,6 +634,9 @@ p {
 .room {
   margin-bottom: 50px;
   position: relative;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
 .room.wrapper2::after {
@@ -658,6 +660,11 @@ p {
 .room h3 {
   margin: 0;
   padding: 0;
+}
+/* When in view, fade in and slide up */
+.room.animate {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /*------------room------------*/
@@ -1305,3 +1312,99 @@ footer .content {
   font-style: italic;
 }
 
+p {
+  font-size: 16px;
+  font-family: "Cabin", sans-serif;
+  color: #6b6b6b;
+  font-weight: 400;
+  line-height: 26px;
+  margin: 0 0 15px 0;
+}
+.testimonial-section {
+  background: #f9f9f9;
+}
+.testimonial-section .section-title {
+  margin-bottom: 30px;
+}
+.testimonial-slider.owl-carousel .owl-item img {
+  width: auto;
+  margin: 0 auto;
+}
+.testimonial-slider.owl-carousel .owl-nav button {
+  height: 44px;
+  width: 44px;
+  border: 1px solid #ebebeb;
+  font-size: 24px;
+  color: #707079;
+  background: #ffffff;
+  line-height: 48px;
+  text-align: center;
+  border-radius: 50%;
+  position: absolute;
+  left: -190px;
+  top: 50%;
+  -webkit-transform: translateY(-6px);
+  -ms-transform: translateY(-6px);
+  transform: translateY(-6px);
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.testimonial-slider.owl-carousel .owl-nav button:hover {
+  border-color: #19191a;
+  color: #19191a;
+}
+.testimonial-slider.owl-carousel .owl-nav button.owl-next {
+  left: auto;
+  right: -190px;
+}
+.testimonial-slider .ts-item {
+  text-align: center;
+}
+.testimonial-slider .ts-item p {
+  font-size: 20px;
+  color: #707079;
+  line-height: 30px;
+  margin-bottom: 50px;
+}
+.testimonial-slider .ts-item .ti-author {
+  margin-bottom: 60px;
+}
+.testimonial-slider .ts-item .ti-author .rating {
+  display: inline-block;
+}
+.testimonial-slider .ts-item .ti-author .rating i {
+  color: #f5b917;
+  font-size: 16px;
+}
+.testimonial-slider .ts-item .ti-author h5 {
+  font-size: 20px;
+  color: #19191a;
+  display: inline-block;
+}
+
+.ts-item {
+  text-align: center;
+  padding: 20px;
+}
+.rating {
+  color: gold;
+  margin: 10px 0;
+}
+.ti-author h5 {
+  margin: 5px 0;
+}
+#reviewT{
+  font-size: 1.3rem;
+  text-align: center;
+  color: #1b1e21;
+margin: 10px 0px;
+}
+
+.testimonial-title {
+  font-size: 2.6rem;
+  font-family: "Playfair Display", times, serif;
+  font-weight: bold;
+  text-align: center;
+  color: #FADA7A;
+}

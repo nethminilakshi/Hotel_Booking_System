@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hotel Booking</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="css/Booking.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+<div class="booking-container">
+  <h2>Book Your Room</h2>
+
+
+  <!-- Hotel ID Dropdown -->
+  <div class="mb-3">
+    <label for="hotelId" class="form-label">Select Hotel</label>
+    <select id="hotelId" class="form-select">
+      <option selected value="">select hotel</option>
+      <!-- Locations will be dynamically added here -->
+    </select>
+  </div>
+
+  <!-- Check-in Date -->
+  <div class="form-group mt-3">
+    <label for="checkinDate">Check-in Date</label>
+    <input type="date" id="checkinDate" class="form-control">
+  </div>
+
+  <!-- Checkout Date -->
+  <div class="form-group mt-3">
+    <label for="checkoutDate">Check-out Date</label>
+    <input type="date" id="checkoutDate" class="form-control">
+  </div>
+
+    <!-- Time Slot Selection -->
+    <div class="form-group mt-3">
+      <label for="timeSlotSelect">Choose Time Slot</label>
+      <select id="timeSlotSelect" class="form-control">
+        <option value="day">Day Time (9:00 AM - 4:00 PM)</option>
+        <option value="night">Night Time (5:00 PM - 8:00 AM)</option>
+      </select>
+    </div>
+
+    <!-- Room Type & Availability -->
+    <div class="form-group mt-4" id="roomTypeContainer">
+      <label for="roomTypeSelect">Room Type</label>
+      <select id="roomTypeSelect" class="form-control">
+        <!-- Room types will be loaded -->
+      </select>
+      <small id="roomAvailabilityInfo" class="form-text text-muted mt-2"></small>
+    </div>
+
+    <!-- Book Button -->
+    <div class="mt-4">
+      <button id="bookRoomButton" class="btn btn-primary">Book Room</button>
+    </div>
+  </div>
+
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="js/booking.js"></script>
+</body>
+</html>

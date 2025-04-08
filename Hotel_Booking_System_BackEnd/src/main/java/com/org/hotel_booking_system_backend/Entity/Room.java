@@ -18,6 +18,7 @@ public class Room {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "type_id", nullable = false)
+
     private RoomType roomType; // Reference to RoomType entity
 
     @Column(name = "availability")

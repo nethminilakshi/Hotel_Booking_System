@@ -115,8 +115,24 @@ public class Mapping {
     }
 
     public Room convertToRoomEntity(RoomDTO dto) {
-        return modelMapper.map(dto, Room.class);
+        Room room = new Room();
+        room.setRoomId(dto.getRoomId());
+        room.setAvailability(dto.getAvailability());
+        room.setFloorNumber(dto.getFloorNumber());
+
+        // Set RoomType
+        RoomType roomType = new RoomType();
+        roomType.setTypeId(UUID.fromString(dto.getRoomTypeId()));
+        room.setRoomType(roomType);
+
+        //  Set Hotel using hotelId from DTO
+        Hotel hotel = new Hotel();
+        hotel.setHotelId(UUID.fromString(dto.getHotelId()));
+        room.setHotel(hotel);
+
+        return room;
     }
+
 
     public List<RoomDTO> convertRoomToDTOList(List<Room> rooms) {
         return modelMapper.map(rooms, new TypeToken<List<RoomDTO>>() {}.getType());

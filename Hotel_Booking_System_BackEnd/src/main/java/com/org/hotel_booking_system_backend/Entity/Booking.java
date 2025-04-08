@@ -30,7 +30,7 @@ public class Booking {
     private LocalDate checkOut;
 
     @Column(nullable = false)
-    private String PhoneNumber;
+    private String time;
 
     @Enumerated(EnumType.STRING)
     private BookingStatus status; // PENDING, CONFIRMED, CANCELLED

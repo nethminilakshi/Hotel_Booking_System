@@ -12,10 +12,12 @@ public class BookingDetailsDTO {
     private String bookingId;
     private String customerId;
     private String customerName;
+    private String PhoneNumber;
+    private String email;
     private String roomId;
     private LocalDate checkIn;
     private LocalDate checkOut;
-    private String PhoneNumber;
+    private String time;
     private String status;
 
 

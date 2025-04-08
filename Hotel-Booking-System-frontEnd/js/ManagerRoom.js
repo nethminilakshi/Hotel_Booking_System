@@ -1,225 +1,195 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // Elements for the Room Registration Form
-  const roomRegisterForm = document.getElementById('room-register-form');
-  const addRoomButton = document.getElementById('add-room');
-  const closeButton = document.getElementById('room-register-close');
-  const roomForm = document.getElementById('room-form');
-  const tableBody = document.querySelector('.room-table tbody');
-  const formTitle = document.querySelector('.room-register-title');
-  const hotelDropdown = document.getElementById('room-hotel-id');
-  const roomTypeDropdown = document.getElementById('room-roomType-id');
-
+$(document).ready(function() {
+  const roomRegisterForm = $('#room-register-form');
+  const addRoomButton = $('#add-room');
+  const closeButton = $('#room-register-close');
+  const roomForm = $('#room-form');
+  const tableBody = $('.room-table tbody');
+  const formTitle = $('.room-register-title');
+  const roomTypeDropdown = $('#roomTypeId');
+  const hotelDropdown = $('#hotelId');
   let currentRoomId = null;
+  let hotels = []; // Store hotels data
+  let roomTypes = []; // Store room types data
 
   // Function to open the registration form
-  const openForm = () => {
-    console.log("Opening Room Form...");
-    roomRegisterForm.style.display = "flex";
-    formTitle.textContent = "Register Room";
-    currentRoomId = null;
-    clearForm();
+  const openForm = function() {
+    roomRegisterForm.css("display", "flex");
+    formTitle.text(currentRoomId ? "Update Room" : "Register Room");
+    if (!currentRoomId) {
+      clearForm();
+    }
   };
 
   // Function to close the registration form
   const closeForm = () => {
-    console.log("Closing Room Form...");
-    roomRegisterForm.style.display = "none";
+    roomRegisterForm.css("display", "none");
     clearForm();
   };
 
-  addRoomButton?.addEventListener("click", openForm);
-  closeButton?.addEventListener("click", closeForm);
+  addRoomButton.on('click', openForm);
+  closeButton.on('click', closeForm);
 
   // Close the form when clicking outside it
-  window.addEventListener('click', (event) => {
-    if (event.target === roomRegisterForm) {
-      closeForm();
-    }
+  $(window).on('click', function(event) {
+    if (event.target === roomRegisterForm[0]) closeForm();
   });
+
+  // Function to get the authentication token
+  const getAuthToken = function() {
+    return localStorage.getItem('authToken');
+  };
+
+  // Function to get hotel name by hotelId
+  function getHotelNameById(hotelId) {
+    if (hotels.length === 0) {
+      console.warn("Hotels data not loaded yet.");
+      return "Unknown Hotel";
+    }
+
+    const hotel = hotels.find(h => h.hotelId === hotelId);
+    return hotel ? hotel.name : "Unknown Hotel";
+  }
+
+  // Function to get room type name by roomTypeId
 
   // Load hotel details into dropdown
-  $(document).ready(() => {
-    $('#load-cus-ids').click((e) => {
-      e.preventDefault();
-
-      $.ajax({
-        url: 'http://localhost:8080/api/v1/hotel/getAll',
-        type: 'GET',
-        success: (res) => {
-          console.log("Response from server:", res);
-          $('#room-hotel-id').empty();
-          $('#room-hotel-id').append('<option value="">-- Select Hotel --</option>');
-
-          if (res.data && Array.isArray(res.data) && res.data.length > 0) {
-            res.data.forEach(hotel => {
-              $('#room-hotel-id').append(
-                `<option value="${hotel.hotelId}">${hotel.description}</option>`
-              );
-            });
-          } else {
-            console.log("No hotel data found in response");
-          }
-        },
-        error: (err) => {
-          console.error("Error fetching hotel IDs:", err);
-        }
-      });
-    });
-  });
-
-  // Load room type details into dropdown
-  $('#load-hotel-ids').click((e) => {
-    e.preventDefault();
-
-    $.ajax({
-      url: 'http://localhost:8080/api/v1/roomType/getAll',
-      type: 'GET',
-      success: (res) => {
-        console.log(res);
-        $('#room-roomType-id').empty();
-        $('#room-roomType-id').append('<option value="">-- Select Room Type --</option>');
-
-        if (res.data && Array.isArray(res.data) && res.data.length > 0) {
-          res.data.forEach(roomType => {
-            $('#room-roomType-id').append(
-              `<option value="${roomType.typeId}">${roomType.description}</option>`
-            );
+  const loadHotels = function() {
+    return $.ajax({
+      url: 'http://localhost:8080/api/v1/hotel/getAll',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`
+      },
+      success: function(result) {
+        if (result.data && Array.isArray(result.data)) {
+          hotels = result.data;
+          hotelDropdown.html('<option value="">-- Select Hotel --</option>');
+          result.data.forEach(function(hotel) {
+            const option = $('<option></option>');
+            option.val(hotel.hotelId);
+            option.text(hotel.name || "Unknown");
+            hotelDropdown.append(option);
           });
         } else {
-          console.log("No room type data found in response");
+          console.error("Error loading hotels:", result);
         }
       },
-      error: (err) => {
-        console.error("Error fetching room types:", err);
+      error: function(error) {
+        console.error("Error loading hotels:", error);
       }
     });
-  });
-
-  // Fetch and display room data
-  const fetchRooms = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/api/v1/room/getAll");
-      if (!response.ok) throw new Error("Failed to fetch rooms");
-
-      const rawText = await response.text();
-      console.log("Raw Response from Backend:", rawText);
-      const result = JSON.parse(rawText);
-      console.log("Parsed JSON:", result);
-
-      const rooms = result.data || [];
-      tableBody.innerHTML = "";
-      rooms.forEach(addRoomToTable);
-    } catch (error) {
-      console.error("Error fetching rooms:", error);
-      alert("An error occurred while fetching rooms.");
-    }
   };
 
-  // Function to dynamically add a room to the table
-  const addRoomToTable = (room) => {
-    console.log("Room Data:", room);
-
-    const row = document.createElement("tr");
-    row.id = `room-${room.roomId}`; //  Add ID to the row for easy deletion
-
-    row.innerHTML = `
-        <td>${room.roomId || "N/A"}</td>
-        <td>${room.roomTypeId || "N/A"}</td>
-        <td>${room.floorNumber || "N/A"}</td>
-        <td>${room.hotelId || "N/A"}</td>
-        <td>${room.availability ? "Available" : "Not Available"}</td>
-        <td><span class="update-button"><i class="fas fa-edit">update</i></span></td>
-        <td><span class="delete-button"><i class="fas fa-trash">delete</i></span></td>
-    `;
-
-    row.querySelector(".update-button").addEventListener("click", () => openUpdateForm(room));
-    row.querySelector(".delete-button").addEventListener("click", () => deleteRoom(room.roomId));
-
-    tableBody.appendChild(row);
-  };
-
-  // Save or Update Room
-  roomForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const availability = document.getElementById("room-availability").value;
-    const floorNumber = document.getElementById("room-floor-number").value;
-    const hotelId = document.getElementById("room-hotel-id").value;
-    const roomTypeId = document.getElementById("room-roomType-id").value;
-
-    const roomData = {
-      availability: availability === "true",
-      floorNumber: parseInt(floorNumber),
-      hotelId: hotelId,
-      roomTypeId: roomTypeId
-    };
-
-    try {
-      const url = currentRoomId
-        ? `http://localhost:8080/api/v1/room/update/${currentRoomId}`
-        : "http://localhost:8080/api/v1/room/save";
-      const method = currentRoomId ? "PATCH" : "POST";
-
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(roomData),
-      });
-
-      if (!response.ok) throw new Error(`Failed to save room: ${response.statusText}`);
-
-      await fetchRooms();
-      closeForm();
-      currentRoomId = null;
-    } catch (error) {
-      console.error("Error saving room:", error);
-      alert(error.message);
-    }
-  });
-
-  // Clear the form
-  const clearForm = () => {
-    roomForm.reset();
-    currentRoomId = null;
-  };
-
-  // ✅ Fixed Delete Room Function
-  const deleteRoom = async (id) => {
-    if (!id) {
-      console.error("Invalid room ID:", id);
-      return;
-    }
-
-    if (!confirm("Are you sure you want to delete this room?")) return;
-
-    try {
-      const response = await fetch(`http://localhost:8080/api/v1/room/delete/${id}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        const result = await response.json();
-        throw new Error(`Failed to delete room: ${result.message}`);
+  // Load room type details into dropdown
+  const loadRoomType = function() {
+    return $.ajax({
+      url: 'http://localhost:8080/api/v1/roomType/getAll',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`
+      },
+      success: function(result) {
+        console.log("Room Types Response:", result);
+        if (result.data && Array.isArray(result.data)) {
+          roomTypes = result.data;
+          console.log("Room Types Array:", roomTypes);
+          roomTypeDropdown.html('<option value="">-- Select RoomType --</option>');
+          result.data.forEach(function(room) {
+            const option = $('<option></option>');
+            option.val(room.roomTypeId);
+            option.text(room.name || "Unknown");
+            roomTypeDropdown.append(option);
+          });
+        } else {
+          console.error("Error loading room types:", result);
+        }
+      },
+      error: function(error) {
+        console.error("Error loading room types:", error);
       }
-
-      console.log(`Room with ID ${id} deleted successfully.`);
-
-      const roomElement = document.getElementById(`room-${id}`);
-      if (roomElement) {
-        roomElement.remove();
-      } else {
-        console.warn(`Room element with ID "room-${id}" not found in DOM.`);
-      }
-
-      alert("Room deleted successfully!");
-    } catch (error) {
-      console.error("Error deleting room:", error);
-      alert(error.message);
-    }
+    });
   };
 
-  // Initial Fetch
-  fetchRooms();
+// Function to get room type name by roomTypeId
+  function getRoomTypeNameById(roomTypeId) {
+    if (roomTypes.length === 0) {
+      console.warn("Room Types data not loaded yet.");
+      return "Unknown Room Type";
+    }
+
+    console.log("Looking for Room Type ID:", roomTypeId);  // Log the ID being searched for
+
+    // Log all room types to inspect their structure
+    roomTypes.forEach((roomType, index) => {
+      console.log(`Room Type ${index}:`, roomType);
+    });
+
+    // Now let's check the roomTypeId more carefully
+    const roomType = roomTypes.find(rt => rt.typeId && rt.typeId.trim() === roomTypeId.trim());
+
+    if (roomType) {
+      console.log("Room Type Found:", roomType);  // Log the found room type
+      return roomType.name || "Unknown Room Type";
+    } else {
+      console.warn("Room Type ID not found:", roomTypeId);  // Log when no match is found
+      return "Unknown Room Type";
+    }
+  }
+
+
+  // Fetch rooms for the table
+  const fetchRooms = function() {
+    $.ajax({
+      url: 'http://localhost:8080/api/v1/room/getAll',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`
+      },
+      success: function(result) {
+        tableBody.html("");
+        if (result && result.data && Array.isArray(result.data)) {
+          result.data.forEach(function(room) {
+            addRoomToTable(room);
+          });
+        } else {
+          console.error("Invalid data format received:", result);
+        }
+      },
+      error: function(error) {
+        console.error("Error fetching rooms:", error);
+        alert("An error occurred while fetching rooms.");
+      }
+    });
+  };
+
+  // Add room data to table
+  const addRoomToTable = function(room) {
+    const row = $('<tr></tr>');
+    row.html(`
+      <td>${room.roomId || "N/A"}</td>
+      <td>${getRoomTypeNameById(room.roomTypeId) || "Unknown"}</td>
+      <td>${room.floorNumber || "N/A"}</td>
+      <td>${getHotelNameById(room.hotelId) || "Unknown"}</td>
+      <td>${room.availability ? "Available" : "Not Available"}</td>
+      <td><span class="update-button">Update</span></td>
+      <td><span class="delete-button">Delete</span></td>
+    `);
+    row.find('.update-button').on('click', function() {
+      openUpdateForm(room);
+    });
+    row.find('.delete-button').on('click', function() {
+      deleteRoom(room.roomId);
+    });
+    tableBody.append(row);
+  };
+
+  // Initial load sequence using $.ajax()
+  $.when(loadHotels(), loadRoomType()).done(function() {
+    fetchRooms(); // Only fetch rooms after both hotels and room types are loaded
+  }).fail(function() {
+    console.error("Error loading data");
+  });
 });

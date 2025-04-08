@@ -9,14 +9,16 @@ import com.org.hotel_booking_system_backend.Util.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class RoomServiceImpl implements RoomService {
+
     @Autowired
     private RoomRepo roomRepo;
+
     @Autowired
     private Mapping mapper;
 
@@ -24,47 +26,58 @@ public class RoomServiceImpl implements RoomService {
     public Room save(RoomDTO roomDTO) {
         Room room = mapper.convertToRoomEntity(roomDTO);
 
-        if (room.getRoomId() == null || room.getRoomId().isEmpty()){
+        if (room.getRoomId() == null || room.getRoomId().isEmpty()) {
             room.setRoomId(AppUtil.createRoomCode());
         }
-if(roomRepo.existsById(room.getRoomId())){
+
+        if (roomRepo.existsById(room.getRoomId())) {
             throw new RuntimeException("Room already exists");
         }
-        roomRepo.save(room);
-        return room;
+
+        return roomRepo.save(room);
     }
 
     @Override
     public List<RoomDTO> getAll() {
-        List<Room> getAllRooms = roomRepo.findAll();
-        return mapper.convertRoomToDTOList(getAllRooms);
+        List<Room> allRooms = roomRepo.findAll();
+        return mapper.convertRoomToDTOList(allRooms);
     }
-
 
     @Override
     public void update(RoomDTO roomDTO) {
-        Optional<Room> room = roomRepo.findById(roomDTO.getRoomId());
-        if (!room.isPresent()) {
-            throw new RuntimeException("Room not Found");
-        } else {
-            Room rooms = room.get();
-            rooms.setAvailability(roomDTO.getAvailability());
-            rooms.setFloorNumber(roomDTO.getFloorNumber());
+        Optional<Room> optionalRoom = roomRepo.findById(roomDTO.getRoomId());
 
-            // Save the updated entity
-            roomRepo.save(rooms);  // This line ensures the entity is saved to the database
+        if (!optionalRoom.isPresent()) {
+            throw new RuntimeException("Room not found");
         }
+
+        Room room = optionalRoom.get();
+        room.setAvailability(roomDTO.getAvailability());
+        room.setFloorNumber(roomDTO.getFloorNumber());
+
+        // If you want to allow changing the roomType and hotel as well:
+        // room.setRoomType( ... );
+        // room.setHotel( ... );
+
+        roomRepo.save(room);
     }
 
     @Override
     public void delete(String id) {
-        Optional<Room> findId = roomRepo.findById(id);
-        if (!findId.isPresent()){
-            throw new RuntimeException("Room not Found");
-        }else {
-            roomRepo.deleteById(id);
+        if (!roomRepo.existsById(id)) {
+            throw new RuntimeException("Room not found");
         }
+
+        roomRepo.deleteById(id);
     }
 
+    @Override
+    public List<RoomDTO> getRoomTypesByHotel(UUID hotelId) {
 
+        List<Room> roomTypes = roomRepo.findByHotel_HotelId(hotelId);
+        if (roomTypes.isEmpty()) {
+            throw new RuntimeException("No room types found for the specified hotel");
+        }
+        return mapper.convertRoomToDTOList(roomTypes);
+    }
 }

@@ -60,7 +60,7 @@
 
 <div id="content">
 <section id="RoomsForm">
-  <div id="roomHeaderSection" class="roomHeader-section">
+  <div id="roomHeaderSection" class="room-header-section">
     <h2>Rooms <span>Manage</span></h2>
     <button id="add-room" class="add-room-button">Add Room</button>
   </div>
@@ -75,25 +75,22 @@
       <form id="room-form">
         <!-- Room ID and Name -->
 
-
         <!-- Room Type and Availability Dropdowns -->
-        <div class="room-dropdown-group">
-          <button id="load-hotel-ids" class="btn btn-primary">Load RoomType Ids</button>
-          <label for="room-roomType-id"></label>
-          <select id="room-roomType-id" name="room-roomType-id" required>
-            <option value="">Select roomTypeId</option>
-            <!-- Dynamic hotel options will be inserted here -->
+        <div class="mb-3">
+          <label for="roomTypeId" class="form-label">Select roomType</label>
+          <select id="roomTypeId" class="form-select">
+            <option selected value="">select roomType</option>
+            <!-- Locations will be dynamically added here -->
           </select>
         </div>
 
 
         <!-- Hotel ID Dropdown -->
-        <div class="room-dropdown-group">
-          <button id="load-cus-ids" class="btn btn-primary">Load HotelIds</button>
-          <label for="room-hotel-id"></label>
-          <select id="room-hotel-id" name="room-hotel-id" required>
-            <option value="">Select Hotel</option>
-            <!-- Dynamic hotel options will be inserted here -->
+        <div class="mb-3">
+          <label for="hotelId" class="form-label">Select Hotel</label>
+          <select id="hotelId" class="form-select">
+            <option selected value="">select hotel</option>
+            <!-- Locations will be dynamically added here -->
           </select>
         </div>
 

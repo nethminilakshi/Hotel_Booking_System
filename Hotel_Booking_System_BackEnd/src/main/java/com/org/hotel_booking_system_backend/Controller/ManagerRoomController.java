@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/room")
@@ -33,6 +34,15 @@ return new ResponseUtil(201,"Room Saved", savedRoom);
 
         List<RoomDTO> rooms = roomService.getAll();
         return new ResponseUtil(200, "Room details are retrieved", rooms);
+    }
+
+    @GetMapping("/roomTypesByHotel/{hotelId}")
+    public ResponseUtil getRoomTypesByHotel(@PathVariable UUID hotelId) {
+        List<RoomDTO> roomTypes = roomService.getRoomTypesByHotel(hotelId);  // Directly pass the UUID
+        if (roomTypes.isEmpty()) {
+            return new ResponseUtil(404, "No room types found for the specified hotel", null);
+        }
+        return new ResponseUtil(200, "Room types retrieved successfully", roomTypes);
     }
 
     @PutMapping("update")

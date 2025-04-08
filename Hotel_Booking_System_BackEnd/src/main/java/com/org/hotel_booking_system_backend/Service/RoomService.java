@@ -4,6 +4,7 @@ import com.org.hotel_booking_system_backend.Dto.RoomDTO;
 import com.org.hotel_booking_system_backend.Entity.Room;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface RoomService {
     Room save(RoomDTO roomDTO);
@@ -13,4 +14,6 @@ public interface RoomService {
     void update(RoomDTO roomDTO);
 
     void delete(String id);
+
+    List<RoomDTO> getRoomTypesByHotel(UUID hotelId);
 }

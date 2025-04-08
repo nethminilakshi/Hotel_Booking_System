@@ -28,3 +28,46 @@
 .booking-table tbody tr:hover {
   background-color: #f1f1f1;
 }
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+.booking-container {
+  max-width: 600px;
+  margin: auto;
+}
+
+label, select, input {
+  display: block;
+  margin: 10px 0;
+  width: 100%;
+}
+
+#room-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.room-card {
+  padding: 10px;
+  background-color: #e0f7fa;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  border-radius: 5px;
+  flex: 1 0 45%;
+  text-align: center;
+}
+
+.room-card.selected {
+  background-color: #4caf50;
+  color: white;
+}
+
+.room-card.booked {
+  background-color: #ccc;
+  color: #333;
+  cursor: not-allowed;
+}

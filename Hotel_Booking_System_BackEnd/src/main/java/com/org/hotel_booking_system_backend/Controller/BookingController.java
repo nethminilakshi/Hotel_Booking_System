@@ -2,7 +2,6 @@ package com.org.hotel_booking_system_backend.Controller;
 
 import com.org.hotel_booking_system_backend.Dto.BookingDetailsDTO;
 import com.org.hotel_booking_system_backend.Entity.Booking;
-import com.org.hotel_booking_system_backend.Entity.Room;
 import com.org.hotel_booking_system_backend.Entity.RoomType;
 import com.org.hotel_booking_system_backend.Service.BookingService;
 import com.org.hotel_booking_system_backend.Service.RoomTypeService;

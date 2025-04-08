@@ -5,7 +5,7 @@ public class ResponseUtil {
     private String message;
     private  Object data;
 
-    public ResponseUtil(String availableRooms, int max) {
+    public ResponseUtil() {
     }
 
     public ResponseUtil(int code, String message, Object data) {

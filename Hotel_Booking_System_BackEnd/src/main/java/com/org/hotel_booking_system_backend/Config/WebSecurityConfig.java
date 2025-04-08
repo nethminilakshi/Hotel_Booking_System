@@ -62,6 +62,8 @@ public class WebSecurityConfig {
                                 "/api/v1/roomType/**",
                                 "/api/v1/review/**",
                                 "/api/v1/user/**",
+                                "/api/v1/Booking/**",
+                                "/api/v1/Booking/availability/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html").permitAll()

@@ -83,29 +83,37 @@ $(document).ready(function () {
   }
 
   function updateRoomAvailability() {
-    const hotelId = hotelDropdown.val();
-    const roomTypeId = roomTypeSelect.val();
-    const checkinDate = checkinDateInput.val();
-    const checkoutDate = checkoutDateInput.val();
-    const timeSlot = timeSlotSelect.val();
+    const hotelId = $('#hotelId').val();
+    const roomTypeId = $('#roomTypeSelect').val();
+    const checkinDate = $('#checkinDate').val();
+    const checkoutDate = $('#checkoutDate').val();
 
-    // Clear previous availability info
-    roomAvailabilityInfo.text('').removeClass('text-success text-danger text-warning');
+    if (!hotelId || !roomTypeId || !checkinDate || !checkoutDate) return;
 
-    // Only check availability if all required fields are filled
-    if (!hotelId || !roomTypeId || !checkinDate || !checkoutDate) {
-      return;
-    }
-
-    console.log("Checking availability for:", {
-      hotelId,
-      roomTypeId,
-      checkinDate,
-      checkoutDate,
-      timeSlot
+    $.ajax({
+      url: 'http://localhost:8080/api/v1/booking/availability',
+      method: 'GET',
+      data: {
+        hotelId,
+        roomTypeId,
+        checkinDate,
+        checkoutDate
+      },
+      success: function (response) {
+        const available = response.availableRooms || 0;
+        $('#roomAvailabilityInfo').text(`Available Rooms: ${available}`);
+        $('#bookRoomButton').prop('disabled', available <= 0);
+      },
+      error: function (err) {
+        console.error("Error checking availability", err);
+        $('#roomAvailabilityInfo').text('Error checking availability');
+        $('#bookRoomButton').prop('disabled', true);
+      }
     });
+  }
 
-    // Make API call to check availability
+
+  // Make API call to check availability
     $.ajax({
       url: 'http://localhost:8080/api/v1/roomType/getAll',
       method: 'GET',
@@ -144,7 +152,7 @@ $(document).ready(function () {
         bookRoomButton.prop('disabled', true);
       }
     });
-  }
+
 
   // Book Room functionality
   bookRoomButton.on('click', function() {

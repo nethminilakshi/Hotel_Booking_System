@@ -20,11 +20,11 @@ $(document).ready(function () {
   timeSlotSelect.on('change', updateRoomAvailability);
 
   // Function to get the authentication token
-  const getAuthToken = function() {
+  const getAuthToken = function () {
     return localStorage.getItem('authToken');
   };
 
-  const loadHotels = function() {
+  const loadHotels = function () {
     return $.ajax({
       url: 'http://localhost:8080/api/v1/hotel/getAll',
       method: 'GET',
@@ -32,11 +32,10 @@ $(document).ready(function () {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${getAuthToken()}`
       },
-      success: function(result) {
+      success: function (result) {
         if (result.data && Array.isArray(result.data)) {
-          hotels = result.data;
           hotelDropdown.html('<option value="">-- Select Hotel --</option>');
-          result.data.forEach(function(hotel) {
+          result.data.forEach(function (hotel) {
             const option = $('<option></option>');
             console.log("Hotel object:", hotel);
             option.val(hotel.hotelId);
@@ -47,7 +46,7 @@ $(document).ready(function () {
           console.error("Error loading hotels:", result);
         }
       },
-      error: function(error) {
+      error: function (error) {
         console.error("Error loading hotels:", error);
       }
     });
@@ -83,79 +82,44 @@ $(document).ready(function () {
   }
 
   function updateRoomAvailability() {
-    const hotelId = $('#hotelId').val();
-    const roomTypeId = $('#roomTypeSelect').val();
-    const checkinDate = $('#checkinDate').val();
-    const checkoutDate = $('#checkoutDate').val();
+    const hotelId = hotelDropdown.val();
+    const roomTypeId = roomTypeSelect.val();
+    const checkinDate = checkinDateInput.val();
+    const checkoutDate = checkoutDateInput.val();
+    const timeSlot = timeSlotSelect.val();
 
     if (!hotelId || !roomTypeId || !checkinDate || !checkoutDate) return;
 
     $.ajax({
-      url: 'http://localhost:8080/api/v1/booking/availability',
+      url: 'http://localhost:8080/api/v1/Booking/availability',
       method: 'GET',
       data: {
         hotelId,
         roomTypeId,
         checkinDate,
-        checkoutDate
+        checkoutDate,
+        time: timeSlot
       },
-      success: function (response) {
-        const available = response.availableRooms || 0;
-        $('#roomAvailabilityInfo').text(`Available Rooms: ${available}`);
-        $('#bookRoomButton').prop('disabled', available <= 0);
-      },
-      error: function (err) {
-        console.error("Error checking availability", err);
-        $('#roomAvailabilityInfo').text('Error checking availability');
-        $('#bookRoomButton').prop('disabled', true);
-      }
-    });
-  }
-
-
-  // Make API call to check availability
-    $.ajax({
-      url: 'http://localhost:8080/api/v1/roomType/getAll',
-      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${getAuthToken()}`
       },
-      data: {
-        hotelId: hotelId,
-        roomTypeId: roomTypeId,
-        checkInDate: checkinDate,
-        checkOutDate: checkoutDate,
-        timeSlot: timeSlot
+      success: function (response) {
+        console.log("Availability API Response:", response);
+        const available = response.data || 0;
+        roomAvailabilityInfo.text(`Available Rooms: ${available}`);
+        bookRoomButton.prop('disabled', available <= 0);
       },
-      success: function(response) {
-        console.log("Availability response:", response);
-
-        if (response.code === 200) {
-          const availableRooms = response.data;
-
-          if (availableRooms > 0) {
-            roomAvailabilityInfo.html(`<strong>Available Rooms: ${availableRooms}</strong>`).addClass('text-success');
-            bookRoomButton.prop('disabled', false);
-          } else {
-            roomAvailabilityInfo.html('<strong>No rooms available for selected dates</strong>').addClass('text-danger');
-            bookRoomButton.prop('disabled', true);
-          }
-        } else {
-          roomAvailabilityInfo.html('<strong>Error checking availability</strong>').addClass('text-warning');
-          bookRoomButton.prop('disabled', true);
-        }
-      },
-      error: function(err) {
-        console.error("Error checking availability:", err);
-        roomAvailabilityInfo.html('<strong>Error checking availability</strong>').addClass('text-warning');
+      error: function (err) {
+        console.error("Error checking availability", err);
+        roomAvailabilityInfo.text('Error checking availability');
         bookRoomButton.prop('disabled', true);
       }
     });
-
+  }
 
   // Book Room functionality
-  bookRoomButton.on('click', function() {
+  bookRoomButton.on('click', function () {
     const hotelId = hotelDropdown.val();
     const roomTypeId = roomTypeSelect.val();
     const checkinDate = checkinDateInput.val();
@@ -173,7 +137,6 @@ $(document).ready(function () {
       checkInDate: checkinDate,
       checkOutDate: checkoutDate,
       timeSlot: timeSlot
-      // Add any other booking details you need (user info, etc.)
     };
 
     $.ajax({
@@ -184,18 +147,18 @@ $(document).ready(function () {
         'Authorization': `Bearer ${getAuthToken()}`
       },
       data: JSON.stringify(bookingData),
-      success: function(response) {
+      success: function (response) {
         console.log("Booking response:", response);
 
         if (response.code === 200 || response.code === 201) {
           alert('Booking successful!');
-          // Redirect to booking confirmation or booking list page
+          // Optional redirect:
           // window.location.href = 'booking-confirmation.html?id=' + response.data.bookingId;
         } else {
           alert('Booking failed: ' + (response.message || 'Unknown error'));
         }
       },
-      error: function(err) {
+      error: function (err) {
         console.error("Error making booking:", err);
         alert('Booking failed. Please try again later.');
       }

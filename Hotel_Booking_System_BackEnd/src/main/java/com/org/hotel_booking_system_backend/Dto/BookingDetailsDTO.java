@@ -16,8 +16,8 @@ public class BookingDetailsDTO {
     private String customerName;
     private String PhoneNumber;
     private String email;
-    private String roomId;
     private String hotelId;
+    private int roomCount;
     private String roomTypeId;
     private LocalDate checkIn;
     private LocalDate checkOut;

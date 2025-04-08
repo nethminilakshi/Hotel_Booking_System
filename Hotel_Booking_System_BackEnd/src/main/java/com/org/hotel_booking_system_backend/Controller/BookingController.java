@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,21 +47,39 @@ public ResponseUtil addBooking(@RequestBody BookingDetailsDTO bookingDetailsDTO)
                                             @RequestParam String checkinDate,
                                             @RequestParam String checkoutDate,
                                             @RequestParam String time) {
+        try {
+            LocalDate checkin = LocalDate.parse(checkinDate);
+            LocalDate checkout = LocalDate.parse(checkoutDate);
 
-        LocalDate checkin = LocalDate.parse(checkinDate);
-        LocalDate checkout = LocalDate.parse(checkoutDate);
+            if (checkin.isAfter(checkout)) {
+                return new ResponseUtil(400, "Check-in date must be before check-out date", null);
+            }
 
-        // 1. Get RoomType to check total rooms available
-        RoomType roomType = roomTypeService.getRoomTypeById(roomTypeId);
-        int totalRooms = roomType.getQtyOnHand();
+            // Retrieve the room type
+            RoomType roomType = roomTypeService.getRoomTypeById(roomTypeId);
 
-        int  bookedRooms = bookingService.countBookedRooms(hotelId, roomTypeId, checkin, checkout,time);
-        int available = totalRooms - bookedRooms;
+            System.out.println("Room Type Name: " + roomType.getName());
+            System.out.println("Total Qty On Hand: " + roomType.getQtyOnHand());
+            // Get total rooms available
+            int totalRooms = roomType.getQtyOnHand();
 
-        if (available > 0) {
-            return new ResponseUtil(200, "Room available", available);
-        } else {
-            return new ResponseUtil(400, "No rooms available", null);
+            // Count booked rooms
+            int bookedRooms = bookingService.countBookedRooms(hotelId, roomTypeId, checkin, checkout, time);
+            System.out.println("Booked Rooms: " + bookedRooms);
+
+            int available = totalRooms - bookedRooms;
+            System.out.println("Available Rooms: " + available);
+
+            // Return availability response
+            if (available > 0) {
+                return new ResponseUtil(200, "Room available", available);
+            } else {
+                return new ResponseUtil(400, "No rooms available", null);
+            }
+        } catch (DateTimeParseException e) {
+            return new ResponseUtil(400, "Invalid date format", null);
+        } catch (Exception e) {
+            return new ResponseUtil(500, "An error occurred: " + e.getMessage(), null);
         }
     }
 }

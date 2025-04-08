@@ -34,6 +34,9 @@ public class Booking {
     private LocalDate checkOut;
 
     @Column(nullable = false)
+    private int roomCount;
+
+    @Column(nullable = false)
     private String time;
 
     @Enumerated(EnumType.STRING)

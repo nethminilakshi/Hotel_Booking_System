@@ -42,6 +42,9 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public int countBookedRooms(UUID hotelId, UUID roomTypeId, LocalDate checkin, LocalDate checkout, String time) {
-        return bookingRepo.countBookingsByHotelAndRoomTypeAndDateRange(hotelId, roomTypeId, checkin, checkout,time);
+        int count = bookingRepo.countBookingsByHotelAndRoomTypeAndDateRange(hotelId, roomTypeId, checkin, checkout,time);
+        System.out.println("Booked rooms count: " + count);
+        return count;
     }
+
 }

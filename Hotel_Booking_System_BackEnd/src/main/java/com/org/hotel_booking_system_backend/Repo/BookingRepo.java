@@ -11,20 +11,20 @@ import java.util.UUID;
 
 @Repository
 public interface BookingRepo extends JpaRepository<Booking, UUID> {
-    @Query("SELECT COUNT(b) FROM Booking b " +
-            "WHERE b.room.hotel.hotelId = :hotelId " +
-            "AND b.room.roomType.typeId = :roomTypeId " +
-            "AND b.checkIn < :checkout " +
-            "AND b.checkOut > :checkin " +
+    @Query("SELECT COALESCE(SUM(b.roomCount), 0) FROM Booking b " +
+            "JOIN b.room r " +
+            "JOIN r.roomType rt " +
+            "WHERE r.hotel.hotelId = :hotelId " +
+            "AND rt.typeId = :roomTypeId " +
+            "AND b.checkIn < :checkoutDate " +
+            "AND b.checkOut > :checkinDate " +
             "AND b.time = :time " +
             "AND b.status = 'CONFIRMED'")
-    int countBookingsByHotelAndRoomTypeAndDateRange(
-            @Param("hotelId") UUID hotelId,
-            @Param("roomTypeId") UUID roomTypeId,
-            @Param("checkin") LocalDate checkin,
-            @Param("checkout") LocalDate checkout,
-            @Param("time") String time);
-
+    int countBookingsByHotelAndRoomTypeAndDateRange(@Param("hotelId") UUID hotelId,
+                         @Param("roomTypeId") UUID roomTypeId,
+                         @Param("checkinDate") LocalDate checkinDate,
+                         @Param("checkoutDate") LocalDate checkoutDate,
+                         @Param("time") String time);
 
 
 }

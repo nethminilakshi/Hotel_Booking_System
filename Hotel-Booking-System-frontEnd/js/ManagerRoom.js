@@ -11,7 +11,6 @@ $(document).ready(function() {
   let hotels = []; // Store hotels data
   let roomTypes = []; // Store room types data
 
-  // Function to open the registration form
   const openForm = function() {
     roomRegisterForm.css("display", "flex");
     formTitle.text(currentRoomId ? "Update Room" : "Register Room");
@@ -20,26 +19,27 @@ $(document).ready(function() {
     }
   };
 
-  // Function to close the registration form
   const closeForm = () => {
     roomRegisterForm.css("display", "none");
     clearForm();
   };
 
+  $('#room-register-submit').on('click', function(e) {
+    e.preventDefault();
+    saveRoom();
+  });
+
   addRoomButton.on('click', openForm);
   closeButton.on('click', closeForm);
 
-  // Close the form when clicking outside it
   $(window).on('click', function(event) {
     if (event.target === roomRegisterForm[0]) closeForm();
   });
 
-  // Function to get the authentication token
   const getAuthToken = function() {
     return localStorage.getItem('authToken');
   };
 
-  // Function to get hotel name by hotelId
   function getHotelNameById(hotelId) {
     if (hotels.length === 0) {
       console.warn("Hotels data not loaded yet.");
@@ -98,8 +98,8 @@ $(document).ready(function() {
           roomTypeDropdown.html('<option value="">-- Select RoomType --</option>');
           result.data.forEach(function(room) {
             const option = $('<option></option>');
-            option.val(room.roomTypeId);
-            option.text(room.name || "Unknown");
+            option.val(room.roomTypeId);  // Ensure the correct roomTypeId is used
+            option.text(room.name || "Unknown");  // Ensure the name is properly assigned
             roomTypeDropdown.append(option);
           });
         } else {
@@ -185,6 +185,55 @@ $(document).ready(function() {
     });
     tableBody.append(row);
   };
+
+  roomForm.on('submit', function(e) {
+    e.preventDefault();
+    if (currentRoomId) {
+      updateHotel();
+    } else {
+      saveRoom();
+    }
+  });
+
+  const saveRoom = function() {
+    const roomData = {
+      roomTypeId: roomTypeDropdown.val(),
+      hotelId: hotelDropdown.val(),
+      floorNumber: $('#floorNumber').val(),
+      availability: $('#availability').is(':checked')
+    };
+
+    console.log("Attempting to save room with data:", roomData);
+    console.log("Auth token:", getAuthToken());
+
+    $.ajax({
+      url: 'http://localhost:8080/api/v1/room/save',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(roomData),
+      headers: {
+        'Authorization': `Bearer ${getAuthToken()}`
+      },
+      success: function(response) {
+        console.log("Room saved successfully:", response);
+        fetchRooms();
+        closeForm();
+      },
+      error: function(xhr, status, error) {
+        console.error("Error saving room - Status:", status);
+        console.error("Error saving room - Error:", error);
+        console.error("Error saving room - Response:", xhr.responseText);
+        alert("An error occurred while saving the room.");
+      }
+    });
+  };
+  const clearForm = function() {
+
+    roomForm[0].reset();
+    currentRoomId = null;
+    roomTypeDropdown.val('');
+    hotelDropdown.val('');
+  }
 
   // Initial load sequence using $.ajax()
   $.when(loadHotels(), loadRoomType()).done(function() {

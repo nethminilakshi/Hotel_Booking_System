@@ -81,10 +81,10 @@ public class ManagerRoomTypeController {
         try{
             roomTypeService.delete(id);
             logger.info("room removed :" + id);
-            return new ResponseUtil();
+return new ResponseUtil(200, "RoomType Deleted Successfully", null);
         }catch (Exception e){
             logger.error(e.getMessage());
-            return new ResponseUtil(201, "RoomType Deleted Successfully", null);
+            return new ResponseUtil(500, "Error deleting RoomType: " + e.getMessage(), null);
         }
     }
 
@@ -127,10 +127,10 @@ public class ManagerRoomTypeController {
 
             roomTypeService.update(updateRoomTypeDTO);
             logger.info("RoomType Updated :" + updateRoomTypeDTO);
-            return new ResponseUtil();
+            return new ResponseUtil(200, "RoomType Updated Successfully", null);
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return new ResponseUtil();
+            return new ResponseUtil(500, "Error updating RoomType: " + e.getMessage(), null);
         }
     }
 

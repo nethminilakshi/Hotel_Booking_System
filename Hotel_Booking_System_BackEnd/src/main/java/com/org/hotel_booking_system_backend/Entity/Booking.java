@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.UUID;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -13,11 +15,13 @@ import java.time.LocalDate;
 @Table(name = "bookings")
 public class Booking {
     @Id
-    private String bookingId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(updatable = false, nullable = false)
+    private UUID bookingId;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+    @OneToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "room_id")

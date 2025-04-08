@@ -120,10 +120,10 @@ public class ManagerHotelController {
         try {
             hotelService.delete(hotelId);
             logger.info("Hotel deleted :" + hotelId);
-            return new ResponseUtil();
+            return new ResponseUtil(200, "Hotel Deleted Successfully", null);
         } catch (Exception e) {
             logger.error(e.getMessage());
-            return new ResponseUtil();
+            return new ResponseUtil(500, "Error deleting hotel: " + e.getMessage(), null);
         }
     }
     }

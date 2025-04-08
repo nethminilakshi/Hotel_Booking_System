@@ -13,13 +13,12 @@
 <div class="booking-container">
   <h2>Book Your Room</h2>
 
-
   <!-- Hotel ID Dropdown -->
   <div class="mb-3">
     <label for="hotelId" class="form-label">Select Hotel</label>
     <select id="hotelId" class="form-select">
       <option selected value="">select hotel</option>
-      <!-- Locations will be dynamically added here -->
+      <!-- Hotels will be loaded dynamically -->
     </select>
   </div>
 
@@ -35,31 +34,33 @@
     <input type="date" id="checkoutDate" class="form-control">
   </div>
 
-    <!-- Time Slot Selection -->
-    <div class="form-group mt-3">
-      <label for="timeSlotSelect">Choose Time Slot</label>
-      <select id="timeSlotSelect" class="form-control">
-        <option value="day">Day Time (9:00 AM - 4:00 PM)</option>
-        <option value="night">Night Time (5:00 PM - 8:00 AM)</option>
-      </select>
-    </div>
-
-    <!-- Room Type & Availability -->
-    <div class="form-group mt-4" id="roomTypeContainer">
-      <label for="roomTypeSelect">Room Type</label>
-      <select id="roomTypeSelect" class="form-control">
-        <!-- Room types will be loaded -->
-      </select>
-      <small id="roomAvailabilityInfo" class="form-text text-muted mt-2"></small>
-    </div>
-
-    <!-- Book Button -->
-    <div class="mt-4">
-      <button id="bookRoomButton" class="btn btn-primary">Book Room</button>
-    </div>
+  <!-- Time Slot Selection -->
+  <div class="form-group mt-3">
+    <label for="timeSlotSelect">Choose Time Slot</label>
+    <select id="timeSlotSelect" class="form-control">
+      <option value="day">Day Time (9:00 AM - 4:00 PM)</option>
+      <option value="night">Night Time (5:00 PM - 8:00 AM)</option>
+    </select>
   </div>
 
+  <!-- Room Type Selection -->
+  <div class="form-group mt-4">
+    <label for="roomTypeSelect">Room Type</label>
+    <select id="roomTypeSelect" class="form-control">
+      <option value="">-- Select Room Type --</option>
+      <!-- Room types will be loaded dynamically -->
+    </select>
+  </div>
+
+  <!-- Room Availability Info -->
+  <div id="roomAvailabilityInfo" class="mt-2 text-success font-weight-bold"></div>
+
+  <!-- Book Button -->
+  <div class="mt-4">
+    <button id="bookRoomButton" class="btn btn-primary" disabled>Book Room</button>
+  </div>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="js/booking.js"></script>
 </body>

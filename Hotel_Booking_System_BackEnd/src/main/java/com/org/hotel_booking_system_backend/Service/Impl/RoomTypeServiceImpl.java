@@ -75,4 +75,14 @@ public class RoomTypeServiceImpl implements RoomTypeService {
             roomTypeRepo.save(roomType1);  // This line ensures the entity is saved to the database
         }
     }
+
+    @Override
+    public RoomType getRoomTypeById(UUID roomTypeId) {
+        Optional<RoomType> roomType = roomTypeRepo.findById(roomTypeId);
+        if (roomType.isPresent()) {
+            return roomType.get();
+        } else {
+            throw new RuntimeException("Room Type not found");
+        }
+    }
 }

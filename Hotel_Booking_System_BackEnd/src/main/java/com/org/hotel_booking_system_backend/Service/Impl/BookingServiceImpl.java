@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
+
 @Service
 public class BookingServiceImpl implements BookingService {
 
@@ -23,5 +26,22 @@ public class BookingServiceImpl implements BookingService {
         List<Booking> AllBookings = bookingRepo.findAll();
         return mapping.convertBookingToDTOList(AllBookings);
 
+    }
+
+    @Override
+    public Booking save(BookingDetailsDTO bookingDetailsDTO) {
+        Booking booking = mapping.convertToBookingEntity(bookingDetailsDTO);
+        if (booking.getBookingId() == null) {
+            booking.setBookingId(UUID.randomUUID());
+        }
+        if (bookingRepo.existsById(UUID.fromString(String.valueOf(booking.getBookingId())))) {
+            throw new RuntimeException("Booking already exists");
+        }
+        return bookingRepo.save(booking);
+    }
+
+    @Override
+    public int countBookedRooms(UUID hotelId, UUID roomTypeId, LocalDate checkin, LocalDate checkout) {
+        return bookingRepo.countBookingsByHotelAndRoomTypeAndDateRange(hotelId, roomTypeId, checkin, checkout);
     }
 }

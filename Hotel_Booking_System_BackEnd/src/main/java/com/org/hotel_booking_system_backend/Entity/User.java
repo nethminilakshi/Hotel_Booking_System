@@ -40,6 +40,8 @@ public class User {
     @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL)
     private List<Hotel> managedHotels;
 
+@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Booking bookings;
 
 
 }

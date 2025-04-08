@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Hotel-Booking-System.iml" filepath="$PROJECT_DIR$/Hotel-Booking-System.iml" />
       <module fileurl="file://$PROJECT_DIR$/Hotel-Booking-System-frontEnd/Hotel-Booking-System-frontEnd.iml" filepath="$PROJECT_DIR$/Hotel-Booking-System-frontEnd/Hotel-Booking-System-frontEnd.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Hotel_Booking_System_BackEnd/Hotel_Booking_System_BackEnd.iml" filepath="$PROJECT_DIR$/Hotel_Booking_System_BackEnd/Hotel_Booking_System_BackEnd.iml" />
     </modules>
   </component>
 </project>

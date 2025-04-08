@@ -45,7 +45,8 @@ public ResponseUtil addBooking(@RequestBody BookingDetailsDTO bookingDetailsDTO)
     public ResponseUtil getRoomAvailability(@RequestParam UUID hotelId,
                                             @RequestParam UUID roomTypeId,
                                             @RequestParam String checkinDate,
-                                            @RequestParam String checkoutDate) {
+                                            @RequestParam String checkoutDate,
+                                            @RequestParam String time) {
 
         LocalDate checkin = LocalDate.parse(checkinDate);
         LocalDate checkout = LocalDate.parse(checkoutDate);
@@ -54,7 +55,7 @@ public ResponseUtil addBooking(@RequestBody BookingDetailsDTO bookingDetailsDTO)
         RoomType roomType = roomTypeService.getRoomTypeById(roomTypeId);
         int totalRooms = roomType.getQtyOnHand();
 
-        int  bookedRooms = bookingService.countBookedRooms(hotelId, roomTypeId, checkin, checkout);
+        int  bookedRooms = bookingService.countBookedRooms(hotelId, roomTypeId, checkin, checkout,time);
         int available = totalRooms - bookedRooms;
 
         if (available > 0) {

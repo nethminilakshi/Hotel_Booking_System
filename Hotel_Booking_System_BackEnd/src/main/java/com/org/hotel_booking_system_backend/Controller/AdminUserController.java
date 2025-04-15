@@ -79,7 +79,7 @@ public class AdminUserController {
 //    }
 
     @PostMapping(value = "register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseUtil> registerUser(@RequestBody @Valid UserDTO userDTO) {
+    public ResponseUtil registerUser(@RequestBody @Valid UserDTO userDTO) {
         try {
             System.out.println("Received user registration request: " + userDTO);
 
@@ -88,21 +88,18 @@ public class AdminUserController {
                 case VarList.Created -> {
                     String token = jwtUtil.generateToken(userDTO);
                     AuthDTO authDTO = new AuthDTO(userDTO.getEmail(), token, userDTO.getRole());
-                    return ResponseEntity.status(HttpStatus.CREATED)
-                            .body(new ResponseUtil(VarList.Created, "Success", authDTO));
+                    return new ResponseUtil(VarList.Created, "Success", authDTO);
                 }
                 case VarList.Not_Acceptable -> {
-                    return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-                            .body(new ResponseUtil(VarList.Not_Acceptable, "Email Already Used", null));
+                    return new ResponseUtil(VarList.Not_Acceptable, "Email Already Used", null);
                 }
                 default -> {
-                    return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
-                            .body(new ResponseUtil(VarList.Bad_Gateway, "Error", null));
+                    return new ResponseUtil(VarList.Bad_Gateway, "Error", null);
                 }
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseUtil(VarList.Internal_Server_Error, e.getMessage(), null));
+            e.printStackTrace(); // log the issue to console for debugging
+            return new ResponseUtil(VarList.Internal_Server_Error, e.getMessage(), null);
         }
     }
 

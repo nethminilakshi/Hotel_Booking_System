@@ -36,7 +36,14 @@ $(document).ready(function () {
       data: JSON.stringify(userData),
       success: function (res) {
         console.log("Success Response: ", res);
-        alert("Registration successful");
+        if (res.code === 201) {
+          alert("Registered successfully!");
+          window.location.href = "login.html";
+        } else if (res.code === 406) {
+          alert("Email already used!");
+        } else {
+          alert("Something went wrong. Please try again.");
+        }
       },
       error: function (xhr, status, error) {
         console.error("Full Error: ", xhr);

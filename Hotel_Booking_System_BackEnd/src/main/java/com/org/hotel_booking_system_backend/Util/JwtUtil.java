@@ -86,4 +86,14 @@ public class JwtUtil implements Serializable {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
+
+    public String extractEmailFromToken(String token) {
+        String jwt = token.startsWith("Bearer ") ? token.substring(7) : token; // Optional safeguard
+        Claims claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(jwt)
+                .getBody();
+        return claims.getSubject(); // This is your email / username
+    }
+
 }

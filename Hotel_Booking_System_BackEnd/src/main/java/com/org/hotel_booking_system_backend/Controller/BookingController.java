@@ -3,9 +3,13 @@ package com.org.hotel_booking_system_backend.Controller;
 import com.org.hotel_booking_system_backend.Dto.BookingDetailsDTO;
 import com.org.hotel_booking_system_backend.Entity.Booking;
 import com.org.hotel_booking_system_backend.Entity.RoomType;
+import com.org.hotel_booking_system_backend.Entity.User;
+import com.org.hotel_booking_system_backend.Repo.UserRepo;
 import com.org.hotel_booking_system_backend.Service.BookingService;
 import com.org.hotel_booking_system_backend.Service.RoomTypeService;
+import com.org.hotel_booking_system_backend.Util.JwtUtil;
 import com.org.hotel_booking_system_backend.Util.ResponseUtil;
+import com.org.hotel_booking_system_backend.Util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +28,10 @@ public class BookingController {
 
     @Autowired
     private RoomTypeService roomTypeService;
+    @Autowired
+    private JwtUtil jwtUtil;
+    @Autowired
+    private UserRepo userRepo;
 
     @GetMapping("getAllHotelBookings")
     public ResponseUtil getBookingsByHotel(UUID hotelID) {
@@ -31,15 +39,43 @@ public class BookingController {
         return new ResponseUtil(200, "booking details retrieved", bookings);
     }
 
-    @PostMapping(path = "save")
-public ResponseUtil addBooking(@RequestBody BookingDetailsDTO bookingDetailsDTO){
-        try{
-            Booking booking = bookingService.save(bookingDetailsDTO);
-            return new ResponseUtil(201,"Room Saved", booking);
-        }catch (Exception e){
-            return new ResponseUtil(500, e.getMessage(), null);
+    @PostMapping("/save")
+    public ResponseUtil saveBooking(@RequestBody BookingDetailsDTO bookingDTO,
+                                    @RequestHeader("Authorization") String authHeader) {
+        try {
+            //  Check if Authorization header is valid
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                return new ResponseUtil(VarList.Unauthorized, "Authorization header missing or invalid", null);
+            }
+
+            //  Extract JWT token
+            String token = authHeader.substring(7);
+
+            //  Extract email from token
+            String email = jwtUtil.extractEmailFromToken(token);
+            if (email == null || email.isEmpty()) {
+                return new ResponseUtil(VarList.Unauthorized, "Invalid token. Please log in again.", null);
+            }
+
+            //  Get user from DB
+            User user = userRepo.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("User not registered. Please sign up."));
+
+            //  Set user-related fields from DB into DTO
+            bookingDTO.setEmail(user.getEmail());
+            bookingDTO.setPhoneNumber(user.getContact());
+            bookingDTO.setCustomerName(user.getName());
+
+            //  Save booking
+            bookingService.save(bookingDTO);
+
+            return new ResponseUtil(VarList.Created, "Booking successful", bookingDTO);
+
+        } catch (Exception e) {
+            return new ResponseUtil(VarList.Internal_Server_Error, "Booking failed: " + e.getMessage(), null);
         }
     }
+
 
     @GetMapping("/availability")
     public ResponseUtil getRoomAvailability(@RequestParam UUID hotelId,
@@ -55,7 +91,6 @@ public ResponseUtil addBooking(@RequestBody BookingDetailsDTO bookingDetailsDTO)
                 return new ResponseUtil(400, "Check-in date must be before check-out date", null);
             }
 
-            // Retrieve the room type
             RoomType roomType = roomTypeService.getRoomTypeById(roomTypeId);
 
             System.out.println("Room Type Name: " + roomType.getName());
@@ -82,4 +117,7 @@ public ResponseUtil addBooking(@RequestBody BookingDetailsDTO bookingDetailsDTO)
             return new ResponseUtil(500, "An error occurred: " + e.getMessage(), null);
         }
     }
+
+
+
 }

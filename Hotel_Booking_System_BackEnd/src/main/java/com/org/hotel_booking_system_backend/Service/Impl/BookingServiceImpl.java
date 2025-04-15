@@ -2,8 +2,11 @@ package com.org.hotel_booking_system_backend.Service.Impl;
 
 import com.org.hotel_booking_system_backend.Dto.BookingDetailsDTO;
 import com.org.hotel_booking_system_backend.Entity.Booking;
+import com.org.hotel_booking_system_backend.Entity.User;
 import com.org.hotel_booking_system_backend.Repo.BookingRepo;
+import com.org.hotel_booking_system_backend.Repo.UserRepo;
 import com.org.hotel_booking_system_backend.Service.BookingService;
+import com.org.hotel_booking_system_backend.Util.JwtUtil;
 import com.org.hotel_booking_system_backend.Util.Mapping;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,11 @@ public class BookingServiceImpl implements BookingService {
     private BookingRepo bookingRepo;
     @Autowired
     private Mapping mapping;
+    @Autowired
+    private UserRepo userRepo;
+    @Autowired
+    private JwtUtil jwtUtil;
+
     @Transactional
     @Override
     public List<BookingDetailsDTO> getAll() {
@@ -28,15 +36,18 @@ public class BookingServiceImpl implements BookingService {
 
     }
 
+
     @Override
-    public Booking save(BookingDetailsDTO bookingDetailsDTO) {
-        Booking booking = mapping.convertToBookingEntity(bookingDetailsDTO);
-        if (booking.getBookingId() == null) {
-            booking.setBookingId(UUID.randomUUID());
-        }
-        if (bookingRepo.existsById(UUID.fromString(String.valueOf(booking.getBookingId())))) {
-            throw new RuntimeException("Booking already exists");
-        }
+    @Transactional
+    public Booking save(BookingDetailsDTO dto) {
+        User user = userRepo.findByEmail(dto.getCustomerId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Booking booking = mapping.convertToBookingEntity(dto);
+        booking.setBookingId(UUID.randomUUID());
+        booking.setUser(user);
+        booking.setStatus(Booking.BookingStatus.PENDING);
+
         return bookingRepo.save(booking);
     }
 

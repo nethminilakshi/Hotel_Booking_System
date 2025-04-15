@@ -56,13 +56,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
             user.setRole(role);
             userRepo.save(user);
-            return VarList.OK;
+            return VarList.Created;
         }
     }
 
     @Override
     public int deleteUserByEmail(String email) {
-        User user = userRepo.findByEmail(email);
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         if (user == null) {
             return VarList.Not_Found;
         }
@@ -82,7 +83,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public int updateUser(String email, UserDTO userDTO) {
-        User user = userRepo.findByEmail(email);
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         if (user == null) {
             return VarList.Not_Found;
         }
@@ -96,7 +98,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepo.findByEmail(email);
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
         if (user == null) {
             throw new UsernameNotFoundException("User not found with email: " + email);
         }
@@ -110,7 +113,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     public UserDTO loadUserDetailsByUsername(String email) {
-        User user = userRepo.findByEmail(email);
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
         return modelMapper.map(user,UserDTO.class);
     }
 }

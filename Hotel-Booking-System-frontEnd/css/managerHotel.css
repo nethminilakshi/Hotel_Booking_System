@@ -229,34 +229,31 @@
 
 /* Update and Delete Buttons */
 .hotel-table button {
-  padding: 6px 12px;
+  padding: 5px 10px;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s;
-}
-
-.hotel-update-button {
-  background-color: #2196F3;
+  border-radius: 5px;
   color: white;
 }
 
+.hotel-update-button {
+  background-color: #ffc107;
+}
+
 .hotel-update-button:hover {
-  background-color: #0b7dda;
+  background-color: #e0a800;
 }
 
 .hotel-delete-button {
   background-color: #f44336;
-  color: white;
 }
 
 .hotel-delete-button:hover {
-  background-color: #d32f2f;
+  background-color: #c82333;
 }
 
 .update-button {
-  background-color: #ffc107;
+  background-color: rgba(23, 103, 14, 0.71);
 }/* Hotel Form Section Styling */
 #HotelsForm {
   width: 100%;
@@ -492,32 +489,29 @@
   border-radius: 4px;
 }
 
-/* Update and Delete Buttons */
-.hotel-table button {
-  padding: 6px 12px;
+/* Buttons */
+.update-button, .delete-button {
+  padding: 5px 10px;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s;
-}
-
-.hotel-update-button {
-  background-color: #2196F3;
+  border-radius: 5px;
   color: white;
 }
 
-.hotel-update-button:hover {
-  background-color: #0b7dda;
+.update-button {
+  background-color: #3e848a;
 }
 
-.hotel-delete-button {
-  background-color: #f44336;
-  color: white;
+.update-button:hover {
+  background-color: #606290;
 }
 
-.hotel-delete-button:hover {
-  background-color: #d32f2f;
+.delete-button {
+  background-color: #ead053;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
 }
 
 /* Responsive Adjustments */
@@ -550,11 +544,11 @@
 
 
 .update-button:hover {
-  background-color: #e0a800;
+  background-color: #606290;
 }
 
 .delete-button {
-  background-color: #dc3545;
+  background-color: #ead053;
 }
 
 .delete-button:hover {

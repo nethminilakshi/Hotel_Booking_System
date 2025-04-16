@@ -182,31 +182,29 @@ body {
   background-color: #f8f9fa;
 }
 
-.btn-primary {
-  background-color: #0d6efd;
-  border-color: #0d6efd;
-  padding: 8px 16px;
-  border-radius: 4px;
-  color: white;
+/* Buttons */
+.update-button, .delete-button {
+  padding: 5px 10px;
+  border: none;
   cursor: pointer;
-  margin-bottom: 10px;
+  border-radius: 5px;
+  color: white;
 }
 
 .btn-primary:hover {
   background-color: #0b5ed7;
   border-color: #0a58ca;
 }
-
 .update-button {
-  background-color: #ffc107;
+  background-color: #3e848a;
 }
 
 .update-button:hover {
-  background-color: #e0a800;
+  background-color: #606290;
 }
 
 .delete-button {
-  background-color: #dc3545;
+  background-color: #ead053;
 }
 
 .delete-button:hover {

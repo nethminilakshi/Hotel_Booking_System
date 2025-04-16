@@ -254,20 +254,21 @@
 }
 
 .update-button {
-  background-color: #ffc107;
+  background-color: #3e848a;
 }
 
 .update-button:hover {
-  background-color: #e0a800;
+  background-color: #606290;
 }
 
 .delete-button {
-  background-color: #dc3545;
+  background-color: #ead053;
 }
 
 .delete-button:hover {
   background-color: #c82333;
 }
+
 
   /* Ensure icons are styled appropriately */
 .update-button i, .delete-button i {

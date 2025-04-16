@@ -42,37 +42,12 @@ public class BookingController {
     @PostMapping("/save")
     public ResponseUtil saveBooking(@RequestBody BookingDetailsDTO bookingDTO,
                                     @RequestHeader("Authorization") String authHeader) {
-        try {
-            //  Check if Authorization header is valid
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                return new ResponseUtil(VarList.Unauthorized, "Authorization header missing or invalid", null);
-            }
 
-            //  Extract JWT token
-            String token = authHeader.substring(7);
-
-            //  Extract email from token
-            String email = jwtUtil.extractEmailFromToken(token);
-            if (email == null || email.isEmpty()) {
-                return new ResponseUtil(VarList.Unauthorized, "Invalid token. Please log in again.", null);
-            }
-
-            //  Get user from DB
-            User user = userRepo.findByEmail(email)
-                    .orElseThrow(() -> new RuntimeException("User not registered. Please sign up."));
-
-            //  Set user-related fields from DB into DTO
-            bookingDTO.setEmail(user.getEmail());
-            bookingDTO.setPhoneNumber(user.getContact());
-            bookingDTO.setCustomerName(user.getName());
-
-            //  Save booking
-            bookingService.save(bookingDTO);
-
-            return new ResponseUtil(VarList.Created, "Booking successful", bookingDTO);
-
+        try{
+            Booking booking = bookingService.save(bookingDTO);
+            return new ResponseUtil(200, "Booking saved successfully", booking);
         } catch (Exception e) {
-            return new ResponseUtil(VarList.Internal_Server_Error, "Booking failed: " + e.getMessage(), null);
+            return new ResponseUtil(500, "Error saving booking: " + e.getMessage(), null);
         }
     }
 

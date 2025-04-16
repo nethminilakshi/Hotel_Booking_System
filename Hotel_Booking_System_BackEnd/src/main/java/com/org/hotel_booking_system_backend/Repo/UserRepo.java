@@ -21,6 +21,8 @@ public interface UserRepo extends JpaRepository<User, UUID> {
     void deleteByEmail(String email);
 
     boolean existsByContact(String contact);
+    boolean existsByEmailAndContact(String email, String contact);
+
 
     List<User> findAllByRole(String admin);
 }

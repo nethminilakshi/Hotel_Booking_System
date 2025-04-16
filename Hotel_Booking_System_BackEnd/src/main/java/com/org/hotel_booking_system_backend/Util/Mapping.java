@@ -8,6 +8,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -164,7 +165,24 @@ public List<BookingDetailsDTO> convertBookingToDTOList(List<Booking> bookings) {
 
     // review to reviewDTO
     public ReviewDTO convertToReviewDTO(Review review) {
-        return modelMapper.map(review, ReviewDTO.class);
+        ReviewDTO dto = modelMapper.map(review, ReviewDTO.class);
+
+        // Manually set nested / unmapped fields
+        if (review.getHotel() != null) {
+            dto.setLocation(review.getHotel().getLocation());
+            dto.setHotelId(review.getHotel().getHotelId());
+        }
+
+        if (review.getCreatedAt() != null) {
+            dto.setReviewDate(LocalDate.from(review.getCreatedAt()));
+        }
+
+        if (review.getUser() != null) {
+            dto.setUserId(review.getUser().getUserId());
+            dto.setUserName(review.getUser().getName());
+        }
+
+        return dto;
     }
     public Review convertToReviewEntity(ReviewDTO dto) {
         return modelMapper.map(dto, Review.class);

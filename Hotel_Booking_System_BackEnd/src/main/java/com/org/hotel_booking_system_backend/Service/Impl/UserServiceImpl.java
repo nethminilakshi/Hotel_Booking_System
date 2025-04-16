@@ -42,6 +42,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return modelMapper.map(admins, new TypeToken<List<UserDTO>>() {}.getType());
     }
 
+    @Override
+    public boolean existsByEmailAndContact(String email, String contact) {
+        return userRepo.existsByEmailAndContact(email, contact);
+    }
 
 
     @Override

@@ -4,138 +4,180 @@
   <meta charset="UTF-8">
   <title>Hotel Booking</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/userBooking.css">
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <link rel="stylesheet" href="css/Booking.css">
-  <link rel="stylesheet" href="css/SignUp.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-<!-- Booking page registration button -->
-<div class="text-center mt-3">
-  <button id="openRegisterBtn" class="btn btn-outline-primary">Register</button>
-</div>
 
+<header class="header">
+  <div class="container">
+    <nav class="navbar flex1">
+      <div class="sticky_logo logo">
+        <img src="image/logo.png" alt="">
+      </div>
 
-<div class="booking-container container py-4">
-  <h2 class="text-center mb-4">Book Your Room</h2>
+      <ul class="nav-menu">
+        <li> <a href="index.html">Home</a> </li>
+        <li> <a href="About.html">About</a> </li>
+        <li><a href="UserHotels.html">Locations</a></li>
+        <li> <a href="UserRoomTypes.html">Rooms</a> </li>
+        <li> <a href="#gallery">Gallery</a> </li>
+        <li> <a href="#blog">Blog</a> </li>
+        <li> <a href="#contact">Contact</a> </li>
+      </ul>
 
-  <!-- Hotel ID Dropdown -->
-  <div class="mb-3">
-    <label for="hotelId" class="form-label">Select Hotel</label>
-    <select id="hotelId" class="form-select">
-      <option selected value="">-- Select Hotel --</option>
-    </select>
+      <!-- Login & Register Buttons -->
+      <div class="auth-buttons">
+        <button id="reviewBtn" class="btn register-btn">Add A Review</button>
+      </div>
+
+      <div class="hamburger">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+
+    </nav>
   </div>
+</header>
+<div class="booking-wrapper">
+  <div class="booking-container">
+    <div class="header">
+      <div class="header-content">
+        <h1 class="topic">Book Your Dream Stay!</h1>
+        <p class="subtitle">Experience luxury, comfort, and warm hospitality</p>
+      </div>
+      <button id="openRegisterBtn" class="register-nav-btn">Register</button>
+    </div>
 
-  <!-- Check-in Date -->
-  <div class="form-group mt-3">
-    <label for="checkinDate">Check-in Date</label>
-    <input type="date" id="checkinDate" class="form-control">
-  </div>
+    <form class="booking-form">
+      <!-- Hotel Selection -->
+      <div class="form-group">
+        <label>Choose Your Hotel</label>
+        <select id="hotelId" class="form-control">
+          <option selected value="">Select a hotel package</option>
+        </select>
+      </div>
 
-  <!-- Checkout Date -->
-  <div class="form-group mt-3">
-    <label for="checkoutDate">Check-out Date</label>
-    <input type="date" id="checkoutDate" class="form-control">
-  </div>
-
-  <!-- Time Slot Selection -->
-  <div class="form-group mt-3">
-    <label for="timeSlotSelect">Choose Time Slot</label>
-    <select id="timeSlotSelect" class="form-control">
-      <option value="day">Day Time (9:00 AM - 4:00 PM)</option>
-      <option value="night">Night Time (5:00 PM - 8:00 AM)</option>
-    </select>
-  </div>
-
-  <!-- Room Type Selection -->
-  <div class="form-group mt-4">
-    <label for="roomTypeSelect">Room Type</label>
-    <select id="roomTypeSelect" class="form-control">
-      <option value="">-- Select Room Type --</option>
-    </select>
-  </div>
-
-  <!-- Room Availability Info -->
-  <div id="roomAvailabilityInfo" class="mt-2 text-success fw-bold"></div>
-
-  <!-- Number of Rooms to Book -->
-  <div class="form-group mt-4">
-    <label for="roomQtyInput">Number of Rooms to Book</label>
-    <input type="number" id="roomQtyInput" class="form-control" min="1" placeholder="Enter room quantity">
-  </div>
-
-  <!-- Book Button -->
-  <div class="mt-4">
-    <button id="bookRoomButton" class="btn btn-primary w-100" disabled>Book Room</button>
-  </div>
-
-  <!-- Optional Auth Links (kept for fallback) -->
-  <div class="auth-buttons text-center mt-3">
-    <a href="login.html" class="btn btn-outline-secondary btn-sm">Login</a>
-  </div>
-</div>
-
-<!--  Registration Modal -->
-<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content p-3">
-      <h5 class="modal-title mb-2" id="registerModalLabel">Register to Continue Booking</h5>
-      <div class="modal-body">
-        <input id="nameSignUp" class="form-control" type="text" placeholder="Full Name" required>
-        <input id="emailSignUp" class="form-control" type="email" placeholder="Email" required>
-        <input id="contactSignUp" class="form-control" type="tel" placeholder="Phone Number" required>
-        <input id="passwordSignUp" class="form-control" type="password" placeholder="Password" required>
-        <input id="confPasswordSignUp" class="form-control" type="password" placeholder="Confirm Password" required>
-        <div class="checkbox-group mt-2">
-          <label>
-            <input type="checkbox">
-            Remember Me
-          </label>
+      <!-- Dates Container -->
+      <div class="dates-container">
+        <div class="form-group">
+          <label>Check-in Date</label>
+          <input type="date" id="checkinDate" class="form-control">
         </div>
-        <button class="btn btn-success w-100 mt-2" id="registerSubmitBtn">Register & Book</button>
+
+        <div class="form-group">
+          <label>Check-out Date</label>
+          <input type="date" id="checkoutDate" class="form-control">
+        </div>
+      </div>
+
+      <!-- Time Slot -->
+      <div class="form-group">
+        <label>Preferred Time</label>
+        <select id="timeSlotSelect" class="form-control">
+          <option value="day">Day Time (9:00 AM - 4:00 PM)</option>
+          <option value="night">Night Time (5:00 PM - 8:00 AM)</option>
+        </select>
+      </div>
+
+      <!-- Room Selection -->
+      <div class="form-group">
+        <label>Room Type</label>
+        <select id="roomTypeSelect" class="form-control">
+          <option value="">Select room type</option>
+        </select>
+      </div>
+
+      <div id="roomAvailabilityInfo" class="availability-info"></div>
+
+      <!-- Number of Rooms -->
+      <div class="form-group">
+        <label>Number of Rooms</label>
+        <input type="number" id="roomQtyInput" class="form-control" min="1" placeholder="How many rooms?">
+      </div>
+
+      <!-- Book Button -->
+      <button type="button" id="bookRoomButton" class="book-button" disabled>
+        Confirm Booking
+      </button>
+    </form>
+
+    <div class="contact-info">
+      <p>Need help? Contact our travel experts for personalized recommendations</p>
+      <p class="phone"><i class="fas fa-phone"></i> +94 77 123 4567</p>
+      <p class="email"><i class="fas fa-envelope"></i> support@hotel.com</p>
+    </div>
+  </div>
+</div>
+
+<!-- Registration Modal -->
+<div class="modal fade" id="registerModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create Your Account</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form class="register-form">
+          <input id="nameSignUp" type="text" placeholder="Full Name" required>
+          <input id="emailSignUp" type="email" placeholder="Email Address" required>
+          <input id="contactSignUp" type="tel" placeholder="Phone Number" required>
+          <input id="passwordSignUp" type="password" placeholder="Create Password" required>
+          <input id="confPasswordSignUp" type="password" placeholder="Confirm Password" required>
+          <div class="remember-me">
+            <label>
+              <input type="checkbox"> Remember Me
+            </label>
+          </div>
+          <button type="button" id="registerSubmitBtn" class="register-button">Create Account</button>
+        </form>
       </div>
     </div>
   </div>
 </div>
 
-<!--  Payment Modal -->
-<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+<!-- Check User Modal -->
+<div class="modal fade" id="checkUserModal" tabindex="-1">
   <div class="modal-dialog">
-    <div class="modal-content p-4">
-      <h5 class="modal-title mb-3" id="paymentModalLabel">Complete Your Payment</h5>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Verify Your Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
       <div class="modal-body">
-        <div class="form-group mb-2">
-          <label>Cardholder Name</label>
-          <input type="text" class="form-control" id="cardName" placeholder="Name on Card">
-        </div>
-        <div class="form-group mb-2">
-          <label>Card Number</label>
-          <input type="text" class="form-control" id="cardNumber" placeholder="xxxx-xxxx-xxxx-xxxx">
-        </div>
-        <div class="row mb-2">
-          <div class="col">
-            <label>Expiry</label>
-            <input type="text" class="form-control" id="cardExpiry" placeholder="MM/YY">
-          </div>
-          <div class="col">
-            <label>CVV</label>
-            <input type="text" class="form-control" id="cardCVV" placeholder="123">
-          </div>
-        </div>
-        <div class="form-group mb-3">
-          <label>Total Amount</label>
-          <input type="text" class="form-control" id="paymentAmount" readonly>
-        </div>
-        <button class="btn btn-success w-100" id="payNowBtn">Pay Now</button>
+        <input type="email" id="checkUserEmail" placeholder="Email Address">
+        <input type="text" id="checkUserContact" placeholder="Contact Number">
+        <button type="button" id="checkUserSubmit" class="verify-button">Verify</button>
       </div>
     </div>
   </div>
 </div>
-
-
 <script src="js/booking.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://kit.fontawesome.com/032d11eac3.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+    const hamburger = document.querySelector(".hamburger");
+    const navMenu = document.querySelector(".nav-menu");
+
+    hamburger.addEventListener("click", mobliemmenu);
+
+    function mobliemmenu() {
+      hamburger.classList.toggle("active");
+      navMenu.classList.toggle("active");
+    }
+
+    window.addEventListener("scroll", function() {
+      var header = document.querySelector("header");
+      header.classList.toggle("sticky", window.scrollY > 0)
+    })
+  </script>
 </body>
 </html>

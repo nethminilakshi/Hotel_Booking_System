@@ -18,7 +18,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -103,6 +105,10 @@ public class AdminUserController {
         }
     }
 
-
+    @GetMapping("/checkUser")
+    public ResponseEntity<?> checkUserExists(@RequestParam("email") String email, @RequestParam("contact") String contact) {
+        boolean exists = userService.existsByEmailAndContact(email, contact);
+        return ResponseEntity.ok(new ResponseUtil(201, "Checked", exists));
+    }
 
 }

@@ -7,7 +7,100 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <link rel="stylesheet" href="css/Review.css">
 </head>
-<body>
+<body class="p-5">
 
+<div class="container col-md-6">
+  <h2 class="mb-4">Submit Your Review</h2>
+
+  <form id="reviewForm">
+    <!-- Hotel ID Dropdown -->
+    <div class="mb-3">
+      <label for="hotelId" class="form-label">Select Hotel</label>
+      <select id="hotelId" class="form-select">
+        <option selected value="">select hotel</option>
+        <!-- Locations will be dynamically added here -->
+      </select>
+    </div>
+
+    <!-- Rating -->
+    <div class="mb-3">
+      <label for="rating" class="form-label">Rating (1 to 5)</label>
+      <input type="number" id="rating" class="form-control" min="1" max="5" required>
+    </div>
+
+    <!-- Comment -->
+    <div class="mb-3">
+      <label for="comment" class="form-label">Comment</label>
+      <textarea id="comment" class="form-control" rows="4" required></textarea>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit" class="btn btn-primary">Submit Review</button>
+  </form>
+</div>
+<script src="js/jquery-3.7.1.min.js"></script>
+<script>
+  $(document).ready(function () {
+
+    const hotelDropdown = $('#hotelId');
+    let hotels = [];
+
+    const getAuthToken = () => localStorage.getItem('authToken');
+
+    // Load hotels for the dropdown
+    const loadHotels = function () {
+      return $.ajax({
+        url: 'http://localhost:8080/api/v1/hotel/getAll',
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getAuthToken()}`
+        },
+        success: function (result) {
+          if (result.data && Array.isArray(result.data)) {
+            hotels = result.data;
+            hotelDropdown.html('<option value="">-- Select Hotel --</option>');
+            result.data.forEach(hotel => {
+              const option = $('<option></option>').val(hotel.hotelId).text(hotel.name || "Unknown");
+              hotelDropdown.append(option);
+            });
+          }
+          console.log("Loaded Hotels:", hotels); // Log loaded hotels
+        },
+        error: function (error) {
+          console.error("Error loading hotels:", error);
+        }
+      });
+    };
+    loadHotels()
+  });
+
+  // Submit review form
+  $('#reviewForm').on('submit', function (e) {
+    e.preventDefault();
+
+    const reviewData = {
+      hotelId: $('#hotelId').val(),
+      rating: $('#rating').val(),
+      comment: $('#comment').val()
+      // Add userId from session/localStorage or backend authentication
+    };
+
+    $.ajax({
+      url: "http://localhost:8080/api/v1/review/save",
+      method: "POST",
+      contentType: "application/json",
+      data: JSON.stringify(reviewData),
+      success: function () {
+        alert("Review submitted successfully!");
+        $('#reviewForm')[0].reset();
+      },
+      error: function () {
+        alert("Failed to submit review.");
+      }
+    });
+  });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

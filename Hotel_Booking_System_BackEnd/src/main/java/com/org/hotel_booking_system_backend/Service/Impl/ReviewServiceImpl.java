@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class ReviewServiceImpl implements ReviewService {
 
@@ -33,9 +35,12 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public List<ReviewDTO> getAllReviews() {
         List<Review> getReviews = reviewRepo.findAll();
-        return mapper.convertReviewToDTOList(getReviews);
 
+        return getReviews.stream()
+                .map(mapper::convertToReviewDTO) //  this will now include location, date, etc.
+                .collect(Collectors.toList());
     }
+
 
     @Override
     public void updateReview(ReviewDTO reviewDTO) {

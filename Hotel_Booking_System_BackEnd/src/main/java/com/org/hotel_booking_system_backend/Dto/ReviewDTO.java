@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -19,5 +20,5 @@ private UUID reviewId;
     private String location;
     private int rating; // 1-5 stars
     private String comment;
-    private String reviewDate; // LocalDateTime as String for simplicity
+    private LocalDate reviewDate; // LocalDateTime as String for simplicity
 }

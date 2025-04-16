@@ -25,4 +25,6 @@ public interface UserService {
     int updateUser(String email, UserDTO userDTO);
 
     List<UserDTO> getAllAdmins();
+    boolean existsByEmailAndContact(String email, String contact);
+
 }

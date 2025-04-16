@@ -1,0 +1,308 @@
+/* Base styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #efefef 0%, #e7e7ec 100%);
+  margin: 0;
+  min-height: 100vh;
+  padding: 0;
+}
+
+.booking-wrapper {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 40px 20px;
+  background-color: #f9f9f9;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  font-family: 'Segoe UI', sans-serif;
+}
+.topic{
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20px;
+}
+.booking-container .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.header-content h1 {
+  font-size: 28px;
+  margin: 0;
+  color: #333;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 16px;
+}
+
+.register-nav-btn {
+  padding: 10px 18px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.register-nav-btn:hover {
+  background-color: #43a047;
+}
+
+.booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Grouping Check-in and Check-out */
+.dates-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #444;
+}
+
+.form-control {
+  padding: 10px 14px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+}
+
+.form-control:focus {
+  border-color: #4CAF50;
+}
+
+.availability-info {
+  font-size: 15px;
+  color: #007BFF;
+  font-weight: 500;
+  margin-top: -10px;
+}
+
+.book-button {
+  background-color: #2196F3;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.book-button:disabled {
+  background-color: #9e9e9e;
+  cursor: not-allowed;
+}
+
+.book-button:hover:enabled {
+  background-color: #1976D2;
+}
+
+.contact-info {
+  margin-top: 40px;
+  text-align: center;
+  color: #555;
+}
+
+.contact-info .phone,
+.contact-info .email {
+  font-weight: 500;
+  margin: 6px 0;
+}
+.auth-buttons {
+  text-align: center;
+  margin-top: 30px;
+}
+
+#reviewBtn {
+  background-color: #ccad19;
+  color: #fff;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+#reviewBtn:hover {
+  background-color: #a17c2c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+#reviewBtn:disabled {
+  background-color: #ccc;
+  color: #888;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+/* Modal Content */
+.modal-content {
+  border-radius: 12px;
+  padding: 25px;
+  background-color: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal Header */
+.modal-header {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.modal-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+}
+
+.btn-close {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+/* Form Styles */
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.register-form input[type="text"],
+.register-form input[type="email"],
+.register-form input[type="tel"],
+.register-form input[type="password"] {
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border 0.3s;
+}
+
+.register-form input:focus {
+  border-color: #ff9800;
+  outline: none;
+}
+
+/* Remember Me */
+.remember-me {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #666;
+  margin-top: -8px;
+  margin-bottom: 8px;
+}
+
+.remember-me input {
+  margin-right: 8px;
+}
+
+/* Submit Button */
+.register-button {
+  background-color: rgba(53, 53, 53, 0.59);
+  color: #fff;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s;
+}
+
+.register-button:hover {
+  background-color: #151311;
+  transform: translateY(-2px);
+}
+
+/* Modal Content */
+#checkUserModal .modal-content {
+  border-radius: 12px;
+  padding: 25px;
+  background-color: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal Header */
+#checkUserModal .modal-header {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+#checkUserModal .modal-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+#checkUserModal .btn-close {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  color: #333;
+}
+
+/* Modal Body Inputs */
+#checkUserModal .modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+#checkUserModal input[type="email"],
+#checkUserModal input[type="text"] {
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.3s;
+}
+
+#checkUserModal input:focus {
+  border-color: rgba(63, 62, 61, 0.59);
+  outline: none;
+}
+
+/* Verify Button */
+.verify-button {
+  background-color: #373531;
+  color: #fff;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s;
+}
+
+.verify-button:hover {
+  background-color: #232322;
+  transform: translateY(-2px);
+}

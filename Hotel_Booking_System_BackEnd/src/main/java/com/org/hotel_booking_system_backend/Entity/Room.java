@@ -20,9 +20,6 @@ public class Room {
     @JoinColumn(name = "type_id", nullable = false)
     private RoomType roomType; // Reference to RoomType entity
 
-    @Column(name = "availability")
-    private Boolean availability;
-
     @Column(name = "floor_number", nullable = false)
     private int floorNumber;
 

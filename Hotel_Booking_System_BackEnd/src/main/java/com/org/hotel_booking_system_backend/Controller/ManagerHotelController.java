@@ -28,7 +28,7 @@ public class ManagerHotelController {
                                   @RequestPart("name") String hotelName,
                                   @RequestPart("location") String location,
                                   @RequestPart("description") String description,
-                                  @RequestPart("image") MultipartFile image,
+                                  @RequestPart(value ="image",required = false) MultipartFile image,
                                   @RequestPart("manager_id") String managerId) {
         try {
             // Log incoming data
@@ -88,7 +88,7 @@ public class ManagerHotelController {
             @RequestPart("manager_id") String manager_id
     ) {
         try {
-            logger.info("Updating Hotel ID: " + hotelId); //  Debugging
+            logger.info("Updating Hotel ID: " + hotelId);
 
             String updateBase64CropImage = null;
             if (updatedImage != null && !updatedImage.isEmpty()) {
@@ -96,6 +96,7 @@ public class ManagerHotelController {
             }
 
             var updateHotelDTO = new HotelDTO();
+            updateHotelDTO.setHotelId(UUID.fromString(hotelId));
             updateHotelDTO.setName(hotelName);
             updateHotelDTO.setLocation(location);
             updateHotelDTO.setDescription(description);
@@ -114,6 +115,7 @@ public class ManagerHotelController {
             return new ResponseUtil(500, "Error updating hotel: " + e.getMessage(), null);
         }
     }
+
 
     @DeleteMapping(value = "delete/{hotelId}")
     public ResponseUtil delete(@PathVariable("hotelId") UUID hotelId) {

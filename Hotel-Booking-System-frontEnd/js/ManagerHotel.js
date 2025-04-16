@@ -10,9 +10,11 @@ $(document).ready(function() {
   const imagePreviewContainer = $("#hotel-image-preview-container");
   const removeImageButton = $("#hotel-remove-image");
   const managerDropdown = $('#managerId');
+  const imageInputWrapper = $('#image-input-wrapper');
   let currentHotelId = null;
+  let managers = [];
 
-  // Image handling setup
+  // Image preview handling
   imageInput.on("change", function(event) {
     const file = event.target.files[0];
     if (file) {
@@ -25,18 +27,23 @@ $(document).ready(function() {
     }
   });
 
-  // Remove image functionality
   removeImageButton.on("click", function() {
     imageInput.val("");
     imagePreview.attr("src", "");
     imagePreviewContainer.css("display", "none");
   });
 
-  // Open and close registration form
+  // Open and close form
   const openForm = function() {
     hotelRegisterForm.css("display", "flex");
     formTitle.text(currentHotelId ? "Update Hotel" : "Register Hotel");
-    if (!currentHotelId) {
+
+    if (currentHotelId) {
+      imageInputWrapper.hide();
+      removeImageButton.hide();
+    } else {
+      imageInputWrapper.show();
+      removeImageButton.show();
       clearForm();
     }
   };
@@ -53,16 +60,23 @@ $(document).ready(function() {
     if (event.target === hotelRegisterForm[0]) closeForm();
   });
 
-  // Function to get the authentication token
   const getAuthToken = function() {
-    // Replace with your actual method of retrieving the token
     return localStorage.getItem('authToken');
   };
 
-  // Populate manager dropdown
+  // Get manager name
+  function getManagerNameById(managerId) {
+    if (!managers || managers.length === 0) {
+      return "Unknown Manager";
+    }
+    const manager = managers.find(m => m.userId === managerId);
+    return manager ? manager.name : "Unknown Manager";
+  }
+
+  // Load managers
   const loadManagers = function() {
-    $.ajax({
-      url: 'http://localhost:8080/api/v1/user/getAll',
+    return $.ajax({
+      url: 'http://localhost:8080/api/v1/admin/getAll',
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -71,6 +85,7 @@ $(document).ready(function() {
       success: function(result) {
         managerDropdown.html('<option value="">-- Select Manager --</option>');
         if (result.data && Array.isArray(result.data)) {
+          managers = result.data;
           result.data.forEach(function(manager) {
             const option = $('<option></option>');
             option.val(manager.userId);
@@ -86,7 +101,7 @@ $(document).ready(function() {
     });
   };
 
-  // Fetch hotels for the table
+  // Fetch hotels
   const fetchHotels = function() {
     $.ajax({
       url: 'http://localhost:8080/api/v1/hotel/getAll',
@@ -112,7 +127,7 @@ $(document).ready(function() {
     });
   };
 
-  // Add hotel data to table
+  // Add hotel row to table
   const addHotelToTable = function(hotel) {
     const row = $('<tr></tr>');
     row.html(`
@@ -123,16 +138,18 @@ $(document).ready(function() {
       <td>
         ${hotel.image ? `<img src="data:image/png;base64,${hotel.image}" alt="Hotel Image" class="hotel-image-table" />` : 'No Image'}
       </td>
-      <td>${hotel.managerId || "N/A"}</td>
+      <td>${getManagerNameById(hotel.managerId) || "N/A"}</td>
       <td><span class="update-button">Update</span></td>
       <td><span class="delete-button">Delete</span></td>
     `);
+
     row.find('.update-button').on('click', function() {
       openUpdateForm(hotel);
     });
     row.find('.delete-button').on('click', function() {
       deleteHotel(hotel.hotelId);
     });
+
     tableBody.append(row);
   };
 
@@ -141,6 +158,7 @@ $(document).ready(function() {
     currentHotelId = hotel.hotelId;
     formTitle.text("Update Hotel");
     populateForm(hotel);
+    imageInput.val('');
     openForm();
   };
 
@@ -150,6 +168,7 @@ $(document).ready(function() {
     $('#hotel-location').val(hotel.location || '');
     $('#hotel-description').val(hotel.description || '');
     $('#managerId').val(hotel.managerId || '');
+
     if (hotel.image) {
       imagePreview.attr("src", `data:image/png;base64,${hotel.image}`);
       imagePreviewContainer.css("display", "flex");
@@ -158,7 +177,6 @@ $(document).ready(function() {
     }
   };
 
-  // Submit form handler
   hotelForm.on('submit', function(e) {
     e.preventDefault();
     if (currentHotelId) {
@@ -168,7 +186,6 @@ $(document).ready(function() {
     }
   });
 
-  // Save hotel data
   const saveHotel = function() {
     const formData = getFormData();
 
@@ -182,7 +199,6 @@ $(document).ready(function() {
       processData: false,
       contentType: false,
       success: function(response) {
-        console.log('Save response:', response);
         alert('Hotel saved successfully!');
         fetchHotels();
         closeForm();
@@ -194,7 +210,6 @@ $(document).ready(function() {
     });
   };
 
-  // Update hotel data
   const updateHotel = function() {
     const formData = getFormData();
 
@@ -208,7 +223,6 @@ $(document).ready(function() {
       processData: false,
       contentType: false,
       success: function(response) {
-        console.log('Update response:', response);
         alert('Hotel updated successfully!');
         fetchHotels();
         closeForm();
@@ -220,13 +234,16 @@ $(document).ready(function() {
     });
   };
 
-  // Get form data
   const getFormData = function() {
     const formData = new FormData();
-    formData.append('name', $('#hotel-name').val());
+    formData.append('hotelName', $('#hotel-name').val());
     formData.append('location', $('#hotel-location').val());
     formData.append('description', $('#hotel-description').val());
-    formData.append('manager_id', $('#managerId').val()); // Changed back to manager_id to match backend expectation
+    formData.append('manager_id', $('#managerId').val());
+
+    if (currentHotelId) {
+      formData.append('hotelId', currentHotelId);
+    }
 
     const image = imageInput[0].files[0];
     if (image) formData.append('image', image);
@@ -237,8 +254,6 @@ $(document).ready(function() {
   function deleteHotel(hotelId) {
     if (!confirm("Are you sure you want to delete this hotel?")) return;
 
-    console.log("Deleting hotel ID:", hotelId);
-
     $.ajax({
       url: `http://localhost:8080/api/v1/hotel/delete/${hotelId}`,
       method: 'DELETE',
@@ -246,9 +261,8 @@ $(document).ready(function() {
         'Authorization': `Bearer ${getAuthToken()}`
       },
       success: function(response) {
-        console.log("Delete Success:", response);
         alert("Hotel deleted successfully!");
-        fetchHotels(); // Refresh table
+        fetchHotels();
       },
       error: function(error) {
         console.error("Error deleting hotel:", error);
@@ -257,15 +271,16 @@ $(document).ready(function() {
     });
   }
 
-
-  // Clear form fields
   const clearForm = function() {
     hotelForm[0].reset();
     imagePreview.attr("src", '');
     imagePreviewContainer.css("display", 'none');
   };
 
-  // Fetch hotels and load managers on page load
-  fetchHotels();
-  loadManagers();
+  // Initial load
+  $.when(loadManagers()).done(function() {
+    fetchHotels();
+  }).fail(function() {
+    console.error("Error loading data.");
+  });
 });

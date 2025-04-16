@@ -12,7 +12,6 @@ public class RoomDTO {
     private String roomId;
     private String roomTypeId; // Reference to RoomType entity
     private String roomTypeName; // Reference to RoomType entity
-    private Boolean availability;
     private int floorNumber;
     private String hotelId;
     private String hotelName; // <--- Add this field

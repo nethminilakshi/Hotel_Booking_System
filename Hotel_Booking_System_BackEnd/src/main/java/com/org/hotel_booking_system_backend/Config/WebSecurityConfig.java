@@ -53,7 +53,7 @@ public class WebSecurityConfig {
                         .requestMatchers(
                                 "/api/v1/auth/authenticate",
                                 "/api/v1/user/register",
-                                "/api/v1/admin/register",
+                                "/api/v1/admin/**",
                                 "/api/v1/auth/refreshToken",
                                 "/api/v1/hotel/**",
                                 "/api/v1/hotel/delete/**",

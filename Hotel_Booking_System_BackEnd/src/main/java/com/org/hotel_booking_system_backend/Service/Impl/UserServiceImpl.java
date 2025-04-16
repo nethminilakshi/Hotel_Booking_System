@@ -31,8 +31,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public List<UserDTO> getAllUsers() {
-        return modelMapper.map(userRepo.findAll(), new TypeToken<List<UserDTO>>() {}.getType());
+        List<User> users = userRepo.findAllByRole("USER");
+        return modelMapper.map(users, new TypeToken<List<UserDTO>>() {}.getType());
     }
+
+
+    @Override
+    public List<UserDTO> getAllAdmins() {
+        List<User> admins = userRepo.findAllByRole("ADMIN");
+        return modelMapper.map(admins, new TypeToken<List<UserDTO>>() {}.getType());
+    }
+
+
 
     @Override
     public UserDTO getSelectedUser(UUID userId) {
@@ -44,6 +54,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public List<String> getAllUserIds() {
         List<UUID> userIds = userRepo.findAllUserIds();
         return userIds.stream().map(UUID::toString).toList();
+    }
+
+
+    @Override
+    public int saveUser(UserDTO userDTO) {
+        return save(userDTO, "USER");
+    }
+
+    @Override
+    public int saveAdmin(UserDTO userDTO) {
+        return save(userDTO, "ADMIN");
     }
 
     @Override
@@ -71,15 +92,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return VarList.OK;
     }
 
-    @Override
-    public int saveUser(UserDTO userDTO) {
-        return save(userDTO, "USER");
-    }
-
-    @Override
-    public int saveAdmin(UserDTO userDTO) {
-        return save(userDTO, "ADMIN");
-    }
 
     @Override
     public int updateUser(String email, UserDTO userDTO) {
@@ -95,6 +107,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         userRepo.save(user);
         return VarList.OK;
     }
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

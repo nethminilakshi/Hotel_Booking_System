@@ -52,7 +52,6 @@ public class RoomServiceImpl implements RoomService {
         }
 
         Room room = optionalRoom.get();
-        room.setAvailability(roomDTO.getAvailability());
         room.setFloorNumber(roomDTO.getFloorNumber());
 
         // If you want to allow changing the roomType and hotel as well:

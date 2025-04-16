@@ -103,21 +103,6 @@ public class AdminUserController {
         }
     }
 
-    @PutMapping(value = "update/{email}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseUtil> updateUser(@PathVariable("email") String email, @RequestBody UserDTO userDTO) {
-        try {
-            System.out.println("Received user update request: " + userDTO);
-            int res = userService.updateUser(email, userDTO);
-            if (res == VarList.OK) {
-                return ResponseEntity.ok(new ResponseUtil(VarList.OK, "User updated successfully", null));
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(new ResponseUtil(VarList.Not_Found, "User not found", null));
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseUtil(VarList.Internal_Server_Error, e.getMessage(), null));
-        }
-    }
+
 
 }

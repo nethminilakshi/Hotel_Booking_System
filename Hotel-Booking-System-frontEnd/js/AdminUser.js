@@ -3,7 +3,8 @@ $(document).ready(function () {
   const addUserButton = $('#add-user');
   const closeButton = $('#user-register-close');
   const userForm = $('#user-form');
-  const tableBody = $('.user-table tbody');
+  const tableBody = $('.admin-table tbody');
+  const userTableBody = $('.user-table tbody');
   const formTitle = $('.user-register-title');
   let currentUserId = null;
 
@@ -43,7 +44,7 @@ $(document).ready(function () {
     }
   });
 
-  // ✅ Corrected saveUsers function
+  // Corrected saveUsers function
   const saveUsers = function () {
     const userData = {
       name: $("#user-name").val().trim(),
@@ -67,7 +68,7 @@ $(document).ready(function () {
       success: function (response) {
         alert("User added successfully!");
         $("#user-form")[0].reset();
-        fetchUsers();
+        fetchAdmins();
         closeForm();
       },
       error: function (error) {
@@ -81,10 +82,10 @@ $(document).ready(function () {
     });
   };
 
-  // Fetch users and populate the table
-  const fetchUsers = function () {
+  // Fetch admins and populate the table
+  const fetchAdmins = function () {
     $.ajax({
-      url: 'http://localhost:8080/api/v1/user/getAll',
+      url: 'http://localhost:8080/api/v1/admin/getAll',
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -95,7 +96,7 @@ $(document).ready(function () {
         tableBody.html("");
         if (result && result.data && Array.isArray(result.data)) {
           result.data.forEach(function (user) {
-            addUserToTable(user);
+            addAdminToTable(user);
           });
         } else {
           console.error("Invalid data format received:", result);
@@ -109,7 +110,7 @@ $(document).ready(function () {
   };
 
   // Add user to table
-  const addUserToTable = function (user) {
+  const addAdminToTable = function (user) {
     const row = $('<tr></tr>');
     row.html(`
       <td>${user.userId || "N/A"}</td>
@@ -132,6 +133,49 @@ $(document).ready(function () {
 
     tableBody.append(row);
   };
+
+  // Fetch users and populate the table
+  const fetchUsers = function () {
+    $.ajax({
+      url: 'http://localhost:8080/api/v1/user/getAll',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${getAuthToken()}`
+      },
+      success: function (res) {
+        console.log("Fetched Users:", res.data);
+        userTableBody.html("");
+        if (res && res.data && Array.isArray(res.data)) {
+          res.data.forEach(function (user) {
+            addUserToTable(user);
+          });
+        } else {
+          console.error("Invalid data format received:", res);
+        }
+      },
+      error: function (error) {
+        console.error("Error fetching users:", error);
+        alert("An error occurred while fetching users.");
+      }
+    });
+  };
+
+
+  // Add user to table
+  const addUserToTable = function (user) {
+    const row = $('<tr></tr>');
+    row.html(`
+      <td>${user.userId || "N/A"}</td>
+      <td>${user.name || "N/A"}</td>
+      <td>${user.email || "N/A"}</td>
+      <td>${user.contact || "N/A"}</td>
+      <td>${user.password ? "••••••••" : "N/A"}</td>
+      <td>${user.role || "N/A"}</td>
+    `);
+    userTableBody.append(row);
+  };
+
 
   // Populate form fields with user data
   const populateForm = function (user) {
@@ -159,7 +203,7 @@ $(document).ready(function () {
     };
 
     $.ajax({
-      url: `http://localhost:8080/api/v1/user/update/${currentUserId}`,
+      url: `http://localhost:8080/api/v1/admin/update/${currentUserId}`,
       method: 'PUT',
       contentType: 'application/json',
       headers: {
@@ -168,7 +212,7 @@ $(document).ready(function () {
       data: JSON.stringify(userData),
       success: function (response) {
         alert('User updated successfully!');
-        fetchUsers();
+        fetchAdmins();
         closeForm();
       },
       error: function (error) {
@@ -190,7 +234,7 @@ $(document).ready(function () {
       },
       success: function (response) {
         alert("User deleted successfully!");
-        fetchUsers();
+        fetchAdmins();
       },
       error: function (error) {
         console.error("Error deleting user:", error);
@@ -206,5 +250,6 @@ $(document).ready(function () {
   };
 
   // Load users on page load
+  fetchAdmins();
   fetchUsers();
 });

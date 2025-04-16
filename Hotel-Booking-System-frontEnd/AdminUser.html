@@ -57,7 +57,7 @@
 <section id="UserForm">
   <div id="userHeaderSection" class="userHeader-section">
     <h2> Users <span>Manage</span></h2>
-    <button id="add-user" class="add-user-button">Add Users</button>
+    <button id="add-user" class="add-user-button">Add Admin</button>
   </div>
 
   <!-- User Registration Form -->
@@ -65,7 +65,7 @@
     <div class="user-register-box">
       <span id="user-register-close" class="user-register-close">&times;</span>
 
-      <h2 class="user-register-title">Register User</h2>
+      <h2 class="user-register-title">Register Admin</h2>
 
       <form id="user-form">
         <!-- name -->
@@ -117,9 +117,9 @@
     </div>
   </div>
 
-  <!-- User Table -->
+  <!-- admin Table -->
   <div class="table-container">
-    <table class="user-table">
+    <table class="admin-table">
       <thead>
       <tr>
         <th>userId</th>
@@ -130,6 +130,26 @@
         <th>Role</th>
         <th>Update</th>
         <th>Delete</th>
+      </tr>
+      </thead>
+      <tbody>
+      <!-- Rows with user data will be dynamically inserted here -->
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- user Table -->
+  <h4 style="margin-top: 40px;">Registered Users</h4>
+  <div class="table-container">
+    <table class="user-table">
+      <thead>
+      <tr>
+        <th>userId</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Contact</th>
+        <th>Password</th>
       </tr>
       </thead>
       <tbody>

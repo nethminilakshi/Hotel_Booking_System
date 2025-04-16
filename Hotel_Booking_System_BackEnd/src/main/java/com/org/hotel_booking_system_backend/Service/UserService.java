@@ -23,4 +23,6 @@ public interface UserService {
     int saveAdmin(UserDTO userDTO);
 
     int updateUser(String email, UserDTO userDTO);
+
+    List<UserDTO> getAllAdmins();
 }

@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
   const roomRegisterForm = $('#room-register-form');
   const addRoomButton = $('#add-room');
   const closeButton = $('#room-register-close');
@@ -9,18 +9,16 @@ $(document).ready(function() {
   const imagePreview = $('#room-image-preview');
   const imagePreviewContainer = $('#room-image-preview-container');
   const removeImageButton = $('#room-remove-image');
+  const imageInputWrapper = $('#image-input-wrapper');
   let currentRoomId = null;
 
-  const getAuthToken = function() {
-    return localStorage.getItem('authToken');
-  };
+  const getAuthToken = () => localStorage.getItem('authToken');
 
-  // Image handling setup
-  imageInput.on('change', function(event) {
+  imageInput.on('change', function (event) {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         imagePreview.attr('src', e.target.result);
         imagePreviewContainer.css('display', 'flex');
       };
@@ -28,23 +26,26 @@ $(document).ready(function() {
     }
   });
 
-  // Remove image functionality
-  removeImageButton.on('click', function() {
+  removeImageButton.on('click', function () {
     imageInput.val('');
     imagePreview.attr('src', '');
     imagePreviewContainer.css('display', 'none');
   });
 
-  // Open and close form
-  const openForm = function() {
+  const openForm = function () {
     roomRegisterForm.css('display', 'flex');
     formTitle.text(currentRoomId ? 'Update Room Type' : 'Register Room Type');
-    if (!currentRoomId) {
+    if (currentRoomId) {
+      imageInputWrapper.hide();
+      removeImageButton.hide();
+    } else {
+      imageInputWrapper.show();
+      removeImageButton.show();
       clearForm();
     }
   };
 
-  const closeForm = function() {
+  const closeForm = function () {
     roomRegisterForm.css('display', 'none');
     clearForm();
   };
@@ -52,9 +53,7 @@ $(document).ready(function() {
   addRoomButton.on('click', openForm);
   closeButton.on('click', closeForm);
 
-
-  // Fetch room types
-  const fetchRooms = function() {
+  const fetchRooms = function () {
     $.ajax({
       url: 'http://localhost:8080/api/v1/roomType/getAll',
       method: 'GET',
@@ -62,23 +61,22 @@ $(document).ready(function() {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${getAuthToken()}`
       },
-      success: function(result) {
+      success: function (result) {
         tableBody.html('');
         if (result.data && Array.isArray(result.data)) {
-          result.data.forEach(function(room) {
+          result.data.forEach(function (room) {
             addRoomToTable(room);
           });
         }
       },
-      error: function(error) {
+      error: function (error) {
         console.error('Error fetching room types:', error);
         alert('An error occurred while fetching room types.');
       }
     });
   };
 
-  // Add room to table
-  const addRoomToTable = function(room) {
+  const addRoomToTable = function (room) {
     const row = $('<tr></tr>');
     row.html(`
       <td>${room.typeId || 'N/A'}</td>
@@ -93,34 +91,39 @@ $(document).ready(function() {
       <td><span class='update-button'>Update</span></td>
       <td><span class='delete-button'>Delete</span></td>
     `);
-    row.find('.update-button').on('click', function() {
+
+    row.find('.update-button').on('click', function () {
+      console.log('Update clicked for room:', room.typeId);
       openUpdateForm(room);
     });
-    row.find('.delete-button').on('click', function() {
-      console.log("Room ID before delete:", room.typeId); // Debugging
-      deleteRoom(room.typeId || room.id || room.roomId); // Ensure the correct field is used
+
+    row.find('.delete-button').on('click', function () {
+      deleteRoom(room.typeId);
     });
-    row.find('.room-image-table').on('click', function() {
+
+    row.find('.room-image-table').on('click', function () {
       alert('Image clicked!');
-  });
+    });
+
     tableBody.append(row);
   };
 
-  // Open update form
-  const openUpdateForm = function(room) {
-    currentRoomId = room.roomId;
+  const openUpdateForm = function (room) {
+    currentRoomId = room.typeId;
+    console.log('Opening form for update:', currentRoomId);
     formTitle.text('Update Room Type');
     populateForm(room);
+    imageInput.val('');
     openForm();
   };
 
-  // Populate form fields
-  const populateForm = function(room) {
+  const populateForm = function (room) {
     $('#room-name').val(room.name);
     $('#room-description').val(room.description);
     $('#room-price').val(room.price);
     $('#room-qty').val(room.qtyOnHand);
     $('#room-persons').val(room.noOfPersons);
+
     if (room.image) {
       imagePreview.attr('src', `data:image/png;base64,${room.image}`);
       imagePreviewContainer.css('display', 'flex');
@@ -129,9 +132,9 @@ $(document).ready(function() {
     }
   };
 
-  // Submit form
-  roomForm.on('submit', function(e) {
+  roomForm.on('submit', function (e) {
     e.preventDefault();
+    console.log('Form submitted. CurrentRoomId:', currentRoomId);
     if (currentRoomId) {
       updateRoom();
     } else {
@@ -139,14 +142,8 @@ $(document).ready(function() {
     }
   });
 
-  // Save room
-  const saveRoom = function() {
+  const saveRoom = function () {
     const formData = getFormData();
-
-    console.log("Submitting FormData:");
-    for (let pair of formData.entries()) {
-      console.log(pair[0] + ': ' + pair[1]);
-    }
 
     $.ajax({
       url: 'http://localhost:8080/api/v1/roomType/save',
@@ -157,98 +154,101 @@ $(document).ready(function() {
       data: formData,
       processData: false,
       contentType: false,
-      success: function(response) {
-        console.log("Save Response:", response);
+      success: function (response) {
         alert('Room type saved successfully!');
         fetchRooms();
         closeForm();
       },
-      error: function(error) {
+      error: function (error) {
         console.error('Error saving room type:', error);
         alert('An error occurred while saving the room type.');
       }
     });
   };
 
-  // Update hotel data
-  const updateRoom = function() {
+  const updateRoom = function () {
     const formData = getFormData();
+    console.log('Updating room with ID:', currentRoomId);
 
-    $.ajax({
-      url: `http://localhost:8080/api/v1/roomType/update/${currentRoomId}`,
+    fetch(`http://localhost:8080/api/v1/roomType/update/${currentRoomId}`, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${getAuthToken()}`
+        // DO NOT set 'Content-Type', let browser handle it with FormData
       },
-      data: formData,
-      processData: false,
-      contentType: false,
-      success: function(response) {
-        console.log('Update response:', response);
-        alert('Hotel updated successfully!');
+      body: formData
+    })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().then(err => { throw err });
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Update successful:', data);
+        alert('RoomType updated successfully!');
         fetchRooms();
         closeForm();
-      },
-      error: function(error) {
-        console.error("Error updating hotel:", error);
-        alert("An error occurred while updating the hotel: " + (error.responseJSON?.message || error.statusText));
-      }
-    });
+      })
+      .catch(error => {
+        console.error("Error updating room:", error);
+        alert("An error occurred while updating the room: " + (error.message || 'Unknown Error'));
+      });
   };
 
-// Get form data
-  const getFormData = function() {
+  const getFormData = function () {
     const formData = new FormData();
-    formData.append('typeId', currentRoomId || '');
+    // Remove typeId; not needed for update
     formData.append('name', $('#room-name').val());
     formData.append('description', $('#room-description').val());
     formData.append('price', $('#room-price').val());
     formData.append('qtyOnHand', $('#room-qty').val());
     formData.append('noOfPersons', $('#room-persons').val());
 
-
-
     const image = imageInput[0].files[0];
-    if (image) formData.append('image', image);
+    if (image) {
+      formData.append('image', image);
+    }
+
+    // Debug: print all keys
+    for (let pair of formData.entries()) {
+      console.log(`${pair[0]}: ${pair[1]}`);
+    }
 
     return formData;
   };
 
-  function deleteRoom(roomId) {
+  const deleteRoom = function (roomId) {
+    if (!confirm("Are you sure you want to delete this room type?")) return;
     if (!roomId) {
-      console.error("Room ID is undefined! Cannot proceed with deletion.");
-      alert("Error: Room ID is missing!");
+      alert("Room ID is missing!");
       return;
     }
 
-    console.log("Deleting Room ID:", roomId);
-
     $.ajax({
-      url: `http://localhost:8080/api/v1/roomType/delete/${roomId}`, // FIXED: Use roomId
+      url: `http://localhost:8080/api/v1/roomType/delete/${roomId}`,
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${getAuthToken()}`
       },
-      success: function(response) {
-        console.log("Delete Success:", response);
+      success: function () {
         alert("Room deleted successfully!");
-        fetchRooms(); // Refresh table
+        fetchRooms();
       },
-      error: function(error) {
+      error: function (error) {
         console.error("Error deleting room:", error);
         alert("Failed to delete room.");
       }
     });
-  }
+  };
 
-
-  // Clear form fields
-  const clearForm = function() {
+  const clearForm = function () {
     roomForm[0].reset();
     imagePreview.attr("src", '');
     imagePreviewContainer.css("display", 'none');
+    imagePreview.removeData('existing');
+    currentRoomId = null;
   };
 
-  // Fetch room types on load
   fetchRooms();
 });

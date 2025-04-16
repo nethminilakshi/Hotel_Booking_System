@@ -94,8 +94,7 @@ public class ManagerRoomTypeController {
         return roomTypeService.getSelectedType(roomTypeCode);
     }
 
-
-    @PutMapping(path = "update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(path = "update/{id}" ,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseUtil update(
             @PathVariable("id") UUID roomTypeId,
             @RequestPart("name") String name,
@@ -104,17 +103,17 @@ public class ManagerRoomTypeController {
             @RequestPart("qtyOnHand") Integer qtyOnHand,
             @RequestPart("noOfPersons") Integer noOfPersons,
             @RequestPart(value = "image", required = false) MultipartFile updatedImage
-
     ) {
         try {
-            logger.info("Updating RoomType ID: " + roomTypeId); //  Debugging
+            logger.info("Updating RoomType ID: " + roomTypeId);
 
             String updateBase64Image = null;
             if (updatedImage != null && !updatedImage.isEmpty()) {
                 updateBase64Image = AppUtil.toBase64CropImage(updatedImage);
             }
 
-            var updateRoomTypeDTO = new RoomTypeDTO();
+            RoomTypeDTO updateRoomTypeDTO = new RoomTypeDTO();
+            updateRoomTypeDTO.setTypeId(roomTypeId); // This is important!
             updateRoomTypeDTO.setName(name);
             updateRoomTypeDTO.setDescription(description);
             updateRoomTypeDTO.setPrice(Double.parseDouble(price));
@@ -126,14 +125,12 @@ public class ManagerRoomTypeController {
             }
 
             roomTypeService.update(updateRoomTypeDTO);
-            logger.info("RoomType Updated :" + updateRoomTypeDTO);
             return new ResponseUtil(200, "RoomType Updated Successfully", null);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            logger.error("Error updating RoomType: ", e);
             return new ResponseUtil(500, "Error updating RoomType: " + e.getMessage(), null);
         }
     }
-
 
 
 }

@@ -64,7 +64,6 @@ public class Mapping {
             @Override
             protected void configure() {
                 map().setRoomId(source.getRoomId()); // Assuming roomId exists in RoomDTO
-                map().setAvailability(source.getAvailability());
                 map().setHotelId(String.valueOf(source.getHotel().getHotelId())); // Assuming RoomDTO has a hotel field
             }
         });
@@ -117,7 +116,6 @@ public class Mapping {
     public Room convertToRoomEntity(RoomDTO dto) {
         Room room = new Room();
         room.setRoomId(dto.getRoomId());
-        room.setAvailability(dto.getAvailability());
         room.setFloorNumber(dto.getFloorNumber());
 
         // Set RoomType

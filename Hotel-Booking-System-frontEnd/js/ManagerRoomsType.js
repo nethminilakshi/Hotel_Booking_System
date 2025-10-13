@@ -12,6 +12,16 @@ $(document).ready(function () {
   const imageInputWrapper = $('#image-input-wrapper');
   let currentRoomId = null;
 
+  // Configure SweetAlert2 default settings for compact alerts
+  const Toast = Swal.mixin({
+    width: '500px',
+    padding: '1em',
+    heightAuto: false,
+    customClass: {
+      popup: 'compact-alert'
+    }
+  });
+
   const getAuthToken = () => localStorage.getItem('authToken');
 
   imageInput.on('change', function (event) {
@@ -71,7 +81,10 @@ $(document).ready(function () {
       },
       error: function (error) {
         console.error('Error fetching room types:', error);
-        alert('An error occurred while fetching room types.');
+        Toast.fire({
+          icon: 'error',
+          title: 'An error occurred while fetching room types.'
+        });
       }
     });
   };
@@ -102,7 +115,10 @@ $(document).ready(function () {
     });
 
     row.find('.room-image-table').on('click', function () {
-      alert('Image clicked!');
+      Toast.fire({
+        icon: 'info',
+        title: 'Image clicked!'
+      });
     });
 
     tableBody.append(row);
@@ -155,13 +171,19 @@ $(document).ready(function () {
       processData: false,
       contentType: false,
       success: function (response) {
-        alert('Room type saved successfully!');
+        Toast.fire({
+          icon: 'success',
+          title: 'Room type saved successfully!'
+        });
         fetchRooms();
         closeForm();
       },
       error: function (error) {
         console.error('Error saving room type:', error);
-        alert('An error occurred while saving the room type.');
+        Toast.fire({
+          icon: 'error',
+          title: 'An error occurred while saving the room type.'
+        });
       }
     });
   };
@@ -170,35 +192,36 @@ $(document).ready(function () {
     const formData = getFormData();
     console.log('Updating room with ID:', currentRoomId);
 
-    fetch(`http://localhost:8080/api/v1/roomType/update/${currentRoomId}`, {
+    $.ajax({
+      url: `http://localhost:8080/api/v1/roomType/update/${currentRoomId}`,
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${getAuthToken()}`
-        // DO NOT set 'Content-Type', let browser handle it with FormData
       },
-      body: formData
-    })
-      .then(response => {
-        if (!response.ok) {
-          return response.json().then(err => { throw err });
-        }
-        return response.json();
-      })
-      .then(data => {
-        console.log('Update successful:', data);
-        alert('RoomType updated successfully!');
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function (response) {
+        console.log('Update successful:', response);
+        Toast.fire({
+          icon: 'success',
+          title: 'RoomType updated successfully!'
+        });
         fetchRooms();
         closeForm();
-      })
-      .catch(error => {
+      },
+      error: function (error) {
         console.error("Error updating room:", error);
-        alert("An error occurred while updating the room: " + (error.message || 'Unknown Error'));
-      });
+        Toast.fire({
+          icon: 'error',
+          title: 'An error occurred while updating the room: ' + (error.responseJSON?.message || 'Unknown Error')
+        });
+      }
+    });
   };
 
   const getFormData = function () {
     const formData = new FormData();
-    // Remove typeId; not needed for update
     formData.append('name', $('#room-name').val());
     formData.append('description', $('#room-description').val());
     formData.append('price', $('#room-price').val());
@@ -219,25 +242,63 @@ $(document).ready(function () {
   };
 
   const deleteRoom = function (roomId) {
-    if (!confirm("Are you sure you want to delete this room type?")) return;
     if (!roomId) {
-      alert("Room ID is missing!");
+      Toast.fire({
+        icon: 'error',
+        title: 'Room ID is missing!'
+      });
       return;
     }
 
-    $.ajax({
-      url: `http://localhost:8080/api/v1/roomType/delete/${roomId}`,
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${getAuthToken()}`
-      },
-      success: function () {
-        alert("Room deleted successfully!");
-        fetchRooms();
-      },
-      error: function (error) {
-        console.error("Error deleting room:", error);
-        alert("Failed to delete room.");
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You want to delete this room type?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      width: '500px',
+      padding: '1em',
+      customClass: {
+        popup: 'compact-alert'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: `http://localhost:8080/api/v1/roomType/delete/${roomId}`,
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${getAuthToken()}`
+          },
+          success: function () {
+            Toast.fire({
+              icon: 'success',
+              title: 'Room deleted successfully!'
+            });
+            fetchRooms();
+          },
+          error: function (error) {
+            console.error("Error deleting room:", error);
+            if (error.status === 409 || (error.responseJSON?.message?.includes('foreign key constraint'))) {
+              Swal.fire({
+                icon: 'error',
+                title: 'Cannot Delete',
+                text: 'This room type cannot be deleted because it is currently assigned to one or more rooms. Please remove all rooms of this type before deleting.',
+                width: '600px',
+                padding: '1em',
+                customClass: {
+                  popup: 'compact-alert'
+                }
+              });
+            } else {
+              Toast.fire({
+                icon: 'error',
+                title: 'Failed to delete room.'
+              });
+            }
+          }
+        });
       }
     });
   };

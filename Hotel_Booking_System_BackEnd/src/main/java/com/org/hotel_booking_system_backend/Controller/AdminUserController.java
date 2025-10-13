@@ -2,6 +2,7 @@ package com.org.hotel_booking_system_backend.Controller;
 
 import com.org.hotel_booking_system_backend.Dto.AuthDTO;
 import com.org.hotel_booking_system_backend.Dto.UserDTO;
+import com.org.hotel_booking_system_backend.Entity.User;
 import com.org.hotel_booking_system_backend.Service.Impl.UserServiceImpl;
 import com.org.hotel_booking_system_backend.Service.UserService;
 import com.org.hotel_booking_system_backend.Util.JwtUtil;
@@ -18,10 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("api/v1/user")
@@ -38,7 +36,6 @@ public class AdminUserController {
         this.userService = userService;
     }
     @GetMapping(path = "getAll", produces = MediaType.APPLICATION_JSON_VALUE)
-//    @PreAuthorize("hasRole('ADMIN')")
     public ResponseUtil getAllUsers() {
         List<UserDTO> allUsers = userService.getAllUsers();
         System.out.println(allUsers);
@@ -50,6 +47,7 @@ public class AdminUserController {
 
 
     @DeleteMapping("delete/{email}")
+    @PreAuthorize("hasRole('ADMIN')")
 //    @PreAuthorize("hasAuthority('ADMIN') or authentication.name == #email")
     public ResponseEntity<ResponseUtil> deleteUser(@PathVariable("email") String email) {
         try {
@@ -75,10 +73,6 @@ public class AdminUserController {
     public UserDTO getSelectedUser(@PathVariable("userId") UUID userId){
         return userService.getSelectedUser(userId);
     }
-//    @GetMapping("/getAllUserIds")
-//    public ResponseEntity<List<String>> getAllUserIds() {
-//        return ResponseEntity.ok((List<String>) userService.getAllUserIds());
-//    }
 
     @PostMapping(value = "register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseUtil registerUser(@RequestBody @Valid UserDTO userDTO) {
@@ -106,9 +100,30 @@ public class AdminUserController {
     }
 
     @GetMapping("/checkUser")
-    public ResponseEntity<?> checkUserExists(@RequestParam("email") String email, @RequestParam("contact") String contact) {
-        boolean exists = userService.existsByEmailAndContact(email, contact);
-        return ResponseEntity.ok(new ResponseUtil(201, "Checked", exists));
+    public ResponseUtil checkUser(@RequestParam String email, @RequestParam String contact) {
+        System.out.println("Checking user with email: " + email + " and contact: " + contact);
+        UserDTO userDTO = userService.existsByEmailAndContact(email, contact);
+        System.out.println("User found: " + (userDTO != null));
+        if (userDTO != null) {
+            return new ResponseUtil(200, "User found", userDTO);
+        } else {
+            return new ResponseUtil(404, "User not found", null);
+        }
     }
 
-}
+    @GetMapping("/getUserByEmail")
+    public ResponseEntity<?> getUserByEmail(@RequestParam String email) {
+        try {
+            UserDTO user = userService.getUserByEmail(email);
+            if (user != null) {
+                ResponseUtil response = new ResponseUtil(201 , "user found", user);
+                return ResponseEntity.ok(response);
+            } else {
+                ResponseUtil response = new ResponseUtil(404, "User not found", null);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+        } catch (Exception e) {
+            ResponseUtil response = new ResponseUtil(500, "Error fetching user: " + e.getMessage(), null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }}

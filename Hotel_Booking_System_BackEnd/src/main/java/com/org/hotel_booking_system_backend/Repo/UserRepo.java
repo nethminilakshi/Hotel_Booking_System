@@ -1,5 +1,6 @@
 package com.org.hotel_booking_system_backend.Repo;
 
+import com.org.hotel_booking_system_backend.Dto.UserDTO;
 import com.org.hotel_booking_system_backend.Entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,10 +19,7 @@ public interface UserRepo extends JpaRepository<User, UUID> {
 
     boolean existsByEmail(String email);
 
-    void deleteByEmail(String email);
-
-    boolean existsByContact(String contact);
-    boolean existsByEmailAndContact(String email, String contact);
+    Optional<User>  findByEmailAndContact(String email, String contact);
 
 
     List<User> findAllByRole(String admin);

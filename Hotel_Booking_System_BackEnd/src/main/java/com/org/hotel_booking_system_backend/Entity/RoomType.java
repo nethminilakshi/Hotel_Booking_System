@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -37,6 +38,12 @@ public class RoomType implements Serializable {
 
     @Column(name = "qtyOnHand", nullable = false)
     private int qtyOnHand;
+
+    @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Booking> bookings;
+
+    @OneToMany(mappedBy = "roomType", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Room> rooms;
 
     // Getters and Setters
 }

@@ -1,6 +1,6 @@
 $(document).ready(function () {
   $("#signUpBtn").click(function (event) {
-    event.preventDefault(); // Prevent the default form submission
+    event.preventDefault();
 
     let username = $("#nameSignUp").val().trim();
     let email = $("#emailSignUp").val().trim();
@@ -9,24 +9,30 @@ $(document).ready(function () {
     let confirmPassword = $("#confPasswordSignUp").val().trim();
 
     if (!username || !email || !contact || !password || !confirmPassword) {
-      alert("All fields are required!");
+      Swal.fire({
+        icon: 'warning',
+        title: 'All fields are required!',
+        customClass: { popup: 'custom-swal' }
+      });
       return;
     }
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      Swal.fire({
+        icon: 'error',
+        title: 'Passwords do not match!',
+        customClass: { popup: 'custom-swal' }
+      });
       return;
     }
 
     let userData = {
-      name: username, // Ensure the field name matches the expected backend field
+      name: username,
       email: email,
       contact: contact,
       password: password,
       role: "USER"
     };
-
-    console.log("Sending Data: ", userData);
 
     $.ajax({
       url: "http://localhost:8080/api/v1/user/register",
@@ -35,27 +41,48 @@ $(document).ready(function () {
       dataType: "json",
       data: JSON.stringify(userData),
       success: function (res) {
-        console.log("Success Response: ", res);
         if (res.code === 201) {
-          alert("Registered successfully!");
-          window.location.href = "login.html";
+          Swal.fire({
+            icon: 'success',
+            title: 'Registered successfully!',
+            text: 'Redirecting to login...',
+            customClass: { popup: 'custom-swal' },
+            timer: 2000,
+            showConfirmButton: false
+          }).then(() => {
+            window.location.href = "login.html";
+          });
         } else if (res.code === 406) {
-          alert("Email already used!");
+          Swal.fire({
+            icon: 'info',
+            title: 'Email already used!',
+            customClass: { popup: 'custom-swal' }
+          });
         } else {
-          alert("Something went wrong. Please try again.");
+          Swal.fire({
+            icon: 'error',
+            title: 'Something went wrong.',
+            text: 'Please try again.',
+            customClass: { popup: 'custom-swal' }
+          });
         }
       },
       error: function (xhr, status, error) {
-        console.error("Full Error: ", xhr);
-        console.error("Status: ", status);
-        console.error("Error: ", error);
-        console.error("Response Text: ", xhr.responseText);
-
         try {
           let errorResponse = JSON.parse(xhr.responseText);
-          alert("Registration failed: " + (errorResponse.message || error));
+          Swal.fire({
+            icon: 'error',
+            title: 'Registration Failed',
+            text: errorResponse.message || error,
+            customClass: { popup: 'custom-swal' }
+          });
         } catch (e) {
-          alert("Registration failed: " + xhr.responseText);
+          Swal.fire({
+            icon: 'error',
+            title: 'Registration Failed',
+            text: xhr.responseText,
+            customClass: { popup: 'custom-swal' }
+          });
         }
       }
     });

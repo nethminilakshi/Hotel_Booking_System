@@ -104,6 +104,8 @@ header ul li a {
   text-transform: uppercase;
   font-weight: 500;
   transition: 0.5s;
+  text-decoration: none;
+
 }
 
 header ul li a:hover {
@@ -1071,7 +1073,10 @@ footer .content {
   padding-bottom: 50px;
   border-top: 2px solid rgba(255, 255, 255, 0.2);
 }
-
+.quick a {
+  color: white;
+  text-decoration: none;
+}
 /*------------footer------------*/
 @media only screen and (max-width:768px) {
 

@@ -227,7 +227,7 @@ $(document).ready(function () {
     if (!confirm("Are you sure you want to delete this user?")) return;
 
     $.ajax({
-      url: `http://localhost:8080/api/v1/user/delete/${email}`,
+      url: `http://localhost:8080/api/v1/admin/delete/${email}`,
       method: "DELETE",
       headers: {
         "Authorization": `Bearer ${getAuthToken()}`

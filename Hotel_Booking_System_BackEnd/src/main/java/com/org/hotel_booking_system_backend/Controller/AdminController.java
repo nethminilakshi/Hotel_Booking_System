@@ -113,4 +113,15 @@ public class AdminController {
                     .body(new ResponseUtil(VarList.Internal_Server_Error, e.getMessage(), null));
         }
     }
+
+    @DeleteMapping(value = "delete/{email}")
+    public ResponseEntity<ResponseUtil> deleteUser(@PathVariable("email") String email) {
+        try {
+            userService.deleteAdmin(email);
+            return ResponseEntity.ok(new ResponseUtil(VarList.OK, "User deleted successfully", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseUtil(VarList.Internal_Server_Error, e.getMessage(), null));
+        }
+    }
 }

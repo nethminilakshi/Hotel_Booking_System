@@ -96,4 +96,16 @@ public class JwtUtil implements Serializable {
         return claims.getSubject(); // This is your email / username
     }
 
+    public String extractRole(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            return claims.get("role", String.class);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

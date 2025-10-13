@@ -12,5 +12,7 @@ public interface BookingService {
 
     Booking save(BookingDetailsDTO bookingDetailsDTO);
 
-    int countBookedRooms(UUID hotelId, UUID roomTypeId, LocalDate checkin, LocalDate checkout, String time);
+//    int countBookedRooms(UUID hotelId, UUID roomTypeId, LocalDate checkin, LocalDate checkout, String time);
+
+    int countBookedRoomsForDateAndTime(UUID hotelId, UUID roomTypeId, LocalDate currentDate, String lowerCase);
 }

@@ -11,12 +11,20 @@ $(document).ready(function () {
   let hotels = [];
   let roomTypes = [];
 
+  const Toast = Swal.mixin({
+    width: '500px',
+    padding: '1em',
+    heightAuto: false,
+    customClass: {
+      popup: 'compact-alert'
+    }
+  });
+
   const openForm = function () {
     roomRegisterForm.css("display", "flex");
     formTitle.text(currentRoomId ? "Update Room" : "Register Room");
     if (!currentRoomId) clearForm();
     console.log("Room Type Dropdown Value on Open Form:", roomTypeDropdown.val());
-
   };
 
   const closeForm = () => {
@@ -39,7 +47,7 @@ $(document).ready(function () {
   };
 
   const getRoomTypeNameById = (roomTypeId) => {
-    const roomType = roomTypes.find(rt => rt.typeId && rt.typeId.trim() === roomTypeId.trim());
+    const roomType = roomTypes.find(rt => rt.typeId && rt.typeId === roomTypeId);
     return roomType ? roomType.name : "Unknown Room Type";
   };
 
@@ -60,10 +68,14 @@ $(document).ready(function () {
             hotelDropdown.append(option);
           });
         }
-        console.log("Loaded Hotels:", hotels); // Log loaded hotels
+        console.log("Loaded Hotels:", hotels);
       },
       error: function (error) {
         console.error("Error loading hotels:", error);
+        Toast.fire({
+          icon: 'error',
+          title: 'Error loading hotels: ' + (error.responseJSON?.message || "Unknown error")
+        });
       }
     });
   };
@@ -84,13 +96,15 @@ $(document).ready(function () {
             const option = $('<option></option>').val(room.typeId).text(room.name || "Unknown");
             roomTypeDropdown.append(option);
           });
-
-          // Log the room type dropdown value to ensure it's populated correctly
           console.log("Room Type Dropdown populated. Current Value:", roomTypeDropdown.val());
         }
       },
       error: function (error) {
         console.error("Error loading room types:", error);
+        Toast.fire({
+          icon: 'error',
+          title: 'Error loading room types: ' + (error.responseJSON?.message || "Unknown error")
+        });
       }
     });
   };
@@ -111,7 +125,10 @@ $(document).ready(function () {
       },
       error: function (error) {
         console.error("Error fetching rooms:", error);
-        alert("An error occurred while fetching rooms.");
+        Toast.fire({
+          icon: 'error',
+          title: 'Error fetching rooms: ' + (error.responseJSON?.message || "Unknown error")
+        });
       }
     });
   };
@@ -147,19 +164,22 @@ $(document).ready(function () {
     const hotelId = hotelDropdown.val();
     const floorNumber = $('#room-floor-number').val();
 
-    console.log("Selected Room Type ID:", roomTypeId); // Log room type id selected
-    console.log("hotelId:", hotelId);
-    console.log("floorNumber:", floorNumber);
+    console.log("Selected Room Type ID:", roomTypeId);
+    console.log("Selected Hotel ID:", hotelId);
+    console.log("Floor Number:", floorNumber);
 
     if (!roomTypeId || !hotelId || !floorNumber) {
-      alert("Please fill all the fields!");
+      Toast.fire({
+        icon: 'warning',
+        title: 'Please fill all the fields!'
+      });
       return;
     }
 
     const roomData = {
-      roomTypeId,
-      hotelId,
-      floorNumber: parseInt(floorNumber),
+      roomTypeId: roomTypeId.trim(),
+      hotelId: hotelId.trim(),
+      floorNumber: parseInt(floorNumber, 10)
     };
 
     console.log("Saving room with data:", roomData);
@@ -172,14 +192,21 @@ $(document).ready(function () {
       headers: {
         'Authorization': `Bearer ${getAuthToken()}`
       },
-      success: function (response) {
-        alert("Room saved successfully!");
-        fetchRooms();
-        closeForm();
-      },
-      error: function (xhr, status, error) {
-        console.error("Error saving room:", xhr.responseText);
-        alert("Save failed: " + (xhr.responseJSON?.message || xhr.responseText || status));
+      complete: function (xhr, status) {
+        if (xhr.status === 201) {
+          Toast.fire({
+            icon: 'success',
+            title: 'Room saved successfully!'
+          });
+          fetchRooms();
+          closeForm();
+        } else {
+          console.error("Error saving room:", xhr.responseText);
+          Toast.fire({
+            icon: 'error',
+            title: 'Error saving room: ' + (xhr.responseJSON?.message || xhr.responseText || status)
+          });
+        }
       }
     });
   };
@@ -189,8 +216,9 @@ $(document).ready(function () {
       roomId: currentRoomId,
       roomTypeId: roomTypeDropdown.val(),
       hotelId: hotelDropdown.val(),
-      floorNumber: $('#room-floor-number').val(),
+      floorNumber: parseInt($('#room-floor-number').val(), 10)
     };
+
     console.log("Updating room with data:", roomData);
 
     $.ajax({
@@ -202,12 +230,19 @@ $(document).ready(function () {
         'Authorization': `Bearer ${getAuthToken()}`
       },
       success: function (response) {
+        Toast.fire({
+          icon: 'success',
+          title: 'Room updated successfully!'
+        });
         fetchRooms();
         closeForm();
       },
       error: function (xhr, status, error) {
         console.error("Error updating room:", xhr.responseText);
-        alert("Update failed: " + (xhr.responseJSON?.message || xhr.responseText || status));
+        Toast.fire({
+          icon: 'error',
+          title: 'Update failed: ' + (xhr.responseJSON?.message || xhr.responseText || status)
+        });
       }
     });
   };
@@ -221,24 +256,45 @@ $(document).ready(function () {
   };
 
   const deleteRoom = function (roomId) {
-    if (!confirm("Are you sure you want to delete this room?")) return;
-
-    $.ajax({
-      url: `http://localhost:8080/api/v1/room/delete/${roomId}`,
-      type: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${getAuthToken()}`
-      },
-      success: function () {
-        fetchRooms();
-      },
-      error: function (xhr) {
-        alert("Failed to delete room: " + (xhr.responseJSON?.message || xhr.responseText));
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You want to delete this room?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+      width: '500px',
+      padding: '1em',
+      customClass: {
+        popup: 'compact-alert'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: `http://localhost:8080/api/v1/room/delete/${roomId}`,
+          type: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${getAuthToken()}`
+          },
+          success: function () {
+            Toast.fire({
+              icon: 'success',
+              title: 'Room deleted successfully!'
+            });
+            fetchRooms();
+          },
+          error: function (xhr) {
+            Toast.fire({
+              icon: 'error',
+              title: 'Failed to delete room: ' + (xhr.responseJSON?.message || xhr.responseText)
+            });
+          }
+        });
       }
     });
   };
 
-  // Handle form submit once only
   roomForm.on('submit', function (e) {
     e.preventDefault();
     if (currentRoomId) {
@@ -248,6 +304,13 @@ $(document).ready(function () {
     }
   });
 
-  // Load everything initially
-  $.when(loadHotels(), loadRoomTypes()).done(fetchRooms);
+  $.when(loadHotels(), loadRoomTypes()).done(function() {
+    fetchRooms();
+  }).fail(function(error) {
+    console.error("Error loading initial data:", error);
+    Toast.fire({
+      icon: 'error',
+      title: 'Error loading initial data. Please refresh the page.'
+    });
+  });
 });

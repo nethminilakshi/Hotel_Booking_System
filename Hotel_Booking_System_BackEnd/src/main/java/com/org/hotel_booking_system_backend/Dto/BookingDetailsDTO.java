@@ -12,17 +12,17 @@ import java.util.UUID;
 public class BookingDetailsDTO {
 
     private UUID bookingId;
-    private String customerId;
-    private String customerName;
-    private String PhoneNumber;
+   private UserDTO user;
     private String email;
-    private String hotelId;
+    private String contact;
+    private HotelDTO hotel;
+    private UUID hotelId;
     private int roomCount;
-    private String roomTypeId;
+    private RoomTypeDTO roomType;
+    private UUID roomTypeId;
     private LocalDate checkIn;
     private LocalDate checkOut;
     private String time;
     private String status;
-
 
 }

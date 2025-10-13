@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,6 +28,7 @@ public class ManagerRoomTypeController {
     static Logger logger = LoggerFactory.getLogger(ManagerRoomTypeController.class);
 
     @PostMapping(path = "save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseUtil saveRoomType(@Valid
                                          @RequestParam("name") String name,
                                      @RequestParam("description") String description,
@@ -77,6 +79,7 @@ public class ManagerRoomTypeController {
     }
 
     @DeleteMapping(value = "delete/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseUtil deleteRoomType(@PathVariable(value = "id") UUID id) {
         try{
             roomTypeService.delete(id);
@@ -95,6 +98,7 @@ public class ManagerRoomTypeController {
     }
 
     @PutMapping(path = "update/{id}" ,consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseUtil update(
             @PathVariable("id") UUID roomTypeId,
             @RequestPart("name") String name,

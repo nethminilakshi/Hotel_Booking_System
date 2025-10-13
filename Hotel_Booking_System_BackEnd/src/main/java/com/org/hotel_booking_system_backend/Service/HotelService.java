@@ -17,4 +17,6 @@ public interface HotelService {
     void delete(UUID id);
 
     HotelDTO getHotelId(UUID hotelId);
+
+    HotelDTO getHotelById(UUID hotelId);
 }

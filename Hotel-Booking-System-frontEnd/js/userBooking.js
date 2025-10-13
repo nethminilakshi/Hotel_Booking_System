@@ -9,24 +9,30 @@ $(document).ready(function () {
   const roomQtyInput = $('#roomQtyInput');
 
   const getAuthToken = () => localStorage.getItem('authToken');
-  const parseJwt = (token) => {
-    try {
-      return JSON.parse(atob(token.split('.')[1]));
-    } catch (e) {
-      return null;
+
+  function checkRedirect() {
+    const contactInfo = JSON.parse(localStorage.getItem('userContactInfo'));
+    const pendingBooking = JSON.parse(localStorage.getItem('pendingBooking'));
+    console.log("Checking redirect logic:", { contactInfo, pendingBooking });
+
+    if (pendingBooking && contactInfo) {
+      console.log("Resuming booking process");
+      proceedWithBooking(contactInfo.email, contactInfo.contact);
     }
-  };
+  }
 
   $('#openRegisterBtn').on('click', function () {
     $('#registerModal').modal('show');
   });
 
   function loadHotels() {
+    console.log("Loading hotels...");
     $.ajax({
       url: 'http://localhost:8080/api/v1/hotel/getAll',
       method: 'GET',
       headers: { 'Authorization': `Bearer ${getAuthToken()}` },
       success: function (result) {
+        console.log("Hotels loaded:", result.data);
         hotelDropdown.html('<option value="">-- Select Hotel --</option>');
         result.data.forEach(hotel => {
           hotelDropdown.append(`<option value="${hotel.hotelId}">${hotel.name}</option>`);
@@ -37,17 +43,19 @@ $(document).ready(function () {
           hotelDropdown.val(pending.hotelId).trigger('change');
         }
       },
-      error: () => console.error("Hotel loading failed.")
+      error: (err) => console.error("Hotel loading failed:", err)
     });
   }
 
   function loadRoomTypes(hotelId) {
+    console.log("Loading room types for hotel:", hotelId);
     if (!hotelId) return;
     $.ajax({
       url: `http://localhost:8080/api/v1/room/roomTypesByHotel/${hotelId}`,
       method: 'GET',
       headers: { 'Authorization': `Bearer ${getAuthToken()}` },
       success: function (res) {
+        console.log("Room types loaded:", res.data);
         roomTypeSelect.html('<option value="">-- Select Room Type --</option>');
         res.data.forEach(rt => {
           roomTypeSelect.append(`<option value="${rt.roomTypeId}">${rt.roomTypeName}</option>`);
@@ -60,7 +68,7 @@ $(document).ready(function () {
 
         updateRoomAvailability();
       },
-      error: () => console.error("Room types load failed.")
+      error: (err) => console.error("Room types load failed:", err)
     });
   }
 
@@ -70,6 +78,8 @@ $(document).ready(function () {
     const checkinDate = checkinDateInput.val();
     const checkoutDate = checkoutDateInput.val();
     const timeSlot = timeSlotSelect.val();
+
+    console.log("Checking availability with:", { hotelId, roomTypeId, checkinDate, checkoutDate, timeSlot });
 
     if (!hotelId || !roomTypeId || !checkinDate || !checkoutDate || !timeSlot) {
       roomAvailabilityInfo.text('Please complete booking details.');
@@ -81,104 +91,91 @@ $(document).ready(function () {
       url: 'http://localhost:8080/api/v1/Booking/availability',
       method: 'GET',
       data: { hotelId, roomTypeId, checkinDate, checkoutDate, time: timeSlot },
-      headers: { 'Authorization': `Bearer ${getAuthToken()}` },
       success: function (res) {
         const available = res.data || 0;
+        console.log("Available rooms:", available);
         roomAvailabilityInfo.text(`Available Rooms: ${available}`);
         bookRoomButton.prop('disabled', available <= 0);
-
-        // Update room quantity max value
         roomQtyInput.attr('max', available);
         if (parseInt(roomQtyInput.val()) > available) {
           roomQtyInput.val(available);
         }
       },
-      error: () => {
+      error: (err) => {
+        console.error("Availability check failed:", err);
         roomAvailabilityInfo.text('Error checking availability.');
         bookRoomButton.prop('disabled', true);
       }
     });
   }
 
-  // Book Room Button Click Handler
   bookRoomButton.on('click', function () {
     console.log("Book Room button clicked");
 
-    // Store booking details in localStorage
     const bookingInputs = {
       hotelId: hotelDropdown.val(),
       roomTypeId: roomTypeSelect.val(),
       checkinDate: checkinDateInput.val(),
       checkoutDate: checkoutDateInput.val(),
       timeSlot: timeSlotSelect.val(),
-      roomQty: roomQtyInput.val() || 1
+      roomQty: parseInt(roomQtyInput.val()) || 1
     };
 
+    if (bookingInputs.roomQty <= 0) {
+      return Swal.fire("Invalid Quantity", "Room quantity must be at least 1.", "warning");
+    }
+
     if (Object.values(bookingInputs).some(val => !val)) {
-      alert("Please fill in all booking details.");
-      return;
+      return Swal.fire("Missing Information", "Please fill in all booking details.", "info");
     }
 
     localStorage.setItem('pendingBooking', JSON.stringify(bookingInputs));
-
-    // Show the check user modal for everyone
+    console.log("Stored pending booking:", bookingInputs);
     $('#checkUserModal').modal('show');
   });
 
-  // Handle Check User Submit button click in modal
   $('#checkUserSubmit').on('click', function () {
     const email = $('#checkUserEmail').val().trim();
     const contact = $('#checkUserContact').val().trim();
 
     if (!email || !contact) {
-      alert("Please enter both email and contact number.");
-      return;
+      return Swal.fire("Required Fields", "Please enter both email and contact number.", "warning");
     }
 
-    // Log the values for debugging
-    console.log("Checking user with email:", email, "and contact:", contact);
+    localStorage.setItem('userContactInfo', JSON.stringify({ email, contact }));
 
-    // Then process the data
     $.ajax({
       url: 'http://localhost:8080/api/v1/user/checkUser',
       method: 'GET',
-      data: {
-        email: email,
-        contact: contact
-      },
-      success: function(response) {
+      data: { email, contact },
+      success: function (response) {
         console.log("User check response:", response);
 
-        // Close the modal
-        $('#checkUserModal').modal('hide');
-
-        // Check if the user exists based on the response structure
-        if (response.data === true || response.userExists === true) {
-          alert("User found successfully!");
-          proceedWithBooking(getAuthToken(), email, contact);
+        if (response.code === 201 || (response.code === 200 && response.data)) {
+          $('#checkUserModal').modal('hide');
+          proceedWithBooking(email, contact);
         } else {
-          alert('User not found, please register for a booking.');
+          $('#checkUserModal').modal('hide');
+          Swal.fire("User Not Found", "Please register for a booking.", "info");
           $('#registerModal').modal('show');
         }
       },
-      error: function(xhr, status, error) {
-        console.error("Error checking user:", xhr, status, error);
-        alert('Error checking user. Please try again.');
+      error: function (xhr) {
+        console.error("Error checking user:", xhr);
+        Swal.fire("Error", "Error checking user. Please try again.", "error");
       }
     });
   });
 
-  function proceedWithBooking(token, email, contact) {
+  function proceedWithBooking(email, contact) {
     const data = JSON.parse(localStorage.getItem('pendingBooking'));
-    if (!data) return alert("Booking data not found!");
+    if (!data) {
+      return Swal.fire("Error", "Booking data not found!", "error");
+    }
 
-    // Make sure we have an auth token
-    const authToken = token || getAuthToken();
-
-    if (!authToken) {
-      console.error("No authentication token available");
-      alert("Authentication required. Please login first.");
-      return;
+    const roomQty = parseInt(data.roomQty);
+    if (isNaN(roomQty) || roomQty <= 0) {
+      return Swal.fire("Invalid Quantity", "Invalid room quantity. Please try again.", "warning");
     }
 
     const bookingData = {
@@ -187,39 +184,33 @@ $(document).ready(function () {
       checkIn: data.checkinDate,
       checkOut: data.checkoutDate,
       time: data.timeSlot,
-      quantity: parseInt(data.roomQty) || 1,
-      status: 'PENDING',
+      roomCount: roomQty,
       email: email,
-      phoneNumber: contact
+      contact: contact,
+      status: "CONFIRMED"
     };
 
     console.log("Sending booking data:", bookingData);
-    console.log("Using token:", authToken);
 
     $.ajax({
       url: 'http://localhost:8080/api/v1/Booking/save',
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`
-      },
+      headers: { 'Content-Type': 'application/json' },
       data: JSON.stringify(bookingData),
       success: function (response) {
-        console.log("Booking response:", response);
+        console.log("Booking successful:", response);
         localStorage.removeItem('pendingBooking');
-        alert("Booking successful!");
-
-        // Optional: Redirect to a booking confirmation page
-        // window.location.href = "booking-confirmation.html";
+        localStorage.removeItem('userContactInfo');
+        localStorage.removeItem('redirectAfterLogin');
+        Swal.fire("Success", "Booking successful!", "success").then(() => window.location.reload());
       },
       error: function (xhr, status, error) {
-        console.error("Booking error:", xhr.responseText);
-        alert("Booking failed. Please try again. " + (xhr.responseJSON?.message || error));
+        console.error("Booking failed:", xhr.responseText);
+        Swal.fire("Booking Failed", xhr.responseJSON?.message || error, "error");
       }
     });
   }
 
-  // Handle user registration
   $('#registerSubmitBtn').on('click', function () {
     const name = $("#nameSignUp").val().trim();
     const email = $("#emailSignUp").val().trim();
@@ -228,10 +219,10 @@ $(document).ready(function () {
     const confirmPassword = $("#confPasswordSignUp").val().trim();
 
     if (!name || !email || !contact || !password || !confirmPassword) {
-      return alert("All fields required!");
+      return Swal.fire("Required Fields", "All fields are required!", "warning");
     }
     if (password !== confirmPassword) {
-      return alert("Passwords do not match!");
+      return Swal.fire("Password Mismatch", "Passwords do not match!", "error");
     }
 
     const userData = {
@@ -242,80 +233,64 @@ $(document).ready(function () {
       role: "USER"
     };
 
+    console.log("Registering user:", userData);
+
     $.ajax({
       url: 'http://localhost:8080/api/v1/user/register',
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       data: JSON.stringify(userData),
       success: function (response) {
-        console.log("Registration response:", response);
+        console.log("Registration successful:", response);
         $('#registerModal').modal('hide');
+        Swal.fire("Success", "Registration successful!", "success");
 
-        // After registration, automatically login the user
-        $.ajax({
-          url: 'http://localhost:8080/api/v1/user/login',
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          data: JSON.stringify({ email: email, password: password }),
-          success: function(loginRes) {
-            console.log("Login response:", loginRes);
-            if (loginRes.token) {
-              localStorage.setItem('authToken', loginRes.token);
-              alert("Registration successful!");
-              proceedWithBooking(loginRes.token, email, contact);
-            } else {
-              alert("Registration successful but login failed. Please login manually.");
-            }
-          },
-          error: function() {
-            alert("Registration successful but login failed. Please login manually.");
-          }
-        });
+        if (!localStorage.getItem('userContactInfo')) {
+          localStorage.setItem('userContactInfo', JSON.stringify({
+            email: email,
+            contact: contact
+          }));
+        }
+
+        proceedWithBooking(email, contact);
       },
       error: function (error) {
         console.error("Registration error:", error);
-        alert("Registration failed: " + (error.responseJSON?.message || "Unknown error"));
+        Swal.fire("Registration Failed", error.responseJSON?.message || "Unknown error", "error");
       }
     });
   });
 
-  // Event listeners for form inputs
   hotelDropdown.on('change', () => loadRoomTypes(hotelDropdown.val()));
   roomTypeSelect.on('change', updateRoomAvailability);
   checkinDateInput.on('change', updateRoomAvailability);
   checkoutDateInput.on('change', updateRoomAvailability);
   timeSlotSelect.on('change', updateRoomAvailability);
-  roomQtyInput.on('change', function() {
+  roomQtyInput.on('change', function () {
     const max = parseInt($(this).attr('max') || 1);
     const value = parseInt($(this).val() || 1);
-    if (value > max) {
-      $(this).val(max);
-    } else if (value < 1) {
-      $(this).val(1);
-    }
+    if (value > max) $(this).val(max);
+    else if (value < 1) $(this).val(1);
   });
 
-  // Set minimum date for check-in to today
   const today = new Date().toISOString().split('T')[0];
   checkinDateInput.attr('min', today);
-
-  // Set minimum date for check-out to check-in date
-  checkinDateInput.on('change', function() {
+  checkinDateInput.on('change', function () {
     checkoutDateInput.attr('min', $(this).val());
     if (checkoutDateInput.val() < $(this).val()) {
       checkoutDateInput.val($(this).val());
     }
   });
 
-  // Load any pending booking data from localStorage
   const pending = JSON.parse(localStorage.getItem('pendingBooking'));
   if (pending) {
+    console.log("Prefilling form from pending booking:", pending);
     checkinDateInput.val(pending.checkinDate);
     checkoutDateInput.val(pending.checkoutDate);
     timeSlotSelect.val(pending.timeSlot);
     roomQtyInput.val(pending.roomQty || 1);
   }
 
-  // Initialize page data
   loadHotels();
+  checkRedirect();
 });

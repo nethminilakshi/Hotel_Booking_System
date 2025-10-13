@@ -5,6 +5,7 @@ import com.org.hotel_booking_system_backend.Entity.Review;
 import com.org.hotel_booking_system_backend.Service.ReviewService;
 import com.org.hotel_booking_system_backend.Util.ResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class ReviewController {
 
 
      @PostMapping("/save")
+     @PreAuthorize("hasAuthority('ADMIN')")
      public ResponseUtil addReview(@RequestBody ReviewDTO reviewDTO) {
          try {
              Review savedReview = reviewService.saveReview(reviewDTO);

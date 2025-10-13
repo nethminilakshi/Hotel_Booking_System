@@ -19,13 +19,17 @@ public class Booking {
     @Column(updatable = false, nullable = false)
     private UUID bookingId;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "room_id")
-    private Room room;
+    @JoinColumn(name = "hotel_id", nullable = false)
+    private Hotel hotel;
+
+    @ManyToOne
+    @JoinColumn(name = "room_type_id", nullable = false)
+    private RoomType roomType;
 
     @Column(nullable = false)
     private LocalDate checkIn;

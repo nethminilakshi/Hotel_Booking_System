@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
@@ -24,6 +25,7 @@ public class ManagerHotelController {
     private HotelService hotelService;
 
     @PostMapping(path = "save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseUtil saveHotel(@Valid
                                   @RequestPart("name") String hotelName,
                                   @RequestPart("location") String location,
@@ -79,6 +81,7 @@ public class ManagerHotelController {
     }
 
     @PutMapping(value = "update/{hotelId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseUtil update(
             @PathVariable("hotelId") String hotelId,
             @RequestPart("hotelName") String hotelName,
@@ -118,6 +121,7 @@ public class ManagerHotelController {
 
 
     @DeleteMapping(value = "delete/{hotelId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseUtil delete(@PathVariable("hotelId") UUID hotelId) {
         try {
             hotelService.delete(hotelId);

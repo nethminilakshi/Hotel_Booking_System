@@ -7,6 +7,60 @@ body {
   padding: 0;
 }
 
+.hero-slider.owl-carousel .owl-dots {
+  position: absolute;
+  left: 0;
+  bottom: 23px;
+  width: 100%;
+  text-align: center;
+}
+.hero-slider.owl-carousel .owl-dots button {
+  height: 6px;
+  width: 6px;
+  background: #ffffff;
+  opacity: 0.5;
+  border-radius: 50%;
+  margin-right: 10px;
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
+}
+.hero-slider.owl-carousel .owl-dots button.active {
+  width: 30px;
+  border-radius: 50px;
+  opacity: 1;
+}
+.hero-slider.owl-carousel .owl-dots button:last-child {
+  margin-right: 0;
+}
+.hero-slider .owl-stage-outer, .hero-slider .owl-stage, .hero-slider .owl-item, .hero-slider .hs-item {
+  height: 100%;
+}
+.hero-section {
+  position: relative;
+  padding-top: 60px;
+  padding-bottom: 100px;
+}
+.hero-section .container {
+  position: relative;
+  z-index: 5;
+}
+.hero-text {
+  padding-top: 145px;
+}
+.hero-text h1 {
+  font-size: 80px;
+  line-height: 90px;
+  color: #ffffff;
+  margin-bottom: 16px;
+}
+.hero-text p {
+  font-size: 18px;
+  color: #ffffff;
+  line-height: 28px;
+  margin-bottom: 35px;
+}
+
 .booking-wrapper {
   max-width: 800px;
   margin: 50px auto;

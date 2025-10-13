@@ -7,24 +7,19 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Repository
 public interface BookingRepo extends JpaRepository<Booking, UUID> {
-    @Query("SELECT COALESCE(SUM(b.roomCount), 0) FROM Booking b " +
-            "JOIN b.room r " +
-            "JOIN r.roomType rt " +
-            "WHERE r.hotel.hotelId = :hotelId " +
-            "AND rt.typeId = :roomTypeId " +
-            "AND b.checkIn < :checkoutDate " +
-            "AND b.checkOut > :checkinDate " +
+    @Query("SELECT b FROM Booking b WHERE b.hotel.hotelId = :hotelId " +
+            "AND b.roomType.typeId = :roomTypeId " +
+            "AND :date BETWEEN b.checkIn AND b.checkOut " +
             "AND b.time = :time " +
-            "AND b.status = 'CONFIRMED'")
-    int countBookingsByHotelAndRoomTypeAndDateRange(@Param("hotelId") UUID hotelId,
-                         @Param("roomTypeId") UUID roomTypeId,
-                         @Param("checkinDate") LocalDate checkinDate,
-                         @Param("checkoutDate") LocalDate checkoutDate,
-                         @Param("time") String time);
-
+            "AND b.status != 'CANCELLED'")
+    List<Booking> findBookingsForDateAndTime(@Param("hotelId") UUID hotelId,
+                                             @Param("roomTypeId") UUID roomTypeId,
+                                             @Param("date") LocalDate date,
+                                             @Param("time") String time);
 
 }

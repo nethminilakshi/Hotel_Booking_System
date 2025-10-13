@@ -4,13 +4,11 @@ import com.org.hotel_booking_system_backend.Dto.UserDTO;
 import com.org.hotel_booking_system_backend.Entity.User;
 import com.org.hotel_booking_system_backend.Repo.UserRepo;
 import com.org.hotel_booking_system_backend.Service.UserService;
-import com.org.hotel_booking_system_backend.Util.Mapping;
 import com.org.hotel_booking_system_backend.Util.VarList;
+import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -43,8 +41,43 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public boolean existsByEmailAndContact(String email, String contact) {
-        return userRepo.existsByEmailAndContact(email, contact);
+    public UserDTO existsByEmailAndContact(String email, String contact) {
+        System.out.println("Checking user with email: " + email + " and contact: " + contact);
+        Optional<User> optionalUser = userRepo.findByEmailAndContact(email, contact);
+        System.out.println("User found: " + optionalUser.isPresent());
+        if (optionalUser.isPresent()) {
+            return modelMapper.map(optionalUser.get(), UserDTO.class);
+        } else {
+            return null;
+        }
+    }
+
+
+    @Override
+    public UserDTO getUserByEmail(String email) {
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+        return mapToDTO(user);
+    }
+
+    @Override
+    public void deleteAdmin(String email) {
+        User user = userRepo.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with email: " + email));
+        if (user == null) {
+            throw new EntityNotFoundException("User not found with email: " + email);
+        }
+        userRepo.delete(user);
+    }
+
+    private UserDTO mapToDTO(User user) {
+        UserDTO dto = new UserDTO();
+        dto.setUserId(user.getUserId());
+        dto.setName(user.getName());
+        dto.setEmail(user.getEmail());
+        dto.setContact(user.getContact());
+        dto.setRole(user.getRole());
+        return dto;
     }
 
 

@@ -6,9 +6,7 @@ import com.org.hotel_booking_system_backend.Entity.User;
 import com.org.hotel_booking_system_backend.Repo.HotelRepo;
 import com.org.hotel_booking_system_backend.Repo.UserRepo;
 import com.org.hotel_booking_system_backend.Service.HotelService;
-import com.org.hotel_booking_system_backend.Util.AppUtil;
 import com.org.hotel_booking_system_backend.Util.Mapping;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,6 +88,16 @@ public class HotelServiceImpl implements HotelService {
         }
             throw  new RuntimeException("HotelId not Found");
         }
+
+    @Override
+    public HotelDTO getHotelById(UUID hotelId) {
+        Optional<Hotel> hotel = hotelRepo.findById(hotelId);
+        if (hotel.isPresent()) {
+            return mapper.convertToHotelDTO(hotel.orElse(null));
+        } else {
+            throw new RuntimeException("Hotel not found");
+        }
     }
+}
 
 

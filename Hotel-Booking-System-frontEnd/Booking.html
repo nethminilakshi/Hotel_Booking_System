@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>Hotel Booking</title>
+  <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/userBooking.css">
+  <link rel="stylesheet" href="css/bootstrap.css">
+
   <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -15,23 +18,19 @@
 <header class="header">
   <div class="container">
     <nav class="navbar flex1">
-      <div class="sticky_logo logo">
-        <img src="image/logo.png" alt="">
-      </div>
 
       <ul class="nav-menu">
         <li> <a href="index.html">Home</a> </li>
-        <li> <a href="About.html">About</a> </li>
+        <li> <a href="About.html">about</a> </li>
         <li><a href="UserHotels.html">Locations</a></li>
-        <li> <a href="UserRoomTypes.html">Rooms</a> </li>
-        <li> <a href="#gallery">Gallery</a> </li>
-        <li> <a href="#blog">Blog</a> </li>
-        <li> <a href="#contact">Contact</a> </li>
+        <li> <a href="UserRoomTypes.html">room</a> </li>
+        <li> <a href="Booking.html">Bookings</a> </li>
+        <li> <a href="#contact">contact</a> </li>
       </ul>
 
-      <!-- Login & Register Buttons -->
       <div class="auth-buttons">
-        <button id="reviewBtn" class="btn register-btn">Add A Review</button>
+        <a href="login.html" class="btn btn-login">Login</a>
+        <a href="register.html" class="btn btn-register">Register</a>
       </div>
 
       <div class="hamburger">
@@ -43,6 +42,22 @@
     </nav>
   </div>
 </header>
+<script>
+  const hamburger = document.querySelector(".hamburger");
+  const navMenu = document.querySelector(".nav-menu");
+
+  hamburger.addEventListener("click", mobliemmenu);
+
+  function mobliemmenu() {
+    hamburger.classList.toggle("active");
+    navMenu.classList.toggle("active");
+  }
+
+  window.addEventListener("scroll", function() {
+    var header = document.querySelector("header");
+    header.classList.toggle("sticky", window.scrollY > 0)
+  })
+</script>
 <div class="booking-wrapper">
   <div class="booking-container">
     <div class="header">
@@ -141,6 +156,94 @@
   </div>
 </div>
 
+<footer>
+  <div class="container top">
+    <div class="subscribe" id="contact">
+      <h2>Subscribe newsletter</h2>
+      <p> Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      <div class="input flex">
+        <input type="email" placeholder="Your Email address">
+        <button class="flex1">
+          <span>Subscribe</span>
+          <i class="fas fa-arrow-circle-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="content grid  top">
+      <div class="box">
+        <div class="logo">
+          <img src="image/logo.png" alt="">
+        </div>
+        <p>Book your stay easily with our secure online platform and enjoy exclusive deals, modern rooms, and top-class hospitality. Whether you’re traveling for business or leisure, we make every stay memorable. </p>
+        <div class="social flex">
+          <i class="fab fa-facebook-f"></i>
+          <i class="fab fa-twitter"></i>
+          <i class="fab fa-instagram"></i>
+          <i class="fab fa-youtube"></i>
+        </div>
+      </div>
+
+      <div class="box">
+        <h2>Quick Links</h2>
+        <div  class="quick text-white">
+          <ul>
+            <li><i class="fas fa-angle-double-right"></i> <a href="index.html">Home</a></li>
+            <li><i class="fas fa-angle-double-right"></i><a href="About.html">about</a></li>
+            <li><i class="fas fa-angle-double-right"></i><a href="UserHotels.html">Locations</a></li>
+            <li><i class="fas fa-angle-double-right"></i><a href="UserRoomTypes.html">room</a></li>
+            <li><i class="fas fa-angle-double-right"></i><a href="Booking.html">Bookings</a></li>
+            <li><i class="fas fa-angle-double-right"></i><a href="#contact">contact</a> </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="box">
+        <h2>Services</h2>
+        <ul>
+          <li><i class="fas fa-angle-double-right"></i>Restaurant</li>
+          <li><i class="fas fa-angle-double-right"></i>Swimming Pool</li>
+          <li><i class="fas fa-angle-double-right"></i>Wellness & Spa</li>
+          <li><i class="fas fa-angle-double-right"></i>Conference Room</li>
+          <li><i class="fas fa-angle-double-right"></i>Events</li>
+          <li><i class="fas fa-angle-double-right"></i>Adult Room</li>
+        </ul>
+      </div>
+
+      <div class="box">
+        <h2>Services</h2>
+        <div class="icon flex">
+          <div class="i">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <div class="text">
+            <h3>Address</h3>
+            <p>No 122, Park street, Colombo 09</p>
+          </div>
+        </div>
+        <div class="icon flex">
+          <div class="i">
+            <i class="fas fa-phone"></i>
+          </div>
+          <div class="text">
+            <h3>Phone</h3>
+            <p>+11 456 7898</p>
+          </div>
+        </div>
+        <div class="icon flex">
+          <div class="i">
+            <i class="far fa-envelope"></i>
+          </div>
+          <div class="text">
+            <h3>Email</h3>
+            <p>ecorik@book.com</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
 <!-- Check User Modal -->
 <div class="modal fade" id="checkUserModal" tabindex="-1">
   <div class="modal-dialog">
@@ -158,8 +261,11 @@
   </div>
 </div>
 <script src="js/userBooking.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://kit.fontawesome.com/032d11eac3.js" crossorigin="anonymous"></script>
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script><script src="https://kit.fontawesome.com/032d11eac3.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 

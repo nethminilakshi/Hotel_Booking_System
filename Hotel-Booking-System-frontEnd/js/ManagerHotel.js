@@ -20,8 +20,29 @@ $(document).ready(function() {
     if (file) {
       const reader = new FileReader();
       reader.onload = function(e) {
-        imagePreview.attr("src", e.target.result);
-        imagePreviewContainer.css("display", "flex");
+        const image = new Image();
+        image.src = e.target.result;
+
+        image.onload = function() {
+          const width = image.width;
+          const height = image.height;
+
+          // Check if image exceeds width or height limits
+          if (width > 800 || height > 600) {
+            // Display SweetAlert if image dimensions are too large
+            Swal.fire({
+              icon: 'warning',
+              title: 'Image too large!',
+              text: 'The image dimensions should not exceed 800x600 pixels.',
+              confirmButtonText: 'OK',
+              confirmButtonColor: '#FF6347'
+            });
+          } else {
+            // If the image dimensions are valid, display the preview
+            imagePreview.attr("src", e.target.result);
+            imagePreviewContainer.css("display", "flex");
+          }
+        };
       };
       reader.readAsDataURL(file);
     }
@@ -83,7 +104,7 @@ $(document).ready(function() {
         'Authorization': `Bearer ${getAuthToken()}`
       },
       success: function(result) {
-        managerDropdown.html('<option value="">-- Select Manager --</option>');
+        managerDropdown.html('<option value="">-- Select Admin --</option>');
         if (result.data && Array.isArray(result.data)) {
           managers = result.data;
           result.data.forEach(function(manager) {
@@ -96,7 +117,13 @@ $(document).ready(function() {
       },
       error: function(error) {
         console.error("Error loading managers:", error);
-        alert("Unable to fetch managers. Please try again.");
+        Swal.fire({
+          icon: 'error',
+          title: 'Unable to fetch managers',
+          text: 'An error occurred while fetching managers. Please try again.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#FF6347'
+        });
       }
     });
   };
@@ -122,7 +149,13 @@ $(document).ready(function() {
       },
       error: function(error) {
         console.error("Error fetching hotels:", error);
-        alert("An error occurred while fetching hotels.");
+        Swal.fire({
+          icon: 'error',
+          title: 'Error fetching hotels',
+          text: 'An error occurred while fetching hotels.',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#FF6347'
+        });
       }
     });
   };
@@ -199,13 +232,25 @@ $(document).ready(function() {
       processData: false,
       contentType: false,
       success: function(response) {
-        alert('Hotel saved successfully!');
+        // SweetAlert for success
+        Swal.fire({
+          icon: 'success',
+          title: 'Hotel saved successfully!',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#28a745'
+        });
         fetchHotels();
         closeForm();
       },
       error: function(error) {
         console.error("Error saving hotel:", error);
-        alert("An error occurred while saving the hotel: " + (error.responseJSON?.message || error.statusText));
+        Swal.fire({
+          icon: 'error',
+          title: 'Error saving hotel',
+          text: `An error occurred while saving the hotel: ${error.responseJSON?.message || error.statusText}`,
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#FF6347'
+        });
       }
     });
   };
@@ -223,20 +268,32 @@ $(document).ready(function() {
       processData: false,
       contentType: false,
       success: function(response) {
-        alert('Hotel updated successfully!');
+        Swal.fire({
+          icon: 'success',
+          title: 'Hotel updated successfully!',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#28a745'
+        });
         fetchHotels();
         closeForm();
       },
       error: function(error) {
         console.error("Error updating hotel:", error);
-        alert("An error occurred while updating the hotel: " + (error.responseJSON?.message || error.statusText));
+        Swal.fire({
+          icon: 'error',
+          title: 'Error updating hotel',
+          text: `An error occurred while updating the hotel: ${error.responseJSON?.message || error.statusText}`,
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#FF6347'
+        });
       }
     });
   };
 
   const getFormData = function() {
     const formData = new FormData();
-    formData.append('hotelName', $('#hotel-name').val());
+    // Change these field names to match your controller's expected parameter names
+    formData.append('name', $('#hotel-name').val());        // Changed from 'hotelName' to 'name'
     formData.append('location', $('#hotel-location').val());
     formData.append('description', $('#hotel-description').val());
     formData.append('manager_id', $('#managerId').val());
@@ -246,27 +303,50 @@ $(document).ready(function() {
     }
 
     const image = imageInput[0].files[0];
-    if (image) formData.append('image', image);
+    if (image) {
+      formData.append('image', image);
+    }
 
     return formData;
   };
 
   function deleteHotel(hotelId) {
-    if (!confirm("Are you sure you want to delete this hotel?")) return;
-
-    $.ajax({
-      url: `http://localhost:8080/api/v1/hotel/delete/${hotelId}`,
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${getAuthToken()}`
-      },
-      success: function(response) {
-        alert("Hotel deleted successfully!");
-        fetchHotels();
-      },
-      error: function(error) {
-        console.error("Error deleting hotel:", error);
-        alert("Failed to delete hotel.");
+    Swal.fire({
+      icon: 'warning',
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#FF6347'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $.ajax({
+          url: `http://localhost:8080/api/v1/hotel/delete/${hotelId}`,
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${getAuthToken()}`
+          },
+          success: function(response) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Hotel deleted successfully!',
+              confirmButtonText: 'OK',
+              confirmButtonColor: '#28a745'
+            });
+            fetchHotels();
+          },
+          error: function(error) {
+            console.error("Error deleting hotel:", error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error deleting hotel',
+              text: 'Failed to delete hotel.',
+              confirmButtonText: 'OK',
+              confirmButtonColor: '#FF6347'
+            });
+          }
+        });
       }
     });
   }

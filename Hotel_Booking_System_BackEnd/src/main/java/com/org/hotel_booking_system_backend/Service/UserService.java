@@ -1,7 +1,6 @@
 package com.org.hotel_booking_system_backend.Service;
 
 import com.org.hotel_booking_system_backend.Dto.UserDTO;
-import jakarta.validation.Valid;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,6 +24,9 @@ public interface UserService {
     int updateUser(String email, UserDTO userDTO);
 
     List<UserDTO> getAllAdmins();
-    boolean existsByEmailAndContact(String email, String contact);
+    UserDTO existsByEmailAndContact(String email, String contact);
 
+    UserDTO getUserByEmail(String email);
+
+    void deleteAdmin(String email);
 }

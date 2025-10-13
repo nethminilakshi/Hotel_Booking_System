@@ -4,8 +4,8 @@ import com.org.hotel_booking_system_backend.Dto.RoomTypeDTO;
 import com.org.hotel_booking_system_backend.Entity.RoomType;
 import com.org.hotel_booking_system_backend.Repo.RoomTypeRepo;
 import com.org.hotel_booking_system_backend.Service.RoomTypeService;
-import com.org.hotel_booking_system_backend.Util.AppUtil;
 import com.org.hotel_booking_system_backend.Util.Mapping;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -77,12 +77,29 @@ public class RoomTypeServiceImpl implements RoomTypeService {
     }
 
     @Override
-    public RoomType getRoomTypeById(UUID roomTypeId) {
+    public RoomTypeDTO getRoomTypeById(UUID roomTypeId) {
         Optional<RoomType> roomType = roomTypeRepo.findById(roomTypeId);
         if (roomType.isPresent()) {
-            return roomType.get();
+            return mapping.convertToRoomTypeDTO(roomType.orElse(null));
         } else {
             throw new RuntimeException("Room Type not found");
         }
+    }
+
+    @Override
+    @Transactional
+    public void updateRoomTypeQuantity(UUID roomTypeId, int roomCount) {
+        RoomType roomType = roomTypeRepo.findById(roomTypeId)
+                .orElseThrow(() -> new RuntimeException("Room type not found: " + roomTypeId));
+
+        int newQuantity = roomType.getQtyOnHand() - roomCount;
+        if (newQuantity < 0) {
+            throw new RuntimeException("Not enough rooms available");
+        }
+
+        roomType.setQtyOnHand(newQuantity);
+        roomTypeRepo.save(roomType);
+
+        System.out.println("Updated room quantity. Previous: " + (newQuantity + roomCount) + ", Current: " + newQuantity);
     }
 }
